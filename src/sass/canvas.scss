@@ -1,0 +1,22 @@
+
+main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+ 
+#canvas {
+    width: 50%;
+    height: 60%;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 10px;
+    cursor: url('../media/icon-pencil.png');
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
