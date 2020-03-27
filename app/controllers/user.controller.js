@@ -1,5 +1,4 @@
 const User = require("../models/user.model");
-const { validSignUpUserData } = require('./Helpers/validation-helpers');
  
 const nameAlreadyRegistered = async name => {
     const allUsers = await User.find({ });
@@ -14,10 +13,6 @@ const emailAlreadyRegistered = async email => {
 };
 
 const createUser = async (req, res) => {
-    if (!(await validSignUpUserData(req.body, res))) {
-        return;
-    }
-
     const { name, email, password } = req.body;
     const user = new User({
         name,

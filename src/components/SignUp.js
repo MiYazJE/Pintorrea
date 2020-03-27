@@ -7,7 +7,7 @@ import { MdEmail } from "react-icons/md";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Nav from "./Nav";
 import Footer from "./Footer";
-import Http from '../Helpers/Http';
+import Http from "../Helpers/Http";
 import "../css/login.css";
 
 const key = "updatable";
@@ -21,11 +21,18 @@ const Register = ({ user, logout }) => {
         if (res.success) {
             message.success({ content: res.message, key, duration: 5 });
             setTimeout(() => setRedirectToHome(true), 1500);
-        }
-        else {
+        } else {
             message.error({ content: res.message, key, duration: 10 });
         }
     }
+
+    const validateEmail = (_, email) => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(email).toLowerCase())) {
+            return Promise.resolve();
+        }
+        return Promise.reject('El email no es válido!');
+    };
 
     return (
         <React.Fragment>
@@ -38,10 +45,13 @@ const Register = ({ user, logout }) => {
                     </h1>
                     <Form.Item
                         name="email"
+                        hasFeedback
                         rules={[
                             {
                                 required: true,
-                                message: "Por favor introduce el email!"
+                            },
+                            {
+                                validator: validateEmail
                             }
                         ]}
                     >
@@ -52,6 +62,7 @@ const Register = ({ user, logout }) => {
                     </Form.Item>
                     <Form.Item
                         name="name"
+                        hasFeedback
                         rules={[
                             {
                                 required: true,
@@ -68,6 +79,7 @@ const Register = ({ user, logout }) => {
                     </Form.Item>
                     <Form.Item
                         name="password"
+                        hasFeedback
                         rules={[
                             {
                                 required: true,
@@ -85,11 +97,21 @@ const Register = ({ user, logout }) => {
                     </Form.Item>
                     <Form.Item
                         name="passwordCheck"
+                        hasFeedback
                         rules={[
                             {
-                                required: true,
-                                message: "Por favor introduce la contraseña!"
-                            }
+                                required: true
+                            },
+                            ({ getFieldValue }) => ({
+                                validator(rule, value) {
+                                    if (getFieldValue("password") === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                        "Las contraseñas deben coincidir."
+                                    );
+                                }
+                            })
                         ]}
                     >
                         <Input.Password
