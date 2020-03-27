@@ -41,6 +41,6 @@ router.get('/whoAmI', (req, res) => {
 router.get('/logOut', (req, res) => {
 	res.clearCookie('jwt');
 	return res.status(200).send({ logOut: true });
-})
+});
 
 module.exports = router;

@@ -1,129 +1,111 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import "../css/login.css";
 import { Link } from "react-router-dom";
-import ListMessages from "./ListMessages";
-import FormLogin from "./FormLogin";
-import FormRegister from "./FormRegister";
-import { Redirect } from "react-router-dom";
 import { whoAmI, logIn, signUp } from "../Helpers/auth-helpers";
+import { Redirect } from "react-router-dom";
+import { Form, Input, Button, Checkbox, message } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { MdEmail } from 'react-icons/md';
+import Nav from "./Nav";
+import Footer from "./Footer";
 
-const generateKey = pre => `${pre}_${new Date().getTime()}`;
+const key = "updatable";
 
-export default function Login({ saveUser }) {
-    const [toHome, setToHome] = useState(false);
-    const [viewLogin, setViewLogin] = useState(true);
-    const [listMessages, setListMessages] = useState([]);
+const Login = ({ saveUser, logout }) => {
+    async function handleLoggin(user) {
+        message.loading({ content: "Validando...", key });
+        const res = await logIn(user);
 
-    async function handleRegister({ name, email, password, passwordCheck }) {
-        const res = await signUp({ 
-            name, 
-            email,
-            password,
-            passwordCheck
-        });
-
-        setListMessages([
-            ...listMessages,
-            {
-                status: res.succes ? "ok" : "error",
-                message: res.message,
-                key: generateKey(listMessages.length)
-            }
-        ]);
-        
-        if (res.succes) {
-            redirectToHome();
-        }
-    }
-
-    function deleteMessage(k) {
-        setListMessages(listMessages.filter(({ key }) => key !== k));
-    }
-
-    function redirectToHome() {
-        setTimeout(() => {
-            setToHome(true);
-        }, 2000);
-    }
-
-    async function handleLoggin({ email, password }) {
-        const res = await logIn({
-            email,
-            password
-        });
-
-        setListMessages([
-            ...listMessages,
-            {
-                message: res.message,
-                status: res.succes ? "ok" : "error",
-                key: generateKey(listMessages.length)
-            }
-        ]);
-
-        if (res.succes) {
-            const data = await whoAmI(); 
+        if (res.success) {
+            const data = await whoAmI();
             if (data.auth) {
                 saveUser(data.user);
-                redirectToHome();
+                message.success({ content: "Logeado!", key, duration: 5 });
             }
+        }
+        else {
+            message.error({ content: res.message, key, duration: 10 });
         }
     }
 
     return (
         <React.Fragment>
-            {toHome ? <Redirect to={"/"} /> : null}
-            <div className="header">
-                <Link to="/">
-                    <h1 className="logo">PINTORREA</h1>
-                </Link>
+            <Nav logout={logout} />
+            <div className="wrapForm">
+                <Form
+                    size="large"
+                    name="normal_login"
+                    className="login-form"
+                    initialValues={{ remember: true }}
+                    onFinish={handleLoggin}
+                >
+                    <h1 style={{ textAlign: "center", color: "white" }}>
+                        Login
+                    </h1>
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Por favor introduce el email!"
+                            }
+                        ]}
+                    >
+                        <Input
+                            prefix={
+                                <MdEmail className="site-form-item-icon" />
+                            }
+                            placeholder="Introduce el email..."
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: "Por favor introduce tu contraseña!"
+                            }
+                        ]}
+                    >
+                        <Input.Password
+                            prefix={
+                                <LockOutlined className="site-form-item-icon" />
+                            }
+                            type="password"
+                            placeholder="Introduce la contraseña..."
+                        />
+                    </Form.Item>
+                    <Form.Item>
+                        <Form.Item
+                            name="remember"
+                            valuePropName="checked"
+                            noStyle
+                        >
+                            <Checkbox><span className="message">Recordar contraseña</span></Checkbox>
+                        </Form.Item>
+
+                        <a className="login-form-forgot" href="">
+                            Olvidaste la contraseña
+                        </a>
+                    </Form.Item>
+
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="login-form-button"
+                        >
+                            Entrar
+                        </Button>
+                        <Link style={{ marginLeft: "30px" }} to="/signUp">
+                            Registrate ahora!
+                        </Link>
+                    </Form.Item>
+                </Form>
             </div>
-            <main>
-                <div className="form">
-                    <div className="wrap-selection">
-                        <div className="login-selection">
-                            <button
-                                className={`btn-selection-login border-left ${
-                                    viewLogin ? "btnSelected" : ""
-                                }`}
-                                onClick={() => {
-                                    setListMessages([]);
-                                    setViewLogin(!viewLogin);
-                                }}
-                            >
-                                Entrar
-                            </button>
-                        </div>
-                        <div className="register-selection">
-                            <button
-                                className={`btn-selection-register ${
-                                    !viewLogin ? "btnSelected border-right" : ""
-                                }`}
-                                onClick={() => {
-                                    setListMessages([]);
-                                    setViewLogin(!viewLogin);
-                                }}
-                            >
-                                Nuevo Usuario
-                            </button>
-                        </div>
-                    </div>
-                    <FormLogin
-                        saveUser={saveUser}
-                        view={viewLogin}
-                        handleLoggin={handleLoggin}
-                    />
-                    <FormRegister
-                        saveUser={saveUser}
-                        view={viewLogin}
-                        handleRegister={handleRegister}
-                    />
-                </div>
-            </main>
-            <ListMessages
-                listMessages={listMessages}
-                deleteMessage={deleteMessage}
-            />
+            <Footer />
         </React.Fragment>
     );
-}
+};
+
+export default Login;

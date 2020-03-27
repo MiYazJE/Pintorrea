@@ -8,19 +8,19 @@ const validSignUpUserData = async (body, res) => {
     const { name, email, password, passwordCheck } = body;
 
     // Check empty inputs
-    if (!name) res.status(400).send({ succes: false, signUpMessage: "El nombre esta vacío." });
-    if (!email) res.status(400).send({ succes: false, signUpMessage: "El email esta vacío." });
+    if (!name) res.status(400).send({ success: false, message: "El nombre esta vacío." });
+    if (!email) res.status(400).send({ success: false, message: "El email esta vacío." });
     if (!password)
-        res.status(400).send({ succes: false, signUpMessage: "La contraseña esta vacía." });
+        res.status(400).send({ success: false, message: "La contraseña esta vacía." });
     if (!passwordCheck)
-        res.status(400).send({ succes: false, signUpMessage: "La contraseña esta vacía." });
+        res.status(400).send({ success: false, message: "La contraseña esta vacía." });
 
     if (!name || !email || !password || !passwordCheck) return false;
 
     if (!validateEmail(email)) {
         res.send({
-            signUpMessage: `El email no es válido.`,
-            succes: false
+            message: `El email no es válido.`,
+            success: false
         });
         return false;
     }
@@ -28,8 +28,8 @@ const validSignUpUserData = async (body, res) => {
     // Validate the password
     if (password.trim() !== passwordCheck.trim()) {
         res.status(400).send({
-            signUpMessage: `Las contraseñas no coinciden`,
-            succes: false
+            message: `Las contraseñas no coinciden`,
+            success: false
         });
         return false;
     }
@@ -43,7 +43,7 @@ const validLoginUserData = (body, res) => {
     if (!email) {
         res.status(400).send({
             signInMessage: `El email esta vacío.`,
-            succes: false
+            success: false
         });
         return false;
     }
@@ -51,7 +51,7 @@ const validLoginUserData = (body, res) => {
     if (!validateEmail(email)) {
         res.status(400).send({
             signInMessage: `El email no es válido.`,
-            succes: false
+            success: false
         });
         return false;
     }
@@ -59,7 +59,7 @@ const validLoginUserData = (body, res) => {
     if (!password) {
         res.status(400).send({
             signInMessage: `La contraseña esta vacía.`,
-            succes: false
+            success: false
         });
         return false;
     }

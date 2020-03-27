@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "../css/nav.css";
 import { Link } from "react-router-dom";
 import "antd/dist/antd.css";
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu } from "antd";
 import {
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
     UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined
+    LogoutOutlined,
+    ProfileOutlined,
+    UnorderedListOutlined
 } from "@ant-design/icons";
-const { Header, Sider, Content } = Layout;
+const { Header } = Layout;
 
 const { SubMenu } = Menu;
 
@@ -18,16 +17,16 @@ export default function Nav({ user, logout }) {
     return (
         <Header>
             <div className="logo" />
-            <Menu
-                theme="dark"
-                className="nav"
-                mode="horizontal"
-                defaultSelectedKeys={["2"]}
-            >
-                <Menu.Item key="1">Inicio</Menu.Item>
+            <Menu theme="dark" className="nav" mode="horizontal">
+                <Menu.Item key="1">
+                    <Link to="/">Inicio</Link>
+                </Menu.Item>
                 <SubMenu
                     title={
-                        <span className="submenu-title-wrapper">Ranking</span>
+                        <span className="submenu-title-wrapper">
+                            <UnorderedListOutlined />
+                            Ranking
+                        </span>
                     }
                 >
                     <Menu.Item key="setting:1">Option 1</Menu.Item>
@@ -42,17 +41,19 @@ export default function Nav({ user, logout }) {
                             </span>
                         }
                     >
-                        <Menu.Item key="setting:2">Ver Perfil</Menu.Item>
+                        <Menu.Item key="setting:2">
+                            <ProfileOutlined style={{ marginRight: "5px" }} />
+                            Ver Perfil
+                        </Menu.Item>
                         <Menu.Item key="setting:1" onClick={logout}>
+                            <LogoutOutlined style={{ marginRight: "5px" }} />
                             Logout
                         </Menu.Item>
                     </SubMenu>
                 ) : (
                     <Menu.Item key="alipay">
-                        <Link to="/login">
-                            <UserOutlined />
-                            Iniciar sesión
-                        </Link>
+                        <UserOutlined />
+                        <Link to="/login">Iniciar sesión</Link>
                     </Menu.Item>
                 )}
             </Menu>

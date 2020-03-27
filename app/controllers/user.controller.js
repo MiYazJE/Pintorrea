@@ -29,7 +29,7 @@ const createUser = async (req, res) => {
     if (await nameAlreadyRegistered(name)) {
         return res.status(400).send({
             message: `El usuari@ ${name} ya existe, por favor pruebe con otro.`,
-            succes: false
+            successs: false
         });
     }
 
@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
     if (await emailAlreadyRegistered(email)) {
         return res.status(400).send({
             message: `El email ${email} ya se encuentra registrado, por favor pruebe con otro.`,
-            succes: false
+            success: false
         });
     }
 
@@ -48,7 +48,7 @@ const createUser = async (req, res) => {
 
     res.send({
         message: `Has sido registrado correctamente.`,
-        succes: true
+        success: true
     });
 };
 
