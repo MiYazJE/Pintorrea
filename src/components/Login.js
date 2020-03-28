@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/login.css";
 import { Link } from "react-router-dom";
-import { whoAmI, logIn, signUp } from "../Helpers/auth-helpers";
+import { whoAmI, logIn } from "../Helpers/auth-helpers";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";

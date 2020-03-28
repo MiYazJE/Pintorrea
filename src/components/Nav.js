@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "../css/nav.css";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Profile from './Profile';
 import "antd/dist/antd.css";
-import { Layout, Menu, Modal, Button } from "antd";
+import { Layout, Menu, Modal, notification } from "antd";
 import {
     UserOutlined,
     LogoutOutlined,
@@ -13,16 +13,25 @@ import {
 const { Header } = Layout;
 
 const { SubMenu } = Menu;
+const key = 'updatable';
 
 export default function Nav({ user, logout }) {
     const [showProfile, setShowProfile] = useState(false);
+    const [redirect, setRedirect] = useState(false);
 
     const toggleShowProfile = () => {
         setShowProfile(!showProfile);
     };
 
+    const handleLogout = () => {
+        logout();
+        notification.success({ message: "Sesión cerrada!", key, duration: 5 });
+        setRedirect(true);
+    }
+
     return (
         <Header className="header">
+        { redirect ? <Redirect to="/login" /> : null }
             <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
                 <Menu.Item key="1">
@@ -52,7 +61,7 @@ export default function Nav({ user, logout }) {
                             <ProfileOutlined style={{ marginRight: "5px" }} />
                             Ver Perfil
                         </Menu.Item>
-                        <Menu.Item key="setting:1" onClick={logout}>
+                        <Menu.Item key="setting:1" onClick={handleLogout}>
                             <LogoutOutlined style={{ marginRight: "5px" }} />
                             Logout
                         </Menu.Item>

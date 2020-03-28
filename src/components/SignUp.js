@@ -20,8 +20,7 @@ const Register = ({ user, logout }) => {
         if (res.success) {
             notification.success({ message: res.message, key, duration: 5 });
             setTimeout(() => setRedirectToHome(true), 1500);
-        } 
-        else {
+        } else {
             notification.error({ message: res.message, key, duration: 10 });
         }
     }
@@ -57,6 +56,7 @@ const Register = ({ user, logout }) => {
                             ]}
                         >
                             <Input
+                                size="large"
                                 prefix={
                                     <MdEmail className="site-form-item-icon" />
                                 }
@@ -74,6 +74,7 @@ const Register = ({ user, logout }) => {
                             ]}
                         >
                             <Input
+                                size="large"
                                 prefix={
                                     <UserOutlined className="site-form-item-icon" />
                                 }
@@ -92,6 +93,7 @@ const Register = ({ user, logout }) => {
                             ]}
                         >
                             <Input.Password
+                                size="large"
                                 prefix={
                                     <LockOutlined className="site-form-item-icon" />
                                 }
@@ -100,13 +102,13 @@ const Register = ({ user, logout }) => {
                             />
                         </Form.Item>
                         <Form.Item
+                            size="large"
                             name="passwordCheck"
                             hasFeedback
                             rules={[
                                 {
                                     required: true,
-                                    message:
-                                        "Este campo no puede estar vacío!"
+                                    message: "Este campo no puede estar vacío!"
                                 },
                                 ({ getFieldValue }) => ({
                                     validator(rule, value) {
@@ -123,6 +125,7 @@ const Register = ({ user, logout }) => {
                             ]}
                         >
                             <Input.Password
+                                size="large"
                                 prefix={
                                     <LockOutlined className="site-form-item-icon" />
                                 }
