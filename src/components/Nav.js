@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/nav.css";
 import { Link } from "react-router-dom";
+import Profile from './Profile';
 import "antd/dist/antd.css";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Modal, Button } from "antd";
 import {
     UserOutlined,
     LogoutOutlined,
@@ -14,8 +15,14 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 
 export default function Nav({ user, logout }) {
+    const [showProfile, setShowProfile] = useState(false);
+
+    const toggleShowProfile = () => {
+        setShowProfile(!showProfile);
+    };
+
     return (
-        <Header>
+        <Header className="header">
             <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
                 <Menu.Item key="1">
@@ -41,7 +48,7 @@ export default function Nav({ user, logout }) {
                             </span>
                         }
                     >
-                        <Menu.Item key="setting:2">
+                        <Menu.Item onClick={toggleShowProfile} key="setting:2">
                             <ProfileOutlined style={{ marginRight: "5px" }} />
                             Ver Perfil
                         </Menu.Item>
@@ -57,6 +64,14 @@ export default function Nav({ user, logout }) {
                     </Menu.Item>
                 )}
             </Menu>
+            <Modal
+                visible={showProfile}
+                title="Perfil"
+                onOk={toggleShowProfile}
+                onCancel={toggleShowProfile}
+            >
+                <Profile user={user} />
+            </Modal>
         </Header>
     );
 }

@@ -4,8 +4,6 @@
     font-size: 20px;
     width: 100%;
     height: 100vh;
-    background-color: #142850;
-    overflow-y: hidden;
 }
 
 .loading {
@@ -13,4 +11,24 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+.layout {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    min-height: 7%;
+    width: 100%;
+}
+
+.content {
+    width: 100%;
+    height: 80%;
+    background: url("../img/pintorrea.jpeg");
+}
+
+.footer {
+    min-height: 7%;
 }

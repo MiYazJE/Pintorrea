@@ -1,16 +1,19 @@
-import React, { useState, Fragment } from 'react';
-import Nav from './Nav';
-import GameInfo from './GameInfo';
-import Footer from './Footer';
+import React, { useState, Fragment } from "react";
+import Footer from "./Footer";
+import Nav from "./Nav";
+import "../css/home.css";
+import { Layout } from "antd";
+
+const { Content } = Layout;
 
 export default function Home({ user, logout }) {
-
     return (
-        <Fragment>
+        <Layout className="layout">
             <Nav logout={logout} user={user} />
-            <GameInfo logout={logout} user={user} />
+            <Content className="content">
+
+            </Content>
             <Footer />
-        </Fragment>
-    )
-        
+        </Layout>
+    );
 }
