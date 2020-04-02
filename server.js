@@ -1,10 +1,11 @@
-const express      = require('express');
-const path         = require('path');
-const mongoose     = require('mongoose');
-const dbConfig     = require('./config/dbConfig.config');
-const passport     = require('passport');
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
+const dbConfig = require('./config/dbConfig.config');
+const passport = require('passport');
 const cookieParser = require('cookie-parser');
-const cors         = require('cors');
+const cors = require('cors');
+const socketIO = require('socket.io');
 require('dotenv').config();
 
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(passport.initialize());
-app.use(cors({credentials: true, origin: 'http://localhost:3001'}));
+app.use(cors({ credentials: true, origin: 'http://localhost:3001' }));
 
 // Use this routes
 app.use('/user', require('./app/routes/users.routes'));
@@ -36,4 +37,9 @@ mongoose.connect(dbConfig.url, { useNewUrlParser: true, useUnifiedTopology: true
     .catch(err => console.log(err))
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log('Listening at port ' + port));
+const server = app.listen(port, () => console.log('Listening at port ' + port));
+
+const io = socketIO(server);
+io.on('connection', (socket) => {
+    console.log('User has been connected.');
+});

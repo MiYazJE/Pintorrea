@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Nav from "./Nav";
 import "../css/home.css";
+import { Link } from 'react-router-dom';
 import { Layout, Button, Input, Form } from "antd";
 import { SmileOutlined, UserOutlined } from "@ant-design/icons";
 
@@ -12,12 +13,12 @@ export default function Home({ user, logout }) {
     const [form] = Form.useForm();
 
     const handlePlayGame = ({ nickname }) => {
-        
+        // TODO when user isnt logged get the name.
     };
 
     useEffect(() => {
         form.setFieldsValue({
-            nickname: user ? user.name : "" 
+            nickname: user ? user.name : ""
         })
         setNickName(user ? user.name : "");
     }, []);
@@ -41,14 +42,16 @@ export default function Home({ user, logout }) {
                             />
                         </Form.Item>
                         <Form.Item>
-                            <Button
-                                type="primary"
-                                size="large"
-                                htmlType="submit"
-                                icon={<SmileOutlined />}
-                            >
-                                Jugar
+                            <Link to="/game">
+                                <Button
+                                    type="primary"
+                                    size="large"
+                                    htmlType="submit"
+                                    icon={<SmileOutlined />}
+                                >
+                                    Jugar
                             </Button>
+                            </Link>
                         </Form.Item>
                     </Form>
                 </div>
