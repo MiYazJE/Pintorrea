@@ -14,16 +14,24 @@ export default function Game({ user, logout }) {
     
     useEffect(() => {
         socket = io(ENDPOINT);
-        socket.on('connection', () => {
-
-        });
-    }, []);
+        socket.emit('join', user);
+        
+        return () => {
+            console.log('unmounting component')
+            socket.emit('disconnect');
+            socket.off();
+        }
+    }, [ENDPOINT]);
+    
+    const sendWord = (word) => {
+        socket.emit('guessWord', { user, word });
+    }
 
     return (
         <Layout className="layout">
             <Nav logout={logout} user={user} />
             <Content className="content">
-                <Chat />
+                <Chat sendWord={sendWord} />
             </Content>
             <Footer />
         </Layout>

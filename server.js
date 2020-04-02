@@ -40,6 +40,4 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, () => console.log('Listening at port ' + port));
 
 const io = socketIO(server);
-io.on('connection', (socket) => {
-    console.log('User has been connected.');
-});
+require('./config/socket-io.js')(io);
