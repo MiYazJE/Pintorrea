@@ -38,9 +38,15 @@ router.get('/whoAmI', (req, res) => {
 	})(req, res)
 });
 
-router.get('/logOut', (req, res) => {
+router.get('/removeCookie', (req, res) => {
 	res.clearCookie('jwt');
 	return res.status(200).send({ logOut: true });
+});
+
+router.get('/imLogged', (req, res, next) => {
+	passport.authenticate('jwt', (err, user, info) => {
+		res.send({ auth: Boolean(user) });
+	})(req, res, next);
 });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 import React from "react";
 import "../css/profile.css";
-import { Layout, Avatar } from "antd";
+import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 export default function Profile({ user }) {

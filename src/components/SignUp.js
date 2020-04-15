@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/login.css";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { signUp } from "../Helpers/auth-helpers";
 import { Form, Input, Button, notification, Layout } from "antd";
 import { MdEmail } from "react-icons/md";
@@ -12,7 +12,7 @@ import "../css/login.css";
 const { Content } = Layout;
 const key = "updatable";
 
-const Register = ({ user, logout }) => {
+const Register = () => {
     const [redirectToHome, setRedirectToHome] = useState(false);
 
     async function handleSignUp(user) {
@@ -36,7 +36,7 @@ const Register = ({ user, logout }) => {
     return (
         <Layout className="layout">
             {redirectToHome && <Redirect to="/logIn" />}
-            <Nav logout={logout} user={user} />
+            <Nav />
             <Content className="content">
                 <div className="wrapForm">
                     <Form className="login-form" onFinish={handleSignUp}>

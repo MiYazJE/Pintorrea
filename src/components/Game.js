@@ -4,14 +4,16 @@ import Footer from "./Footer";
 import io from 'socket.io-client';
 import { Layout } from 'antd';
 import Chat from './Chat';
+import { connect } from "react-redux";
+import { readUser } from '../Redux/Reducers/UserReducer';
 
 const { Content } = Layout;
 
 let socket;
 const ENDPOINT = 'http://localhost:3000';
 
-export default function Game({ user, logout }) {
-    
+const Game = ({ user }) => {
+
     useEffect(() => {
         socket = io(ENDPOINT);
         socket.emit('join', user);
@@ -21,7 +23,7 @@ export default function Game({ user, logout }) {
             socket.emit('disconnect');
             socket.off();
         }
-    }, [ENDPOINT]);
+    }, [user]);
     
     const sendWord = (word) => {
         socket.emit('guessWord', { user, word });
@@ -29,7 +31,7 @@ export default function Game({ user, logout }) {
 
     return (
         <Layout className="layout">
-            <Nav logout={logout} user={user} />
+            <Nav />
             <Content className="content">
                 <Chat sendWord={sendWord} />
             </Content>
@@ -37,3 +39,9 @@ export default function Game({ user, logout }) {
         </Layout>
     );
 }
+
+const mapStateToProps = state => {
+    return { user: readUser(state) }
+}
+
+export default connect(mapStateToProps, { })(Game);

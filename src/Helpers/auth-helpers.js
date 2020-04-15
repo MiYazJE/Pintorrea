@@ -1,6 +1,6 @@
 import Http from "../Helpers/Http";
 
-export async function logIn(body) {
+export async function signIn(body) {
     return await Http.post(
         body,
         '/user/logIn'
@@ -24,4 +24,16 @@ export async function logout() {
     return await Http.get(
         '/user/logOut'
     );
+}
+
+export async function removeCookie() {
+    return await Http.get(
+        '/user/removeCookie'
+    );
+}
+
+export async function imLogged() {
+    return await Http.get(
+        '/user/imLogged'
+    )
 }

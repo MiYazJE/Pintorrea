@@ -5,10 +5,12 @@ import "../css/home.css";
 import { Link } from 'react-router-dom';
 import { Layout, Button, Input, Form } from "antd";
 import { SmileOutlined, UserOutlined } from "@ant-design/icons";
+import { connect } from 'react-redux';
+import { readUser } from '../Redux/Reducers/UserReducer';
 
 const { Content } = Layout;
 
-export default function Home({ user, logout }) {
+const Home = ({ user }) => {
     const [nickName, setNickName] = useState("");
     const [form] = Form.useForm();
 
@@ -21,11 +23,11 @@ export default function Home({ user, logout }) {
             nickname: user ? user.name : ""
         })
         setNickName(user ? user.name : "");
-    }, []);
+    }, [form, user]);
 
     return (
         <Layout className="layout">
-            <Nav logout={logout} user={user} />
+            <Nav />
             <Content className="content">
                 <div className="main-home">
                     <Form
@@ -60,3 +62,9 @@ export default function Home({ user, logout }) {
         </Layout>
     );
 }
+
+const mapStateToProps = state => {
+    return { user: readUser(state) };
+};
+
+export default connect(mapStateToProps, { })(Home); 

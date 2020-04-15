@@ -1,36 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import "../css/login.css";
-import { Link } from "react-router-dom";
-import { whoAmI, logIn } from "../Helpers/auth-helpers";
+import { Link, Redirect } from "react-router-dom";
+import { whoAmI, signIn } from "../Helpers/auth-helpers";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import { connect } from 'react-redux';
+import { logUser } from '../Redux/Actions/UserActions';
 
 const { Content } = Layout;
 const key = "updatable";
 
-const Login = ({ saveUser, logout }) => {
+const Login = ({ logUser }) => {
+    const [redirect, setRedirect] = useState(false);
 
     async function handleLoggin(user) {
-        const res = await logIn(user);
+        const res = await signIn(user);
 
         if (res.success) {
             const data = await whoAmI();
             if (data.auth) {
-                saveUser(data.user);
-                notification.success({ message: "Logeado!", key, duration: 5 });
+                logUser(data.user);
+                notification.success({
+                    message: 'Has sido logeado satisfactoriamente!',
+                    key,
+                    duration: 5,
+                    placement: 'bottomRight'
+                });
+                setTimeout(() => setRedirect(true), 1000);
             }
-        } 
+        }
         else {
-            notification.error({ message: res.message, key, duration: 10 });
+            notification.error({
+                message: res.message,
+                key,
+                duration: 10,
+                placement: 'bottomRight'
+            });
         }
     }
 
     return (
         <Layout className="layout">
-            <Nav logout={logout} />
+            {redirect ? <Redirect to="/" /> : null}
+            <Nav />
             <Content className="content">
                 <div className="wrapForm">
                     <Form
@@ -90,7 +105,7 @@ const Login = ({ saveUser, logout }) => {
                                 </Checkbox>
                             </Form.Item>
 
-                            <a className="login-form-forgot" href="">
+                            <a className="login-form-forgot" href="/validatePassword">
                                 Olvidaste la contraseña
                             </a>
                         </Form.Item>
@@ -115,4 +130,4 @@ const Login = ({ saveUser, logout }) => {
     );
 };
 
-export default Login;
+export default connect(null, { logUser })(Login);

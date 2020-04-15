@@ -10,12 +10,16 @@ import {
     ProfileOutlined,
     UnorderedListOutlined
 } from "@ant-design/icons";
-const { Header } = Layout;
+import { removeCookie } from '../Helpers/auth-helpers';
+import { connect } from 'react-redux';
+import { readUser } from '../Redux/Reducers/UserReducer';
+import { logOutUser } from '../Redux/Actions/UserActions';
 
+const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
-export default function Nav({ user, logout }) {
+const Nav = ({ user, logOutUser }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
@@ -24,14 +28,20 @@ export default function Nav({ user, logout }) {
     };
 
     const handleLogout = () => {
-        logout();
-        notification.success({ message: "Sesión cerrada!", key, duration: 5 });
+        logOutUser();
+        removeCookie();
+        notification.success({
+            message: "Sesión cerrada!",
+            key,
+            duration: 5,
+            placement: 'bottomRight'
+        });
         setRedirect(true);
     }
 
     return (
         <Header className="header">
-        { redirect ? <Redirect to="/login" /> : null }
+            {redirect ? <Redirect to="/login" /> : null}
             <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
                 <Menu.Item key="1">
@@ -67,11 +77,11 @@ export default function Nav({ user, logout }) {
                         </Menu.Item>
                     </SubMenu>
                 ) : (
-                    <Menu.Item key="alipay">
-                        <UserOutlined />
-                        <Link to="/login">Iniciar sesión</Link>
-                    </Menu.Item>
-                )}
+                        <Menu.Item key="alipay">
+                            <UserOutlined />
+                            <Link to="/login">Iniciar sesión</Link>
+                        </Menu.Item>
+                    )}
             </Menu>
             <Modal
                 visible={showProfile}
@@ -84,3 +94,9 @@ export default function Nav({ user, logout }) {
         </Header>
     );
 }
+
+const mapStateToProps = state => {
+    return { user: readUser(state) };
+};
+
+export default connect(mapStateToProps, { logOutUser })(Nav);
