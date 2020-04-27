@@ -15,6 +15,7 @@
 - [Passport js](http://www.passportjs.org/)
 - [bcrytp js](https://www.npmjs.com/package/bcryptjs)
 - [Mongoose](https://mongoosejs.com/)
+- [Scoket.io](https://socket.io/)
 > Tecnologías utilizadas en el lado del cliente:
 - [React js](https://es.reactjs.org/)
 - [Webpack](https://webpack.js.org/)
