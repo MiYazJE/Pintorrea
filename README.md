@@ -23,12 +23,12 @@
 ---
 
 ## INSTALACIÓN
-Para correr este proyecto localmente debes tener instalado mongodb y ejecutar lo siguiente:
+Para correr este proyecto localmente debes tener instalado mongodb y ejecutar:
 ```
 $ npm i
 $ npm run dev
-$ npm run webpack
-$ Ir a http://localhost:3000
+$ npm run start
+$ Ir a http://localhost:3001
 ```
 
 ---
