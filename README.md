@@ -17,7 +17,7 @@
 - [Mongoose](https://mongoosejs.com/)
 - [Socket.io](https://socket.io/)
 > Tecnologías utilizadas en el lado del cliente:
-- Javascript
+- [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [React js](https://es.reactjs.org/)
 
 ---
