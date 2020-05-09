@@ -1,43 +1,65 @@
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const dbConfig = require('./config/dbConfig.config');
-const passport = require('passport');
+const express      = require('express');
+const path         = require('path');
+const mongoose     = require('mongoose');
+const dbConfig     = require('./config/dbConfig.config');
+const passport     = require('passport');
 const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const socketIO = require('socket.io');
-require('dotenv').config();
+const cors         = require('cors');
+const socketIO     = require('socket.io');
 
 const app = express();
-require('./config/passport');
 
-mongoose.Promise = global.Promise;
+(async function initApp() {
 
-// serve static files 
-app.use(express.static(path.join(__dirname, 'public')));
+    mongoose.Promise = global.Promise;
 
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(passport.initialize());
-app.use(cors({ credentials: true, origin: 'http://localhost:3001' }));
+    initDataTransfer();
+    await initDb();
+    initPassport();
+    initRoutes();
+    
+    app.use(express.static(path.join(__dirname, 'public')));
 
-// Use this routes
-app.use('/user', require('./app/routes/users.routes'));
-app.use('/api', require('./app/routes/api.routes'));
+    const port = process.env.PORT || 3000;
+    const server = app.listen(port, () => console.log('Listening at port ' + port));
 
-// Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/index.html'));
-});
+    initSocketIO(server);
+})();
 
-mongoose.connect(dbConfig.url, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('mongodb started...'))
-    .catch(err => console.log(err))
+function initDataTransfer() {
+    require('dotenv').config();
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(cookieParser());
+    app.use(cors({ credentials: true, origin: 'http://localhost:3001' }));
+}
 
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => console.log('Listening at port ' + port));
+async function initDb() {
+    try {
+        const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true };
+        await mongoose.connect(dbConfig.url, DB_PROPERTIES);
+        console.log('*** DB STARTED ***');
+    }
+    catch(error) {
+        throw new Error(error)
+    }
+}
 
-const io = socketIO(server);
-require('./config/socket-io.js')(io);
+function initPassport() {
+    require('./config/passport');
+    app.use(passport.initialize());
+    console.log('*** PASSPORT STARTED ***');
+}
+
+function initRoutes() {
+    const HOME_PAGE = `__dirname${'/public/index.html'}`;
+
+    app.use('/user', require('./app/routes/users.routes'));
+    app.use('/api', require('./app/routes/api.routes'));
+    app.get('*', (req, res) => res.sendFile(path.join(HOME_PAGE)));
+}
+
+function initSocketIO(server) {
+    const io = socketIO(server);
+    require('./config/socket-io.js')(io);
+}
