@@ -15,20 +15,20 @@
 - [Passport js](http://www.passportjs.org/)
 - [bcrytp js](https://www.npmjs.com/package/bcryptjs)
 - [Mongoose](https://mongoosejs.com/)
+- [Socket.io](https://socket.io/)
 > Tecnologías utilizadas en el lado del cliente:
+- [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [React js](https://es.reactjs.org/)
-- [Webpack](https://webpack.js.org/)
-- [Babel](https://babeljs.io/)
 
 ---
 
 ## INSTALACIÓN
-Para correr este proyecto localmente debes tener instalado mongodb y ejecutar lo siguiente:
+Para correr este proyecto localmente debes tener instalado mongodb y ejecutar:
 ```
 $ npm i
 $ npm run dev
-$ npm run webpack
-$ Ir a http://localhost:3000
+$ npm run start
+$ Ir a http://localhost:3001
 ```
 
 ---
