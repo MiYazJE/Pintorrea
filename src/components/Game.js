@@ -1,40 +1,59 @@
-import React, { useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Nav from "./Nav";
 import Footer from "./Footer";
-import io from 'socket.io-client';
 import { Layout } from 'antd';
 import Chat from './Chat';
+import CanvasControls from './CanvasControls';
+import CanvasDraw from "react-canvas-draw";
 import { connect } from "react-redux";
 import { readUser } from '../Redux/Reducers/UserReducer';
+import { Row, Col } from 'antd';
+import '../css/game.css';
 
 const { Content } = Layout;
 
-let socket;
-const ENDPOINT = 'http://localhost:3000';
-
 const Game = ({ user }) => {
 
-    useEffect(() => {
-        socket = io(ENDPOINT);
-        socket.emit('join', user);
-        
-        return () => {
-            console.log('unmounting component')
-            socket.emit('disconnect');
-            socket.off();
+    const [canvasColor, setCanvasColor]     = useState('#ccc');
+    const [previousColor, setPreviousColor] = useState(canvasColor);
+    const canvasRef = useRef(null);
+
+    const setPaintMode = (mode) => {
+        if (mode === 'lapiz') {
+            setCanvasColor(previousColor);
         }
-    }, [user]);
-    
-    const sendWord = (word) => {
-        socket.emit('guessWord', { user, word });
+        else if (mode === 'goma') {
+            setCanvasColor('#FFF');
+        }
+    }
+
+    const changeColor = (color) => {
+        setCanvasColor(color);
+        setPreviousColor(color);
     }
 
     return (
         <Layout className="layout">
             <Nav />
-            <Content className="content">
-                <Chat sendWord={sendWord} />
-            </Content>
+            <div className="wrapGameContent">
+                <div className="gameContent">
+                    <Row style={{height: '100%'}} justify="space-around" align="center">
+                        <Col span={16} >
+                            <CanvasDraw 
+                                ref={canvasRef} 
+                                hideGrid={true} 
+                                canvasHeight={'85%'} 
+                                canvasWidth={'100%'} 
+                                brushColor={canvasColor}
+                            />
+                            <CanvasControls changeColor={changeColor} setPaintMode={setPaintMode} />
+                        </Col>
+                        <Col span={6}>
+                            <Chat />
+                        </Col>
+                    </Row>
+                </div>
+            </div>
             <Footer />
         </Layout>
     );
@@ -44,4 +63,4 @@ const mapStateToProps = state => {
     return { user: readUser(state) }
 }
 
-export default connect(mapStateToProps, { })(Game);
+export default connect(mapStateToProps, {})(Game);

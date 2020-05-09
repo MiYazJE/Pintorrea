@@ -1,11 +1,24 @@
 
 .wrap-chat {
+    width: 100%;
+    height: 100%;
     background-color: #001529;
     
     .text-chat {
-        height: 500px;
+        height: 90%;
         width: 100%;
         padding: 10px;
+    }
+
+    .inputs {
+        height: 10%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        * {
+            margin: 0px 2px;
+        }
     }
 
 }
