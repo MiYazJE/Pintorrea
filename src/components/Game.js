@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import { Layout } from 'antd';
@@ -19,6 +19,14 @@ const Game = ({ user }) => {
     const [fontSize, setFontSize] = useState(12);
     const canvasRef = useRef(null);
 
+    useEffect(() => {
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') {
+                canvasRef.current.undo();
+            }
+        });
+    }, []);
+
     const setPaintMode = (mode) => {
         if (mode === 'draw') {
             setCanvasColor(previousColor);
@@ -31,6 +39,10 @@ const Game = ({ user }) => {
     const changeColor = (color) => {
         setCanvasColor(color);
         setPreviousColor(color);
+    }
+
+    const goBack = () => {
+        canvasRef.current.undo();
     }
 
     return (
@@ -53,6 +65,7 @@ const Game = ({ user }) => {
                                 changeColor={changeColor} 
                                 setPaintMode={setPaintMode} 
                                 setFontSize={setFontSize}
+                                goBack={goBack}
                             />
                         </Col>
                         <Col span={6}>

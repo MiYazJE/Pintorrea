@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { CirclePicker } from 'react-color';
 import { FaEraser, FaPen } from 'react-icons/fa';
-import { Radio, Tooltip, Slider } from 'antd';
+import { IoIosUndo } from 'react-icons/io';
+import { Radio, Tooltip, Slider, Button } from 'antd';
 import '../css/canvasControls.css';
 
 const COLORS = [
@@ -15,7 +16,7 @@ const COLORS = [
     '#AB149E'
 ];
 
-const CanvasControls = ({ changeColor, setPaintMode, setFontSize }) => {
+const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack }) => {
 
     return (
         <div className="wrapControls">
@@ -43,6 +44,14 @@ const CanvasControls = ({ changeColor, setPaintMode, setFontSize }) => {
                             </Radio.Button>
                         </Tooltip>
                     </Radio.Group>
+                    <Tooltip title="Atrás">
+                        <Button 
+                            shape="circle" 
+                            icon={<IoIosUndo />}
+                            onClick={goBack}
+                        >
+                        </Button>
+                    </Tooltip>
                 </div>
                 <span style={{ margin: '5px 0px', textAlign: 'center' }}>Grosor</span>
                 <Slider 
