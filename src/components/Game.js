@@ -14,15 +14,16 @@ const { Content } = Layout;
 
 const Game = ({ user }) => {
 
-    const [canvasColor, setCanvasColor]     = useState('#ccc');
+    const [canvasColor, setCanvasColor] = useState('#000000');
     const [previousColor, setPreviousColor] = useState(canvasColor);
+    const [fontSize, setFontSize] = useState(12);
     const canvasRef = useRef(null);
 
     const setPaintMode = (mode) => {
-        if (mode === 'lapiz') {
+        if (mode === 'draw') {
             setCanvasColor(previousColor);
         }
-        else if (mode === 'goma') {
+        else if (mode === 'erase') {
             setCanvasColor('#FFF');
         }
     }
@@ -41,12 +42,18 @@ const Game = ({ user }) => {
                         <Col span={16} >
                             <CanvasDraw 
                                 ref={canvasRef} 
+                                brushRadius={fontSize}
                                 hideGrid={true} 
-                                canvasHeight={'85%'} 
+                                canvasHeight={'84%'} 
                                 canvasWidth={'100%'} 
                                 brushColor={canvasColor}
+                                hideInterface={true}
                             />
-                            <CanvasControls changeColor={changeColor} setPaintMode={setPaintMode} />
+                            <CanvasControls 
+                                changeColor={changeColor} 
+                                setPaintMode={setPaintMode} 
+                                setFontSize={setFontSize}
+                            />
                         </Col>
                         <Col span={6}>
                             <Chat />
