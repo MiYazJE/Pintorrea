@@ -1,7 +1,7 @@
-const express  = require('express');
-const router   = express.Router();
-const users    = require('../controllers/user.controller');
-const passport = require('passport'); 
+const express   = require('express');
+const router    = express.Router();
+const usersCtrl = require('../controllers/user.controller');
+const passport  = require('passport'); 
 
 const { createToken } = require('../controllers/Helpers/auth-helpers');
 
@@ -11,7 +11,7 @@ const optsCookie = {
 	httpOnly: true
 }
 
-router.post('/createUser', users.createUser);
+router.post('/createUser', usersCtrl.createUser);
 
 router.post('/logIn', (req, res, next) => {
     passport.authenticate('local-login', { session: false }, (err, user, info) => {
@@ -37,6 +37,8 @@ router.get('/whoAmI', (req, res) => {
 		})
 	})(req, res)
 });
+
+router.get('/:userName', usersCtrl.exists);
 
 router.get('/removeCookie', (req, res) => {
 	res.clearCookie('jwt');

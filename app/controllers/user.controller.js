@@ -1,19 +1,32 @@
 const User = require("../models/user.model");
  
-const nameAlreadyRegistered = async name => {
+module.exports = {
+    nameAlreadyRegistered,
+    emailAlreadyRegistered,
+    createUser,
+    getUsers,
+    deleteAll,
+    exists
+}
+
+async function nameAlreadyRegistered(name) {
     const allUsers = await User.find({ });
     const usersNames = allUsers.map(user => user.name);
     return usersNames.includes(name);
 };
 
-const emailAlreadyRegistered = async email => {
+async function emailAlreadyRegistered(email) {
     const allUsers = await User.find({ });
     const usersEmails = allUsers.map(user => user.email);
     return usersEmails.includes(email);
 };
 
-const createUser = async (req, res) => {
+async function createUser(req, res) {
     const { name, email, password } = req.body;
+
+    if (!name || !email || !password) 
+        return res.status(400).json({ msg: 'Empty fields.' });
+
     const user = new User({
         name,
         email,
@@ -47,21 +60,18 @@ const createUser = async (req, res) => {
     });
 };
 
-const getUsers = async (req, res) => {
+async function getUsers(req, res) {
     res.status(200).send(await User.find({ }));
-};
+}
 
-const deleteAll = (req, res) => {
-    User.deleteMany({}, (err, status) => {
-        if (err) throw err;
-        res.redirect("/api");
-    });
-};
+async function deleteAll(req, res) {
+    await User.deleteMany({ });
+    res.redirect('/api');
+}
 
-module.exports = {
-    nameAlreadyRegistered,
-    emailAlreadyRegistered,
-    createUser,
-    getUsers,
-    deleteAll
+async function exists(req, res) {
+    const { userName } = req.params;
+    if (!userName) return res.status(400).json({ msg: 'User name is empty' });
+    const userExists = await nameAlreadyRegistered(userName);
+    return res.json({ userExists });
 }

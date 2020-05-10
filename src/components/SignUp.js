@@ -7,15 +7,19 @@ import { MdEmail } from "react-icons/md";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import Http from '../Helpers/Http';
 import "../css/login.css";
 
 const { Content } = Layout;
 const key = "updatable";
 
 const Register = () => {
+    const [validateStatus, setValidateStatus] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [redirectToHome, setRedirectToHome] = useState(false);
 
     async function handleSignUp(user) {
+        setLoading(true);
         const res = await signUp(user);
         if (res.success) {
             notification.success({ message: res.message, key, duration: 5 });
@@ -23,6 +27,7 @@ const Register = () => {
         } else {
             notification.error({ message: res.message, key, duration: 10 });
         }
+        setLoading(false)
     }
 
     const validateEmail = (_, email) => {
@@ -31,7 +36,25 @@ const Register = () => {
             return Promise.resolve();
         }
         return Promise.reject("El email no es válido!");
-    };
+    }
+
+    const validatePasswords = ({ getFieldValue }) => ({
+        validator(rule, value) {
+            if (getFieldValue("password") === value) {
+                return Promise.resolve();
+            }
+            return Promise.reject("Las contraseñas no coinciden!");
+        }
+    })
+
+    const validateUserName = async (_, nickName) => {
+        if (!nickName) return;
+        const { userExists } = await Http.get(`/user/${nickName}`);
+        if (userExists) {
+            return Promise.reject('Este nombre ya se encuentra registrado...');
+        }
+        return Promise.resolve();
+    }
 
     return (
         <Layout className="layout">
@@ -46,14 +69,15 @@ const Register = () => {
                         <Form.Item
                             name="email"
                             hasFeedback
-                            rules={[
-                                {
-                                    required: true
-                                },
-                                {
-                                    validator: validateEmail
-                                }
-                            ]}
+                            rules={
+                                [
+                                    { 
+                                        required: true,
+                                        message: 'Por favor introduce el correo.'
+                                    },
+                                    { validator: validateEmail }
+                                ]
+                            }
                         >
                             <Input
                                 size="large"
@@ -64,14 +88,17 @@ const Register = () => {
                             />
                         </Form.Item>
                         <Form.Item
-                            name="name"
+                            name="nickname"
                             hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Por favor introduce el nickname!"
-                                }
-                            ]}
+                            rules={
+                                [
+                                    {
+                                        required: true,
+                                        message: "Por favor introduce el nickname!"
+                                    }, 
+                                    { validator: validateUserName }
+                                ]
+                            }
                         >
                             <Input
                                 size="large"
@@ -84,13 +111,12 @@ const Register = () => {
                         <Form.Item
                             name="password"
                             hasFeedback
-                            rules={[
-                                {
+                            rules={
+                                [{
                                     required: true,
-                                    message:
-                                        "Por favor introduce la contraseña!"
-                                }
-                            ]}
+                                    message: "Por favor introduce la contraseña!" 
+                                }]
+                            }
                         >
                             <Input.Password
                                 size="large"
@@ -105,24 +131,15 @@ const Register = () => {
                             size="large"
                             name="passwordCheck"
                             hasFeedback
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Este campo no puede estar vacío!"
-                                },
-                                ({ getFieldValue }) => ({
-                                    validator(rule, value) {
-                                        if (
-                                            getFieldValue("password") === value
-                                        ) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject(
-                                            "Las contraseñas no coinciden!"
-                                        );
-                                    }
-                                })
-                            ]}
+                            rules={
+                                [
+                                    {
+                                        required : true,
+                                        message  : "Por favor vuelve a repetir la contraseña!"
+                                    }, 
+                                    validatePasswords
+                                ]
+                            }
                         >
                             <Input.Password
                                 size="large"
@@ -138,6 +155,7 @@ const Register = () => {
                                 type="primary"
                                 htmlType="submit"
                                 className="login-form-button"
+                                loading={loading}
                             >
                                 Registrar
                             </Button>
