@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CirclePicker } from 'react-color';
 import { FaEraser, FaPen } from 'react-icons/fa';
 import { IoIosUndo } from 'react-icons/io';
+import { AiFillDelete } from 'react-icons/ai';
 import { Radio, Tooltip, Slider, Button } from 'antd';
 import '../css/canvasControls.css';
 
@@ -16,7 +17,7 @@ const COLORS = [
     '#AB149E'
 ];
 
-const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack }) => {
+const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack, clear }) => {
 
     return (
         <div className="wrapControls">
@@ -49,6 +50,14 @@ const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack }) => {
                             shape="circle" 
                             icon={<IoIosUndo />}
                             onClick={goBack}
+                        >
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Limpiar">
+                        <Button 
+                            shape="circle" 
+                            icon={<AiFillDelete style={{color: 'red'}} />}
+                            onClick={clear}
                         >
                         </Button>
                     </Tooltip>

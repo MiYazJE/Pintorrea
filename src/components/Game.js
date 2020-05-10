@@ -41,10 +41,6 @@ const Game = ({ user }) => {
         setPreviousColor(color);
     }
 
-    const goBack = () => {
-        canvasRef.current.undo();
-    }
-
     return (
         <Layout className="layout">
             <Nav />
@@ -59,13 +55,13 @@ const Game = ({ user }) => {
                                 canvasHeight={'84%'} 
                                 canvasWidth={'100%'} 
                                 brushColor={canvasColor}
-                                hideInterface={true}
-                            />
+                                />
                             <CanvasControls 
                                 changeColor={changeColor} 
                                 setPaintMode={setPaintMode} 
                                 setFontSize={setFontSize}
-                                goBack={goBack}
+                                goBack={() => canvasRef.current.undo()}
+                                clear={() => canvasRef.current.clear()}
                             />
                         </Col>
                         <Col span={6}>
