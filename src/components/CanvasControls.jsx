@@ -3,6 +3,7 @@ import { CirclePicker } from 'react-color';
 import { FaEraser, FaPen } from 'react-icons/fa';
 import { IoIosUndo } from 'react-icons/io';
 import { AiFillDelete } from 'react-icons/ai';
+import { GiPaintBucket } from 'react-icons/gi';
 import { Radio, Tooltip, Slider, Button } from 'antd';
 import '../css/canvasControls.css';
 
@@ -17,7 +18,9 @@ const COLORS = [
     '#AB149E'
 ];
 
-const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack, clear }) => {
+const CanvasControls = ({ 
+    changeColor, setPaintMode, 
+    setFontSize, goBack, clear, paintBucket }) => {
 
     return (
         <div className="wrapControls">
@@ -42,6 +45,11 @@ const CanvasControls = ({ changeColor, setPaintMode, setFontSize, goBack, clear 
                         <Tooltip title="Lápiz">
                             <Radio.Button value="draw">
                                 <FaPen />
+                            </Radio.Button>
+                        </Tooltip>
+                        <Tooltip title="Cubo de pintura">
+                            <Radio.Button value="bucket">
+                                <GiPaintBucket />
                             </Radio.Button>
                         </Tooltip>
                     </Radio.Group>

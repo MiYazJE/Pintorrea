@@ -1,7 +1,7 @@
 
 .wrapControls {
     width: 100%;
-    height: 14%;
+    height: auto;
     background-color: #001529;
     color: white;
     font-size: 12px;
@@ -14,14 +14,14 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        height: 100%;
+        height: auto;
         padding: 20px;
     }
 
     .wrapPaintModes {
         padding: 20px;
         min-width: 220px;
-        height: 100%;
+        height: auto;
         display: flex;
         justify-content: space-around;
         flex-direction: column;

@@ -14,7 +14,6 @@ const { Content } = Layout;
 const key = "updatable";
 
 const Register = () => {
-    const [validateStatus, setValidateStatus] = useState(false);
     const [loading, setLoading] = useState(false);
     const [redirectToHome, setRedirectToHome] = useState(false);
 
@@ -49,7 +48,7 @@ const Register = () => {
 
     const validateUserName = async (_, nickName) => {
         if (!nickName) return;
-        const { userExists } = await Http.get(`/user/${nickName}`);
+        const { userExists } = await Http.get(`/user/exists/${nickName}`);
         if (userExists) {
             return Promise.reject('Este nombre ya se encuentra registrado...');
         }
@@ -88,7 +87,7 @@ const Register = () => {
                             />
                         </Form.Item>
                         <Form.Item
-                            name="nickname"
+                            name="name"
                             hasFeedback
                             rules={
                                 [

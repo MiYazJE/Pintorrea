@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import { readUser } from './Redux/Reducers/UserReducer';
 import { logUser } from './Redux/Actions/UserActions';
 
-const App = ({ user, logUser, logOutUser, setAuth }) => {
+const App = ({ user, logUser }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -40,6 +40,9 @@ const App = ({ user, logUser, logOutUser, setAuth }) => {
                     <Switch>
                         <Route path="/" exact>
                             <Home />
+                        </Route>
+                        <Route path="/game" exact>
+                            {user ? <Game /> : <Redirect to="/" />}
                         </Route>
                         <PrivateRoute component={Game} path="/game" exact />
                         <Route path="/login">

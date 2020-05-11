@@ -38,7 +38,7 @@ router.get('/whoAmI', (req, res) => {
 	})(req, res)
 });
 
-router.get('/:userName', usersCtrl.exists);
+router.get('/exists/:userName', usersCtrl.exists);
 
 router.get('/removeCookie', (req, res) => {
 	res.clearCookie('jwt');

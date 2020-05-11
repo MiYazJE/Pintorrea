@@ -5,15 +5,15 @@ module.exports = (io) => {
 
     io.on('connect', (socket) => {
 
-        // socket.on('join', (user) => {
-        //     console.log('user joined ', user.name);
-        //     pintorrea.addUser(user);
-        //     console.log(pintorrea.getUsers());
-        // });
+        socket.on('join', (user) => {
+            pintorrea.addUser(user);
+            console.log(user.name + ' se ha conectado...');
+            console.log(pintorrea.getUsers());
+            io.emit('message', { admin: true , msg: `${user.name} se ha conectado.`});
+        });
 
-        socket.on('chat', ({ user, msg }) => {
-            console.log(user.name, msg)
-            io.emit('chat', { user, msg })
+        socket.on('sendMessage', ({user, msg}) => {
+            io.emit('message', { name: user.name, msg });
         });
 
         socket.on('guessWord', ({ user, msg }) => {
@@ -21,31 +21,12 @@ module.exports = (io) => {
             // pintorrea.guessWord(pintorrea.name, word);
         });
 
-        socket.on('disconnect', ({ user }) => {
-            console.log('User has been disconnected!');
-            // pintorrea.removeUser()
+        socket.on('disconnect', (user) => {
+            console.log(`${user.name} has been disconnected!`);
+            pintorrea.deleteUser(user);
+            console.log(pintorrea.getUsers());
         });
 
     });
 
 }
-
-class Game {
-
-    constructor() {
-        this.word = 'rueda';
-        this.winner = null;
-        this.users = new Map();
-    }
-
-    addUser = (user) => this.users.set(user.name, user);
-
-    removeUser = ({ name }) => this.users.delete(name);
-
-    guessWord = (name, word) => {
-        const user = this.users.get(name);
-        this.winner = (word === this.word) ? user : null;
-        console.log((this.winner) ? `The winner is ${this.winner.name}!` : 'No winner yet');
-    }
-
-} 

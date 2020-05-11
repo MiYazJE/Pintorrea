@@ -24,8 +24,9 @@ async function emailAlreadyRegistered(email) {
 async function createUser(req, res) {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) 
+    if (!name || !email || !password) {
         return res.status(400).json({ msg: 'Empty fields.' });
+    }
 
     const user = new User({
         name,
