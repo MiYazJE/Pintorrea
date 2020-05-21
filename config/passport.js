@@ -1,8 +1,12 @@
-const passport      = require("passport");
-const JwtStrategy   = require('passport-jwt').Strategy;
-const LocalStrategy = require('passport-local').Strategy;
+const passport       = require("passport");
+const JwtStrategy    = require('passport-jwt').Strategy;
+const LocalStrategy  = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-const { localStrategy, jwtStrategy } = require('../app/controllers/auth.controller'); 
+const { clientID, callbackURL, clientSecret } = require('./config');
+
+const authCtrl       = require('../app/controllers/localAuth.controller'); 
+const googleAuthCtrl = require('../app/controllers/googleAuth.controller');
 
 const OPTIONS = {
     LOCAL_STRATEGY_OPTIONS: {
@@ -15,5 +19,17 @@ const OPTIONS = {
     }
 }
 
-passport.use('local-login', new LocalStrategy(OPTIONS.LOCAL_STRATEGY_OPTIONS, localStrategy));
-passport.use(new JwtStrategy(OPTIONS.JWT_STRATEGY_OPTIONS, jwtStrategy));    
+passport.serializeUser((user, done) => {
+    done(null, user); 
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.use('local-login', new LocalStrategy(OPTIONS.LOCAL_STRATEGY_OPTIONS, authCtrl.localStrategy));
+passport.use(               new JwtStrategy(  OPTIONS.JWT_STRATEGY_OPTIONS,   authCtrl.jwtStrategy));    
+
+passport.use(new GoogleStrategy({
+    clientID, callbackURL, clientSecret,
+}, googleAuthCtrl.strategy));
