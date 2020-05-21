@@ -13,13 +13,14 @@ import {
 import { removeCookie } from '../Helpers/auth-helpers';
 import { connect } from 'react-redux';
 import { readUser } from '../Redux/Reducers/UserReducer';
+import { setAuth } from '../Redux/Actions/AuthActions';
 import { logOutUser } from '../Redux/Actions/UserActions';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
-const Nav = ({ user, logOutUser }) => {
+const Nav = ({ user, logOutUser, setAuth }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
@@ -28,6 +29,7 @@ const Nav = ({ user, logOutUser }) => {
     };
 
     const handleLogout = () => {
+        setAuth(false);
         logOutUser();
         removeCookie();
         notification.success({
@@ -95,8 +97,6 @@ const Nav = ({ user, logOutUser }) => {
     );
 }
 
-const mapStateToProps = state => {
-    return { user: readUser(state) };
-};
+const mapStateToProps = state => ({ user: readUser(state) });
 
-export default connect(mapStateToProps, { logOutUser })(Nav);
+export default connect(mapStateToProps, { logOutUser, setAuth })(Nav);

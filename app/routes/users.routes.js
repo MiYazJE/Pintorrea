@@ -52,7 +52,6 @@ router.get('/imLogged', (req, res, next) => {
 });
 
 const authCtrl = require('../controllers/googleAuth.controller');
-
 router.get('/me', authCtrl.me);
 
 module.exports = router;

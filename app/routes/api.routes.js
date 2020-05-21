@@ -9,7 +9,7 @@ router.get('/deleteAll', usersCtrl.deleteAll);
 
 router.get('/auth/google/signIn',   googleAuthCtrl.signIn);
 router.get('/auth/google/callback', googleAuthCtrl.callback);
-router.get('/auth/google/me',       googleAuthCtrl.me);
+router.get('/auth/google/me',       googleAuthCtrl.me); // Investigar porque esta ruta tira problemas de cors
 router.get('/auth/google/failure',  googleAuthCtrl.failure);
 
 module.exports = router;

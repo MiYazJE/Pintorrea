@@ -8,31 +8,56 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import { connect } from 'react-redux';
 import { logUser } from '../Redux/Actions/UserActions';
+import { setAuth } from '../Redux/Actions/AuthActions';
+import { readUser } from '../Redux/Reducers/UserReducer';
 import "../css/login.css";
 import Http from "../Helpers/Http";
 
 const { Content } = Layout;
 const key = "updatable";
 
-const Login = ({ logUser }) => {
+const Login = ({ logUser, setAuth, user }) => {
     const [redirect, setRedirect] = useState(false);
 
-    useEffect(() => {
-        (async () => {
+    const getUser = async () => {
+        console.log(user);
+        if (!user) {
             // const user = await Http.get('/auth/me');
-            // console.log(user);
-            const res = await Http.get('/user/me');
-            console.log(res)
-        })()
-    }, []);
+            const { auth } = await Http.get('/user/me');
+            console.log(auth)
+            setAuth(auth)
+            if (auth) {
+                const data = await whoAmI();
+                console.log(data)
+                if (data.auth) {
+                    logUser(data.user);
+                    notification.success({
+                        message: 'Has sido logeado satisfactoriamente!',
+                        key,
+                        duration: 5,
+                        placement: 'bottomRight'
+                    });
+                    setRedirect(true);
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+        getUser();
+
+        return () => console.log('unmounting'); 
+    }, [getUser]);
 
     async function handleLogin(user) {
         const res = await signIn(user);
 
         if (res.success) {
             const data = await whoAmI();
+            setAuth(data.auth)
             if (data.auth) {
                 logUser(data.user);
+                console.log(data)
                 notification.success({
                     message: 'Has sido logeado satisfactoriamente!',
                     key,
@@ -148,4 +173,6 @@ const Login = ({ logUser }) => {
     );
 };
 
-export default connect(null, { logUser })(Login);
+const mapStateToProps = state => ({ user: readUser(state) });
+
+export default connect(mapStateToProps, { logUser, setAuth })(Login);

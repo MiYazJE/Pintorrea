@@ -1,8 +1,8 @@
 const express      = require('express');
 const path         = require('path');
 const mongoose     = require('mongoose');
-const dbConfig     = require('./config/dbConfig.config');
 const passport     = require('passport');
+const session      = require('express-session');
 const cookieParser = require('cookie-parser');
 const cors         = require('cors');
 const socketIO     = require('socket.io');
@@ -11,8 +11,7 @@ const app = express();
 
 (async function initApp() {
 
-    mongoose.Promise = global.Promise;
-
+    initSession();
     initDataTransfer();
     await initDb();
     initPassport();
@@ -26,37 +25,41 @@ const app = express();
     initSocketIO(server);
 })();
 
+function initSession() {
+    app.use(session({ saveUninitialized: true, resave: false, secret: 'secret_key' }));
+}
+
 function initDataTransfer() {
     require('dotenv').config();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
-    app.use(cors({ credentials: true, origin: 'http://localhost:3001' }));
+    app.use(cors({ credentials: true, origin: 'http://localhost:3001', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }));
 }
 
 async function initDb() {
     try {
-        const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true };
-        await mongoose.connect(dbConfig.url, DB_PROPERTIES);
+        const { DB_URL, DB_PROPERTIES } = require('./config/config');
+        await mongoose.connect(DB_URL, DB_PROPERTIES);
         console.log('*** DB STARTED ***');
     }
     catch(error) {
-        throw new Error(error)
+        throw new Error(error);
     }
 }
 
 function initPassport() {
     require('./config/passport');
     app.use(passport.initialize());
+    app.use(passport.session());
     console.log('*** PASSPORT STARTED ***');
 }
 
 function initRoutes() {
-    const HOME_PAGE = `__dirname${'/public/index.html'}`;
-
+    const HOME_PAGE = `http://localhost:3001`;
+    app.use('/',     require('./app/routes/api.routes'));
     app.use('/user', require('./app/routes/users.routes'));
-    app.use('/api', require('./app/routes/api.routes'));
-    app.get('*', (req, res) => res.sendFile(path.join(HOME_PAGE)));
+    app.get('*', (req, res) => res.redirect(HOME_PAGE));
 }
 
 function initSocketIO(server) {

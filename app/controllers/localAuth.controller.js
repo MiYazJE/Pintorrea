@@ -22,10 +22,8 @@ async function localStrategy(email, password, done) {
 }
 
 async function jwtStrategy(payload, done) {
-    const user = await User.findById({ _id: payload.id });
+    const { _id, name, email, avatar } = await User.findById({ _id: payload.id });
     done(null, {
-        id: user._id,
-        name: user.name,
-        email: user.email
+        id: _id, name, email, avatar
     });
 } 
