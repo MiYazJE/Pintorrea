@@ -10,6 +10,15 @@
     flex-direction: column;
     color: white;
 
+    .ant-upload {
+        display: flex;
+        justify-content: center;
+
+        img {
+            cursor: pointer;
+        }
+    }
+
     h2 {
         color: white;
     }
