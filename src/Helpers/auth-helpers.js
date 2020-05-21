@@ -37,3 +37,9 @@ export async function imLogged() {
         '/user/imLogged'
     )
 }
+
+export async function signInWithGoogle() {
+    return await Http.get(
+        '/auth/google/signIn'
+    )
+}

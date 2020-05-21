@@ -1,9 +1,15 @@
-const express = require('express');
-const router  = express.Router(); 
-const users   = require('../controllers/user.controller');
+const express   = require('express');
+const router    = express.Router(); 
 
-router.get('/', users.getUsers);
+const usersCtrl      = require('../controllers/user.controller');
+const googleAuthCtrl = require('../controllers/googleAuth.controller');
 
-router.get('/deleteAll', users.deleteAll);
+router.get('/',          usersCtrl.getUsers);
+router.get('/deleteAll', usersCtrl.deleteAll);
+
+router.get('/auth/google/signIn',   googleAuthCtrl.signIn);
+router.get('/auth/google/callback', googleAuthCtrl.callback);
+router.get('/auth/google/me',       googleAuthCtrl.me);
+router.get('/auth/google/failure',  googleAuthCtrl.failure);
 
 module.exports = router;

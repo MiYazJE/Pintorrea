@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import "../css/login.css";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, Redirect} from "react-router-dom";
 import { whoAmI, signIn } from "../Helpers/auth-helpers";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
-import { LockOutlined } from "@ant-design/icons";
+import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import { connect } from 'react-redux';
 import { logUser } from '../Redux/Actions/UserActions';
+import "../css/login.css";
+import Http from "../Helpers/Http";
 
 const { Content } = Layout;
 const key = "updatable";
@@ -16,7 +17,16 @@ const key = "updatable";
 const Login = ({ logUser }) => {
     const [redirect, setRedirect] = useState(false);
 
-    async function handleLoggin(user) {
+    useEffect(() => {
+        (async () => {
+            // const user = await Http.get('/auth/me');
+            // console.log(user);
+            const res = await Http.get('/user/me');
+            console.log(res)
+        })()
+    }, []);
+
+    async function handleLogin(user) {
         const res = await signIn(user);
 
         if (res.success) {
@@ -53,7 +63,7 @@ const Login = ({ logUser }) => {
                         name="normal_login"
                         className="login-form"
                         initialValues={{ remember: true }}
-                        onFinish={handleLoggin}
+                        onFinish={handleLogin}
                     >
                         <h1 style={{ textAlign: "center", color: "white" }}>
                             Login
@@ -122,6 +132,14 @@ const Login = ({ logUser }) => {
                                 Registrate ahora!
                             </Link>
                         </Form.Item>
+                        <div className="wrapButtonsLogin">
+                            <a href="http://localhost:3000/auth/google/signIn">
+                                <Button
+                                    icon={<GoogleOutlined />}
+                                    type="primary"
+                                >Entrar con google</Button>
+                            </a>
+                        </div>
                     </Form>
                 </div>
             </Content>

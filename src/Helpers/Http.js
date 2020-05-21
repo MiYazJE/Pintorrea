@@ -6,9 +6,9 @@ export default class Http {
             method: method,
             body: JSON.stringify(data),
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             },
-            credentials: 'include'
+            credentials: 'include',
         }
         return new Request(`${HOST}${url}`, init)
     }
