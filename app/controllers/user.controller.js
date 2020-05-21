@@ -62,7 +62,7 @@ async function createUser(req, res) {
 };
 
 async function getUsers(req, res) {
-    res.status(200).send(await User.find({ }));
+    res.status(200).json(await User.find({ }));
 }
 
 async function deleteAll(req, res) {

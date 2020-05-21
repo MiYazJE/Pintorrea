@@ -14,20 +14,20 @@ import { Spin } from 'antd';
 import PrivateRoute from './components/PrivateRoute';
 import { whoAmI } from './Helpers/auth-helpers';
 import { connect } from 'react-redux';
-import { readUser } from './Redux/Reducers/UserReducer';
+import { readAuth } from './Redux/Reducers/UserReducer';
 import { logUser } from './Redux/Actions/UserActions';
 
-const App = ({ user, logUser }) => {
+const App = ({ logUser, auth }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setLoading(true);
         (async () => {
             const data = await whoAmI();
-            logUser(data.user);
+            logUser(data.user, data.auth);
             setLoading(false);
         })();
-    }, []);
+    }, [auth]);
 
     return (
         <Router>
@@ -42,14 +42,14 @@ const App = ({ user, logUser }) => {
                             <Home />
                         </Route>
                         <Route path="/game" exact>
-                            {user ? <Game /> : <Redirect to="/" />}
+                            {auth ? <Game /> : <Redirect to="/" />}
                         </Route>
                         <PrivateRoute component={Game} path="/game" exact />
                         <Route path="/login">
-                            {user ? <Redirect to="/" /> : <Login />}
+                            {auth ? <Redirect to="/" /> : <Login />}
                         </Route>
                         <Route path="/signUp">
-                            {user ? <Redirect to="/" /> : <SignUp />}
+                            {auth ? <Redirect to="/" /> : <SignUp />}
                         </Route>
                         <Route path="*">
                             <Redirect to="/" />
@@ -61,6 +61,6 @@ const App = ({ user, logUser }) => {
     );
 }
 
-const mapStateToProps = state => ({ user: readUser(state) })
+const mapStateToProps = state => ({ auth: readAuth(state) });
 
 export default connect(mapStateToProps, { logUser })(App);

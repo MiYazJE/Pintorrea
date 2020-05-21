@@ -16,12 +16,13 @@ const optsCookie = {
 const scope = [
     'email',
     'profile',
+    'https://mail.google.com/'	
 ];
 
 module.exports = {
     strategy,
     callback,
-    me,
+    success,
     failure: (req, res) => res.sendStatus(403),
     signIn : passport.authenticate('google', { scope }),
 }
@@ -53,9 +54,9 @@ async function strategy(accessToken, refreshToken, profile, done) {
     }
 }
 
-async function me(req, res) {
+async function success(req, res) {
     const { user } = req;
-    console.log('me', user)
+    req.session.destroy();
     if (!user) return res.send({ auth: false });
     const token = createToken({ id: user.id });
     res.cookie('jwt', token, optsCookie);

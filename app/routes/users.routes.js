@@ -19,6 +19,8 @@ router.post('/logIn', (req, res, next) => {
             return res.status(400).send(info);
         }
         req.logIn(user, error => {
+			req.session.destroy();
+			console.log(user);
             const token = createToken({ id: user.id });
             res.cookie('jwt', token, optsCookie);
             res.send(info);
@@ -50,8 +52,5 @@ router.get('/imLogged', (req, res, next) => {
 		res.send({ auth: Boolean(user) });
 	})(req, res, next);
 });
-
-const authCtrl = require('../controllers/googleAuth.controller');
-router.get('/me', authCtrl.me);
 
 module.exports = router;

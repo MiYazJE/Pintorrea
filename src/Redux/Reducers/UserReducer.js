@@ -1,16 +1,18 @@
-const initialState = { user: null };
+const initialState = { user: null, auth: false };
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case "LOG_USER":
             return {
                 ...state,
-                user: action.user
+                user: action.user,
+                auth: action.auth,
             }
         case "LOGOUT_USER":
             return {
                 ...state,
-                user: null
+                user: null,
+                auth: false,
             }
         default:
             return {
@@ -19,8 +21,7 @@ const reducer = (state = initialState, action) => {
     }
 }
 
-export const readUser = state => {
-    return state.UserReducer.user;
-}
+export const readUser = state => state.UserReducer.user;
+export const readAuth = state => state.UserReducer.auth;
 
 export default reducer;

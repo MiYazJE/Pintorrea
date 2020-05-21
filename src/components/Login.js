@@ -8,64 +8,66 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 import { connect } from 'react-redux';
 import { logUser } from '../Redux/Actions/UserActions';
-import { setAuth } from '../Redux/Actions/AuthActions';
-import { readUser } from '../Redux/Reducers/UserReducer';
 import "../css/login.css";
 import Http from "../Helpers/Http";
 
 const { Content } = Layout;
 const key = "updatable";
 
-const Login = ({ logUser, setAuth, user }) => {
+const Login = ({ logUser }) => {
     const [redirect, setRedirect] = useState(false);
 
-    const getUser = async () => {
-        console.log(user);
-        if (!user) {
-            // const user = await Http.get('/auth/me');
-            const { auth } = await Http.get('/user/me');
-            console.log(auth)
-            setAuth(auth)
+    const setUser = async (success, error) => {
+        const data = await whoAmI();
+        if (data.auth) {
+            logUser(data.user, data.auth);
+            if (success)
+                success();
+        }
+        else {
+            if (error)
+                error();
+        }
+    }
+
+    const validateEmail = (_, email) => {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(String(email).toLowerCase())) {
+            return Promise.resolve();
+        }
+        return Promise.reject("El email no es válido!");
+    }
+
+    useEffect(() => {
+        let isMounted = true;
+        (async () => {
+            const { auth } = await Http.get('/auth/google/success');
             if (auth) {
-                const data = await whoAmI();
-                console.log(data)
-                if (data.auth) {
-                    logUser(data.user);
+                setUser(() => {
                     notification.success({
                         message: 'Has sido logeado satisfactoriamente!',
                         key,
                         duration: 5,
                         placement: 'bottomRight'
                     });
-                    setRedirect(true);
-                }
+                });       
             }
-        }
-    }
-
-    useEffect(() => {
-        getUser();
-
-        return () => console.log('unmounting'); 
-    }, [getUser]);
+        })();
+        return () => setRedirect(false);
+    }, []);
 
     async function handleLogin(user) {
         const res = await signIn(user);
-
+        console.log(res);
         if (res.success) {
-            const data = await whoAmI();
-            setAuth(data.auth)
-            if (data.auth) {
-                logUser(data.user);
-                console.log(data)
+            setUser(() => {
                 notification.success({
                     message: 'Has sido logeado satisfactoriamente!',
                     key,
                     duration: 5,
                     placement: 'bottomRight'
                 });
-                setTimeout(() => setRedirect(true), 1000);
-            }
+            });
         }
         else {
             notification.error({
@@ -95,11 +97,13 @@ const Login = ({ logUser, setAuth, user }) => {
                         </h1>
                         <Form.Item
                             name="email"
+                            hasFeedback
                             rules={[
                                 {
                                     required: true,
                                     message: "Por favor introduce el email!"
-                                }
+                                },
+                                { validator: validateEmail }
                             ]}
                         >
                             <Input
@@ -173,6 +177,4 @@ const Login = ({ logUser, setAuth, user }) => {
     );
 };
 
-const mapStateToProps = state => ({ user: readUser(state) });
-
-export default connect(mapStateToProps, { logUser, setAuth })(Login);
+export default connect(null, { logUser })(Login);
