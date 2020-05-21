@@ -9,15 +9,15 @@ async function localStrategy(email, password, done) {
     try {
         const user = await User.findOne({ email: email });
         if (!user) {
-            return done(null, false, { success: false, message: `El email ${email} no se encuentra registrado.` })
+            done(null, false, { success: false, message: `El email ${email} no se encuentra registrado.` })
         }
         if (!await user.comparePassword(password, user.password)) {
-            return done(null, false, { success: false, message: `Las contraseña no es correcta.` })
+            done(null, false, { success: false, message: `Las contraseña no es correcta.` })
         }
-        return done(null, { id: user._id }, { success: true, message: 'Has sido logeado correctamente.' })
+        done(null, { id: user._id }, { success: true, message: 'Has sido logeado correctamente.' })
     }
     catch(error) {
-        return done(error, false, { success: false, message: 'Problemas internos.' })
+        done(error, false, { success: false, message: 'Problemas internos.' })
     }
 }
 
