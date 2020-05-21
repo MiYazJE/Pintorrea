@@ -3,7 +3,7 @@ const {
     clientID, callbackURL, clientSecret 
 } = process.env;
 
-const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true };
+const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false };
 let DB_URL;
 
 if (ENVIROMENT === 'DEVELOPMENT') {

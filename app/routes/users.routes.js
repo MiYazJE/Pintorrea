@@ -53,4 +53,6 @@ router.get('/imLogged', (req, res, next) => {
 	})(req, res, next);
 });
 
+router.post('/uploadPicture', usersCtrl.uploadPicture);
+
 module.exports = router;

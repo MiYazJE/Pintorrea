@@ -1,4 +1,4 @@
-const User = require("../models/user.model");
+const userModel = require("../models/user.model");
  
 module.exports = {
     nameAlreadyRegistered,
@@ -6,17 +6,18 @@ module.exports = {
     createUser,
     getUsers,
     deleteAll,
-    exists
+    exists,
+    uploadPicture,
 }
 
 async function nameAlreadyRegistered(name) {
-    const allUsers = await User.find({ });
+    const allUsers = await userModel.find({ });
     const usersNames = allUsers.map(user => user.name);
     return usersNames.includes(name);
 };
 
 async function emailAlreadyRegistered(email) {
-    const allUsers = await User.find({ });
+    const allUsers = await userModel.find({ });
     const usersEmails = allUsers.map(user => user.email);
     return usersEmails.includes(email);
 };
@@ -28,7 +29,7 @@ async function createUser(req, res) {
         return res.status(400).json({ msg: 'Empty fields.' });
     }
 
-    const user = new User({
+    const user = new userModel({
         name,
         email,
         password
@@ -62,11 +63,11 @@ async function createUser(req, res) {
 };
 
 async function getUsers(req, res) {
-    res.status(200).json(await User.find({ }));
+    res.status(200).json(await userModel.find({ }));
 }
 
 async function deleteAll(req, res) {
-    await User.deleteMany({ });
+    await userModel.deleteMany({ });
     res.redirect('/api');
 }
 
@@ -75,4 +76,11 @@ async function exists(req, res) {
     if (!userName) return res.status(400).json({ msg: 'User name is empty' });
     const userExists = await nameAlreadyRegistered(userName);
     return res.json({ userExists });
+}
+
+async function uploadPicture(req, res) {
+    const { picture, id } = req.body;
+    if (!picture || !id) return res.status(401).json({ msg: 'Must require a user id and an image.' });
+    const user = await userModel.findOneAndUpdate({ _id: id }, { picture });
+    res.json(user);
 }
