@@ -16,6 +16,8 @@ const key = "updatable";
 
 const Login = ({ logUser }) => {
     const [redirect, setRedirect] = useState(false);
+    const [localLoading, setLocalLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
 
     const setUser = async (success, error) => {
         const data = await whoAmI();
@@ -50,15 +52,15 @@ const Login = ({ logUser }) => {
                         duration: 5,
                         placement: 'bottomRight'
                     });
-                });       
+                });    
             }
         })();
         return () => setRedirect(false);
     }, []);
 
     async function handleLogin(user) {
+        setLocalLoading(true);
         const res = await signIn(user);
-        console.log(res);
         if (res.success) {
             setUser(() => {
                 notification.success({
@@ -77,6 +79,7 @@ const Login = ({ logUser }) => {
                 placement: 'bottomRight'
             });
         }
+        setLocalLoading(false);
     }
 
     return (
@@ -154,6 +157,7 @@ const Login = ({ logUser }) => {
                                 type="primary"
                                 htmlType="submit"
                                 className="login-form-button"
+                                loading={localLoading}
                             >
                                 Entrar
                             </Button>
@@ -166,6 +170,8 @@ const Login = ({ logUser }) => {
                                 <Button
                                     icon={<GoogleOutlined />}
                                     type="primary"
+                                    loading={googleLoading}
+                                    onClick={() => setGoogleLoading(true)}
                                 >Entrar con google</Button>
                             </a>
                         </div>
