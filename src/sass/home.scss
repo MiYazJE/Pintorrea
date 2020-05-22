@@ -1,3 +1,4 @@
+$height-title: 30px;
 
 .content {
     display: flex;
@@ -7,22 +8,55 @@
 }
 
 .main-home {
-    height: 50%;
-    width: 50%;
-    min-width: 500px;
-    min-height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    max-height: 80%;
+    width: 80%;
     background-color: #001529;
     border-radius: 8px;
+    padding: 10px;
+
+    .title-rooms {
+        height: $height-title;
+        color: white;
+        text-align: center;
+        padding: 0;
+        margin: 0;
+    }
+
+    .wrap-rooms {
+        height: calc(100% - #{$height-title} - 40px);
+        overflow: auto;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        .card-room {
+            margin: 10px;
+            width: 20%;
+            color: white;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid white;
+
+            @media only screen and (max-width: 1000px) {
+                width: 40%;
+            }
+
+            @media only screen and (max-width: 600px) {
+                width: 100%;
+            }
+
+
+            .title {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
 }
 
-.form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: #001529;
-}

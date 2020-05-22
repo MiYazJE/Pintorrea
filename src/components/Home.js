@@ -1,70 +1,60 @@
-import React, { useState, useEffect } from "react";
-import Footer from "./Footer";
-import Nav from "./Nav";
-import "../css/home.css";
-import { Link } from 'react-router-dom';
-import { Layout, Button, Input, Form } from "antd";
-import { SmileOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from 'react';
+import Footer from './Footer';
+import Nav from './Nav';
+import { Layout, Button, Divider } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../Redux/Reducers/UserReducer';
+import '../css/home.css';
+import io from 'socket.io-client';
 
+const ENDPOINT = 'http://localhost:3000';
 const { Content } = Layout;
 
-const Home = ({ user }) => {
-    const [nickName, setNickName] = useState("");
-    const [form] = Form.useForm();
+let socket;
 
-    const handlePlayGame = ({ nickname }) => {
-        // TODO when user isnt logged get the name.
-    };
+const Home = ({ user }) => {
+    const [rooms, setRooms] = useState([]);
 
     useEffect(() => {
-        form.setFieldsValue({
-            nickname: user ? user.name : ""
-        })
-        setNickName(user ? user.name : "");
-    }, [form, user]);
+        socket = io(ENDPOINT);
+        socket.emit('requestRooms', {});
+        socket.on('rooms', ({ rooms }) => {
+            console.log(rooms)
+            setRooms(rooms);
+        });
+    }, [ENDPOINT]);
+
+    const handleJoinRoom = (e) => {
+        console.log(e);
+    }
 
     return (
         <Layout className="layout">
             <Nav />
             <Content className="content">
                 <div className="main-home">
-                    <Form
-                        form={form}
-                        onFinish={handlePlayGame}
-                        className="form"
-                    >
-                        <Form.Item name="nickname" value="ruben">
-                            <Input
-                                size="large"
-                                disabled={nickName}
-                                placeholder="Introduce tu nickname..."
-                                prefix={<UserOutlined />}
-                            />
-                        </Form.Item>
-                        <Form.Item>
-                            <Link to="/game">
-                                <Button
-                                    type="primary"
-                                    size="large"
-                                    htmlType="submit"
-                                    icon={<SmileOutlined />}
-                                >
-                                    Jugar
-                            </Button>
-                            </Link>
-                        </Form.Item>
-                    </Form>
-                </div>
+                    <h1 className="title-rooms">Rooms</h1>
+                    <Divider />
+                    <div className="wrap-rooms">
+                        {rooms ? rooms.map(({ name, players, max }) => (
+                            <div className="card-room" key={name}>
+                                <div className="title">{name}</div>
+                                <div className="players">{players}/{max}</div>
+                                <Button type="primary" onClick={() => handleJoinRoom(name)}>
+                                    Entrar
+                                </Button>
+                            </div>
+                        )) : (<div>No rooms</div>)}
+                    </div>
+                </div> 
             </Content>
             <Footer />
         </Layout>
     );
-}
+};
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return { user: readUser(state) };
 };
 
-export default connect(mapStateToProps, { })(Home); 
+export default connect(mapStateToProps, {})(Home);
