@@ -6,6 +6,7 @@ const Chat = ({ messages, sendMessage }) => {
     const [form] = Form.useForm();
 
     const handleSendMessage = ({ msg }) => {
+        if (!msg) return;
         sendMessage(msg);
         form.resetFields();
     }

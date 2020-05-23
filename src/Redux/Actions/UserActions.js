@@ -9,3 +9,8 @@ export const logOutUser = (user, auth) => ({
     user, 
     auth
 });
+
+export const joinRoom = (room) => ({
+    type: 'JOIN_ROOM', 
+    room
+});

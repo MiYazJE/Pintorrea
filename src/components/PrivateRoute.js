@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { readAuth } from '../Redux/Reducers/UserReducer';
-import { logOutUser } from '../Redux/Actions/UserActions';
+import { logOutUser, logUser } from '../Redux/Actions/UserActions';
 import { removeCookie, whoAmI } from '../Helpers/auth-helpers';
 
 const PrivateRoute = ({ component: Component, logOutUser, setAuth, auth, ...rest }) => {
@@ -14,7 +14,9 @@ const PrivateRoute = ({ component: Component, logOutUser, setAuth, auth, ...rest
                 logOutUser();
                 removeCookie();
             }
-            setAuth(data.auth);
+            else {
+                logUser(data.user, data.auth);
+            }
         })();
     }, []);
 

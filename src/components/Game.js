@@ -3,18 +3,21 @@ import Chat from './Chat';
 import CanvasControls from './CanvasControls';
 import CanvasDraw from "react-canvas-draw";
 import { connect } from "react-redux";
-import { readUser } from '../Redux/Reducers/UserReducer';
+import { readUser, readRoom } from '../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
 import '../css/game.css';
 
-const ENDPOINT          = 'http://localhost:3000'
-const INITIAL_COLOR     = '#000000';
-const INITIAL_FONT_SIZE = 12;
+const ENDPOINT = 'http://localhost:3000'
+const INITIAL_COLOR = '#000000';
+const INITIAL_FONT_SIZE = 10;
 
 let socket;
 
-const Game = ({ user }) => {
+const Game = ({ user, room }) => {
 
+    const [coordinates, setCoordinates] = useState({});
+    const [drawing, setDrawing] = useState(false);
+    const [isDrawer, setIsDrawer] = useState(false);
     const [messages, setMessages] = useState([]);
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
     const [previousColor, setPreviousColor] = useState(canvasColor);
@@ -24,25 +27,35 @@ const Game = ({ user }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
-        socket = io(ENDPOINT);
-        socket.emit('join', user);
-
         window.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'z') {
-                canvasRef.current.undo();
+                handleUndo();
             }
+        });
+    }, []);
+
+    useEffect(() => {
+        socket = io(ENDPOINT);
+        socket.emit('joinRoom', { user, room });
+
+        socket.on('message', (message) => {
+            console.log(message)
+            setMessages(messages => [...messages, message]);
+        });
+
+        socket.on('startGame', ({ drawer }) => {
+            console.log(drawer)
+            console.log(user)
+            setIsDrawer(drawer === user.name);
+        });
+
+        socket.on('draw', ({ drawer, coordinates }) => {
+            canvasRef.current.loadSaveData(coordinates);
         });
 
         return () => {
             socket.disconnect(user);
         }
-    }, [ENDPOINT]);
-
-    useEffect(() => {
-        socket.on('message', (message) => { 
-            console.log(message)
-            setMessages(messages => [...messages, message]);
-        });
     }, []);
 
     const setPaintMode = (mode) => {
@@ -58,7 +71,6 @@ const Game = ({ user }) => {
             setBucketPaint(true);
             return;
         }
-        console.log('entra')
         setFontSize(previousFontSize);
         setBucketPaint(false);
     }
@@ -70,31 +82,48 @@ const Game = ({ user }) => {
 
     const paintBucket = () => {
         console.log('painting with bucket...');
-        
     }
 
-    const sendMessage = (msg) => socket.emit('sendMessage', { user, msg });
+    const sendMessage = (msg) => socket.emit('sendMessage', { user, msg, room });
+
+    const sendCoordinates = (canvas) => {
+        // if (!isDrawer) return;
+        const coordinates = canvas.getSaveData();
+        socket.emit('sendDraw', { drawer: user.name, coordinates, room });
+    }
+
+    const handleClear = () => {
+        canvasRef.current.clear();
+        sendCoordinates(canvasRef.current);
+    }
+    
+    const handleUndo = () => {
+        canvasRef.current.undo();
+        sendCoordinates(canvasRef.current);
+    }
 
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
                 <div className="drawContainer">
-                    <CanvasDraw 
-                        ref={canvasRef} 
+                    <CanvasDraw
+                        ref={canvasRef}
+                        onChange={sendCoordinates}
                         brushRadius={fontSize}
-                        hideGrid={true} 
+                        hideGrid={true}
                         canvasHeight="80%"
-                        canvasWidth={'100%'} 
+                        canvasWidth={'100%'}
                         brushColor={canvasColor}
                         lazyRadius={0}
                         hideInterface={true}
-                        />
-                    <CanvasControls 
-                        changeColor={changeColor} 
-                        setPaintMode={setPaintMode} 
+                        immediateLoading={true}
+                    />
+                    <CanvasControls
+                        changeColor={changeColor}
+                        setPaintMode={setPaintMode}
                         setFontSize={setFontSize}
-                        goBack={() => canvasRef.current.undo()}
-                        clear={() => canvasRef.current.clear()}
+                        goBack={handleUndo}
+                        clear={handleClear}
                     />
                 </div>
                 <Chat messages={messages} sendMessage={sendMessage} />
@@ -104,7 +133,7 @@ const Game = ({ user }) => {
 }
 
 const mapStateToProps = state => {
-    return { user: readUser(state) }
+    return { user: readUser(state), room: readRoom(state) }
 }
 
 export default connect(mapStateToProps, {})(Game);

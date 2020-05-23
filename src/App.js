@@ -38,12 +38,7 @@ const App = ({ logUser, auth }) => {
                     </div>
                     :
                     <Switch>
-                        <Route path="/" exact>
-                            <Home />
-                        </Route>
-                        <Route path="/game" exact>
-                            {auth ? <Game /> : <Redirect to="/" />}
-                        </Route>
+                        <PrivateRoute component={Home} path="/" exact />
                         <PrivateRoute component={Game} path="/game" exact />
                         <Route path="/login">
                             {auth ? <Redirect to="/" /> : <Login />}
