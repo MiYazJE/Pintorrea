@@ -9,7 +9,7 @@ import '../css/home.css';
 import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 
-const ENDPOINT = 'http://localhost:3000';
+const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
 const { Content } = Layout;
 
 let socket;

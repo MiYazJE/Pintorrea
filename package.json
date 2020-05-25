@@ -45,8 +45,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "sass": "node-sass -w --output-style compressed src/sass -o src/css",
-    "start:development": "env-cmd -f .env.development react-scripts start",
-    "start:production": "env-cmd -f .env.production react-scripts start",
+    "start": "env-cmd -f .env.development react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

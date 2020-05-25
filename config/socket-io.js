@@ -70,7 +70,7 @@ module.exports = (io) => {
             currentRoom.game.deleteUser(user.name);
             rooms.set(user.roomName, currentRoom);
             io.to(user.room).emit('message', { admin: true, msg: `${user.name} se ha desconectado` });
-            console.log(rooms.values());
+            // console.log(rooms.values());
         });
 
     });

@@ -15,6 +15,7 @@ else if (ENVIROMENT === 'PRODUCTION') {
 }
 
 module.exports = {
+    HOST_URL,
     ACCESS_TOKEN_SECRET,
     DB_URL,
     DB_PROPERTIES,

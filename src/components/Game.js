@@ -7,7 +7,7 @@ import { readUser, readRoom } from '../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
 import '../css/game.css';
 
-const ENDPOINT = 'http://localhost:3000'
+const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
 const INITIAL_COLOR = '#000000';
 const INITIAL_FONT_SIZE = 10;
 
