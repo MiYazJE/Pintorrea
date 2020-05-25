@@ -16,7 +16,6 @@ let socket;
 const Game = ({ user, room }) => {
 
     const [coordinates, setCoordinates] = useState({});
-    const [drawing, setDrawing] = useState(false);
     const [isDrawer, setIsDrawer] = useState(false);
     const [messages, setMessages] = useState([]);
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
@@ -36,26 +35,22 @@ const Game = ({ user, room }) => {
 
     useEffect(() => {
         socket = io(ENDPOINT);
-        socket.emit('joinRoom', { user, room });
+        socket.emit('joinRoom', { user, roomName: room });
 
         socket.on('message', (message) => {
-            console.log(message)
             setMessages(messages => [...messages, message]);
         });
 
         socket.on('startGame', ({ drawer }) => {
-            console.log(drawer)
-            console.log(user)
             setIsDrawer(drawer === user.name);
         });
 
         socket.on('draw', ({ drawer, coordinates }) => {
+            if (drawer === user.name) return;
             canvasRef.current.loadSaveData(coordinates);
         });
 
-        return () => {
-            socket.disconnect(user);
-        }
+        return () => socket.disconnect();
     }, []);
 
     const setPaintMode = (mode) => {
@@ -87,7 +82,7 @@ const Game = ({ user, room }) => {
     const sendMessage = (msg) => socket.emit('sendMessage', { user, msg, room });
 
     const sendCoordinates = (canvas) => {
-        // if (!isDrawer) return;
+        if (!isDrawer) return;
         const coordinates = canvas.getSaveData();
         socket.emit('sendDraw', { drawer: user.name, coordinates, room });
     }
@@ -96,7 +91,7 @@ const Game = ({ user, room }) => {
         canvasRef.current.clear();
         sendCoordinates(canvasRef.current);
     }
-    
+
     const handleUndo = () => {
         canvasRef.current.undo();
         sendCoordinates(canvasRef.current);
@@ -117,14 +112,16 @@ const Game = ({ user, room }) => {
                         lazyRadius={0}
                         hideInterface={true}
                         immediateLoading={true}
+                        disabled={!isDrawer}
                     />
-                    <CanvasControls
-                        changeColor={changeColor}
-                        setPaintMode={setPaintMode}
-                        setFontSize={setFontSize}
-                        goBack={handleUndo}
-                        clear={handleClear}
-                    />
+                    {isDrawer ?
+                        <CanvasControls
+                            changeColor={changeColor}
+                            setPaintMode={setPaintMode}
+                            setFontSize={setFontSize}
+                            goBack={handleUndo}
+                            clear={handleClear}
+                        /> : null}
                 </div>
                 <Chat messages={messages} sendMessage={sendMessage} />
             </div>

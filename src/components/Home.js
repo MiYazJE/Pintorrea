@@ -25,6 +25,8 @@ const Home = ({ user, joinRoom }) => {
             console.log(rooms);
             setRooms(rooms);
         });
+
+        return () => socket.disconnect();
     }, [ENDPOINT]);
 
     const handleJoinRoom = (room) => {
