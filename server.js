@@ -11,6 +11,12 @@ const app = express();
 
 (async function initApp() {
 
+    require('dotenv').config();
+    if (process.env.ENVIROMENT === 'PRODUCTION') {
+        app.use(express.static(path.resolve(__dirname, 'build')));
+        app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'build', 'index.html')));
+    }
+
     initSession();
     initDataTransfer();
     await initDb();
@@ -30,7 +36,6 @@ function initSession() {
 }
 
 function initDataTransfer() {
-    require('dotenv').config();
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
@@ -56,10 +61,8 @@ function initPassport() {
 }
 
 function initRoutes() {
-    const HOME_PAGE = `http://localhost:3001`;
     app.use('/',     require('./app/routes/api.routes'));
     app.use('/user', require('./app/routes/users.routes'));
-    app.get('*', (req, res) => res.redirect(HOME_PAGE));
 }
 
 function initSocketIO(server) {

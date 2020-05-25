@@ -2,9 +2,11 @@ const passport        = require('passport');
 const { createToken } = require('../controllers/Helpers/auth-helpers');
 const userModel       = require('../models/user.model');
 
+const { HOST_URL } = require('../../config/config');
+
 const CALLBACK_REDIRECT = {
-    successRedirect: 'http://localhost:3001/login',
-    failureRedirect: 'http://localhost:3000/auth/google/failure'
+    successRedirect: process.env.ENVIROMENT === 'PRODUCTION' ? HOST_URL : 'http://localhost:3001/login',
+    failureRedirect: `${HOST_URL}/auth/google/failure`
 };
 
 const optsCookie = {
@@ -21,14 +23,14 @@ const scope = [
 
 module.exports = {
     strategy,
-    callback,
     success,
-    failure: (req, res) => res.sendStatus(403),
-    signIn : passport.authenticate('google', { scope }),
+    failure : (req, res) => res.sendStatus(403),
+    callback: passport.authenticate('google', CALLBACK_REDIRECT),
+    signIn  : passport.authenticate('google', { scope }),
 }
 
 function callback(req, res, next) {
-    passport.authenticate('google', CALLBACK_REDIRECT)(req, res, next);
+    (req, res, next);
 }
 
 async function strategy(accessToken, refreshToken, profile, done) {
