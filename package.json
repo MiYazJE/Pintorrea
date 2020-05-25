@@ -33,6 +33,7 @@
     "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "node-sass": "^4.13.0",
     "nodemon": "^2.0.2",
     "npm": "^6.13.7",
@@ -44,7 +45,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "sass": "node-sass -w --output-style compressed src/sass -o src/css",
-    "start": "react-scripts start",
+    "start:development": "env-cmd -f .env.development react-scripts start",
+    "start:production": "env-cmd -f .env.production react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

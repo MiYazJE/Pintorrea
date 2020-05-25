@@ -1,4 +1,5 @@
-const HOST = "http://localhost:3000"
+const HOST = process.env.REACT_APP_API_BASE_URL;
+console.log(HOST)
 
 export default class Http {
     static getRequest = (data, url, method) => {

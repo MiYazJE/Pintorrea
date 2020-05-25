@@ -21,6 +21,7 @@ const App = ({ logUser, auth }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        console.log(process.env.REACT_APP_API_BASE_URL )
         setLoading(true);
         (async () => {
             const data = await whoAmI();

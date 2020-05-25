@@ -10,7 +10,7 @@ if (ENVIROMENT === 'DEVELOPMENT') {
     DB_URL = 'mongodb://localhost:27017/usuariosPintorrea';
 }
 else if (ENVIROMENT === 'PRODUCTION') {
-
+    DB_URL = `mongodb+srv://ruben:${process.env.mongoPassword}@mongo-fallero-s8xta.mongodb.net/test?retryWrites=true&w=majority`;
 }
 
 module.exports = {
