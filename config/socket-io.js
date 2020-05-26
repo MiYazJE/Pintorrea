@@ -7,7 +7,7 @@ const nameRooms = ['room1', 'room2', 'room3'];
 const getInitialRoomState = room => ({
     game: game(words),
     players: 0,
-    max: 5,
+    max: 7,
     name: room,
     started: false
 });
