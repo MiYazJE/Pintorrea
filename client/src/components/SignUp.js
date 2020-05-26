@@ -32,7 +32,7 @@ const Register = () => {
     const validateEmail = (_, email) => {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (re.test(String(email).toLowerCase())) {
-            return Promise.resolve();
+            return validateEmailExists(email);
         }
         return Promise.reject("El email no es válido!");
     }
@@ -46,11 +46,19 @@ const Register = () => {
         }
     })
 
-    const validateUserName = async (_, nickName) => {
+    const validateUserNameExists = async (_, nickName) => {
         if (!nickName) return;
-        const { userExists } = await Http.get(`/user/exists/${nickName}`);
+        const { userExists } = await Http.get(`/user/exists/name/${nickName}`);
         if (userExists) {
             return Promise.reject('Este nombre ya se encuentra registrado...');
+        }
+        return Promise.resolve();
+    }
+
+    const validateEmailExists = async (email) => {
+        const { emailExists } = await Http.get(`/user/exists/email/${email}`);
+        if (emailExists) {
+            return Promise.reject('Este email ya se encuentra registrado...');
         }
         return Promise.resolve();
     }
@@ -95,7 +103,7 @@ const Register = () => {
                                         required: true,
                                         message: "Por favor introduce el nickname!"
                                     }, 
-                                    { validator: validateUserName }
+                                    { validator: validateUserNameExists }
                                 ]
                             }
                         >

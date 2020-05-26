@@ -6,7 +6,8 @@ module.exports = {
     createUser,
     getUsers,
     deleteAll,
-    exists,
+    userNameExists,
+    emailExists,
     uploadPicture,
 }
 
@@ -71,7 +72,14 @@ async function deleteAll(req, res) {
     res.redirect('/api');
 }
 
-async function exists(req, res) {
+async function emailExists(req, res) {
+    const { email } = req.params;
+    if (!email) return res.status(400).json({ msg: 'El email se encuentra vacío.' });
+    const emailExists = await emailAlreadyRegistered(email);
+    res.json({ emailExists });
+}
+
+async function userNameExists(req, res) {
     const { userName } = req.params;
     if (!userName) return res.status(400).json({ msg: 'User name is empty' });
     const userExists = await nameAlreadyRegistered(userName);

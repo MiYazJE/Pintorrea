@@ -40,7 +40,9 @@ router.get('/whoAmI', (req, res) => {
 	})(req, res)
 });
 
-router.get('/exists/:userName', usersCtrl.exists);
+
+router.get('/exists/name/:userName', usersCtrl.userNameExists);
+router.get('/exists/email/:email',   usersCtrl.emailExists);
 
 router.get('/removeCookie', (req, res) => {
 	res.clearCookie('jwt');
