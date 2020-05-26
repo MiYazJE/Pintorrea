@@ -1,11 +1,15 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose     = require('mongoose');
+const bcrypt       = require('bcryptjs');
+const userDefaults = require('./user.defaults');
 
 const userSchema = mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    picture: String
+    picture: {
+        type: String,
+        default: userDefaults.picture
+    }
 }, {
     timestamps: true
 })

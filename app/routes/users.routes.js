@@ -40,7 +40,6 @@ router.get('/whoAmI', (req, res) => {
 	})(req, res)
 });
 
-
 router.get('/exists/name/:userName', usersCtrl.userNameExists);
 router.get('/exists/email/:email',   usersCtrl.emailExists);
 

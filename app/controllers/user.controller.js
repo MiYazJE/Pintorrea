@@ -81,7 +81,7 @@ async function emailExists(req, res) {
 
 async function userNameExists(req, res) {
     const { userName } = req.params;
-    if (!userName) return res.status(400).json({ msg: 'El user name esta vacío.' });
+    if (!userName) return res.status(400).json({ msg: 'El username esta vacío.' });
     const userExists = await nameAlreadyRegistered(userName);
     return res.json({ userExists });
 }

@@ -37,6 +37,24 @@ const Register = () => {
         return Promise.reject("El email no es válido!");
     }
 
+    const validateEmailExists = async (email) => {
+        const { emailExists } = await Http.get(`/user/exists/email/${email}`);
+        if (emailExists) {
+            return Promise.reject('Este email ya se encuentra registrado...');
+        }
+        return Promise.resolve();
+    }
+
+    const validateUserNameExists = async (_, nickName) => {
+        if (!nickName) return;
+        const { userExists } = await Http.get(`/user/exists/name/${nickName}`);
+        console.log(userExists)
+        if (userExists) {
+            return Promise.reject('Este nombre ya se encuentra registrado...');
+        }
+        return Promise.resolve();
+    }
+
     const validatePasswords = ({ getFieldValue }) => ({
         validator(rule, value) {
             if (getFieldValue("password") === value) {
@@ -45,23 +63,6 @@ const Register = () => {
             return Promise.reject("Las contraseñas no coinciden!");
         }
     })
-
-    const validateUserNameExists = async (_, nickName) => {
-        if (!nickName) return;
-        const { userExists } = await Http.get(`/user/exists/name/${nickName}`);
-        if (userExists) {
-            return Promise.reject('Este nombre ya se encuentra registrado...');
-        }
-        return Promise.resolve();
-    }
-
-    const validateEmailExists = async (email) => {
-        const { emailExists } = await Http.get(`/user/exists/email/${email}`);
-        if (emailExists) {
-            return Promise.reject('Este email ya se encuentra registrado...');
-        }
-        return Promise.resolve();
-    }
 
     return (
         <Layout className="layout">
