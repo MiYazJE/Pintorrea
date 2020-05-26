@@ -2,16 +2,9 @@ const passport        = require('passport');
 const { createToken } = require('../controllers/Helpers/auth-helpers');
 const userModel       = require('../models/user.model');
 
-const { HOST_URL } = require('../../config/config');
-
-const CALLBACK_REDIRECT = {
-    successRedirect: process.env.ENVIROMENT === 'PRODUCTION' ? HOST_URL : 'http://localhost:3001/login',
-    failureRedirect: `${HOST_URL}/auth/google/failure`
-};
-
 const optsCookie = {
     expires: new Date(Date.now() + 3600000),
-	secure: false, // set to true if your using https
+	secure: false, 
 	httpOnly: true
 }
 
@@ -21,16 +14,13 @@ const scope = [
     'https://mail.google.com/'	
 ];
 
+const REDIRECT_CALLBACK = process.env.ENVIROMENT === 'DEVELOPMENT' ? 'http://localhost:3000/login' : '/login';
+
 module.exports = {
     strategy,
-    success,
-    failure : (req, res) => res.sendStatus(403),
-    callback: passport.authenticate('google', CALLBACK_REDIRECT),
+    user,
     signIn  : passport.authenticate('google', { scope }),
-}
-
-function callback(req, res, next) {
-    (req, res, next);
+    callback: (req, res) => res.redirect(REDIRECT_CALLBACK)
 }
 
 async function strategy(accessToken, refreshToken, profile, done) {
@@ -56,7 +46,7 @@ async function strategy(accessToken, refreshToken, profile, done) {
     }
 }
 
-async function success(req, res) {
+async function user(req, res) {
     const { user } = req;
     req.session.destroy();
     if (!user) return res.send({ auth: false });

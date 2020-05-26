@@ -8,24 +8,25 @@ const cors         = require('cors');
 const socketIO     = require('socket.io');
 
 const app = express();
+const dev = process.env.ENVIROMENT === 'DEVELOPMENT';
 
 (async function initApp() {
 
     require('dotenv').config();
-    if (process.env.ENVIROMENT === 'PRODUCTION') {
-        app.use(express.static(path.resolve(__dirname, 'build')));
-        app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'build', 'index.html')));
+    if (!dev) {
+        app.use(express.static(path.join(__dirname, 'client/build')));
+        app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, 'client/build', 'index.html')));
     }
+
+    app.use(require('morgan')('tiny'));
 
     initSession();
     initDataTransfer();
     await initDb();
     initPassport();
     initRoutes();
-    
-    app.use(express.static(path.join(__dirname, 'public')));
 
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 5000;
     const server = app.listen(port, () => console.log('Listening at port ' + port));
 
     initSocketIO(server);
@@ -39,7 +40,6 @@ function initDataTransfer() {
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
-    app.use(cors({ credentials: true, origin: 'http://localhost:3001', methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' }));
 }
 
 async function initDb() {
@@ -61,8 +61,11 @@ function initPassport() {
 }
 
 function initRoutes() {
-    app.use('/',     require('./app/routes/api.routes'));
+    app.use('/',  require('./app/routes/api.routes'));
     app.use('/user', require('./app/routes/users.routes'));
+    if (!dev) {
+        app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'client/build', 'index.html')));
+    }
 }
 
 function initSocketIO(server) {

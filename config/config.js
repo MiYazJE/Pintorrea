@@ -3,7 +3,6 @@ const {
     clientID, callbackURL, clientSecret 
 } = process.env;
 
-const HOST_URL = process.env.ENVIROMENT === 'PRODUCTION' ? 'https://pintorrea.herokuapp.com/' : `http://localhost:${process.env.PORT || 3000}`;
 const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false };
 let DB_URL;
 
@@ -15,7 +14,6 @@ else if (ENVIROMENT === 'PRODUCTION') {
 }
 
 module.exports = {
-    HOST_URL,
     ACCESS_TOKEN_SECRET,
     DB_URL,
     DB_PROPERTIES,

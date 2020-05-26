@@ -25,7 +25,7 @@ module.exports = (io) => {
     io.on('connect', (socket) => {
 
         socket.on('requestRooms', () => {
-            io.emit('rooms', { rooms: Array.from(rooms.values()) });
+            socket.emit('rooms', { rooms: Array.from(rooms.values()) });
         });
 
         socket.on('joinRoom', ({ user, roomName }) => {

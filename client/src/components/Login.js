@@ -14,36 +14,22 @@ import Http from "../Helpers/Http";
 const { Content } = Layout;
 const key = "updatable";
 
+const validateEmail = (_, email) => {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (re.test(String(email).toLowerCase())) {
+        return Promise.resolve();
+    }
+    return Promise.reject("El email no es válido!");
+}
+
 const Login = ({ logUser }) => {
     const [redirect, setRedirect] = useState(false);
     const [localLoading, setLocalLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
 
-    const setUser = async (success, error) => {
-        const data = await whoAmI();
-        if (data.auth) {
-            logUser(data.user, data.auth);
-            if (success)
-                success();
-        }
-        else {
-            if (error)
-                error();
-        }
-    }
-
-    const validateEmail = (_, email) => {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(String(email).toLowerCase())) {
-            return Promise.resolve();
-        }
-        return Promise.reject("El email no es válido!");
-    }
-
     useEffect(() => {
-        let isMounted = true;
         (async () => {
-            const { auth } = await Http.get('/auth/google/success');
+            const { auth } = await Http.get('/auth/google/user');
             if (auth) {
                 setUser(() => {
                     notification.success({
@@ -55,8 +41,15 @@ const Login = ({ logUser }) => {
                 });    
             }
         })();
-        return () => setRedirect(false);
     }, []);
+
+    const setUser = async (success) => {
+        const data = await whoAmI();
+        if (data.auth) {
+            logUser(data.user, data.auth);
+            success();
+        }
+    }
 
     async function handleLogin(user) {
         setLocalLoading(true);
@@ -166,7 +159,7 @@ const Login = ({ logUser }) => {
                             </Link>
                         </Form.Item>
                         <div className="wrapButtonsLogin">
-                            <a href="http://localhost:3000/auth/google/signIn">
+                            <a href="/auth/google">
                                 <Button
                                     icon={<GoogleOutlined />}
                                     type="primary"

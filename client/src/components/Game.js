@@ -7,7 +7,7 @@ import { readUser, readRoom } from '../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
 import '../css/game.css';
 
-const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
+const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
 const INITIAL_FONT_SIZE = 10;
 
@@ -34,7 +34,7 @@ const Game = ({ user, room }) => {
     }, []);
 
     useEffect(() => {
-        socket = io(ENDPOINT);
+        socket = io();
         socket.emit('joinRoom', { user, roomName: room });
 
         socket.on('message', (message) => {

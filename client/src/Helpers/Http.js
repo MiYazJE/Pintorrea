@@ -1,6 +1,3 @@
-const HOST = process.env.REACT_APP_API_BASE_URL;
-console.log(HOST)
-
 export default class Http {
     static getRequest = (data, url, method) => {
         const init = {
@@ -8,10 +5,11 @@ export default class Http {
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             credentials: 'include',
         }
-        return new Request(`${HOST}${url}`, init)
+        return new Request(`${url}`, init)
     }
 
     static post = async (body, url) => {
@@ -21,7 +19,7 @@ export default class Http {
     }
 
     static get = async url => {
-        const res = await fetch(`${HOST}${url}`, {
+        const res = await fetch(`${url}`, {
             credentials: "include"
         })
         return await res.json()

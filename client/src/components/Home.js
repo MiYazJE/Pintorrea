@@ -9,7 +9,7 @@ import '../css/home.css';
 import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
 
-const ENDPOINT = process.env.REACT_APP_API_BASE_URL;
+const ENDPOINT = '/socket-io';
 const { Content } = Layout;
 
 let socket;
@@ -19,7 +19,7 @@ const Home = ({ user, joinRoom }) => {
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
-        socket = io(ENDPOINT);
+        socket = io();
         socket.emit('requestRooms', {});
         socket.on('rooms', ({ rooms }) => {
             console.log(rooms);
@@ -27,7 +27,7 @@ const Home = ({ user, joinRoom }) => {
         });
 
         return () => socket.disconnect();
-    }, [ENDPOINT]);
+    }, []);
 
     const handleJoinRoom = (room) => {
         joinRoom(room);
