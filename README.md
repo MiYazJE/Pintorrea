@@ -23,12 +23,17 @@
 ---
 
 ## INSTALACIÓN
-Para correr este proyecto localmente debes tener instalado mongodb y ejecutar:
+Para correr este proyecto localmente debes tener instalado:
++ Mongodb
++ Node js
+
+Ejecutar por consola en la raíz del proyecto:
 ```
 $ npm i
+$ npm install client
 $ npm run dev
-$ npm run start
-$ Ir a http://localhost:3001
+$ npm run client
+$ Ir a http://localhost:3000
 ```
 
 ---
