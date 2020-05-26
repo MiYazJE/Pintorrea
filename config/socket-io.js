@@ -65,12 +65,15 @@ module.exports = (io) => {
             const user = listUsers.get(socket.id);
             if (!user) return;
             console.log(`${user.name} se ha desconectado!`);
-            const currentRoom = rooms.get(user.roomName);
+            let currentRoom = rooms.get(user.roomName);
             currentRoom.players--;
             currentRoom.game.deleteUser(user.name);
+            if (currentRoom.players === 0) {
+                currentRoom = getInitialRoomState(currentRoom.name);
+            }
             rooms.set(user.roomName, currentRoom);
             io.to(user.room).emit('message', { admin: true, msg: `${user.name} se ha desconectado` });
-            // console.log(rooms.values());
+            console.log(rooms.values());
         });
 
     });

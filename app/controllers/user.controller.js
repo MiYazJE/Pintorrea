@@ -81,14 +81,14 @@ async function emailExists(req, res) {
 
 async function userNameExists(req, res) {
     const { userName } = req.params;
-    if (!userName) return res.status(400).json({ msg: 'User name is empty' });
+    if (!userName) return res.status(400).json({ msg: 'El user name esta vacío.' });
     const userExists = await nameAlreadyRegistered(userName);
     return res.json({ userExists });
 }
 
 async function uploadPicture(req, res) {
     const { picture, id } = req.body;
-    if (!picture || !id) return res.status(401).json({ msg: 'Must require a user id and an image.' });
+    if (!picture || !id) return res.status(401).json({ msg: 'Los campos están vacíos.' });
     const user = await userModel.findOneAndUpdate({ _id: id }, { picture });
     res.json(user);
 }
