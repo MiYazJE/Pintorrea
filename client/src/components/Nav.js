@@ -3,7 +3,7 @@ import "../css/nav.css";
 import { Link, Redirect } from "react-router-dom";
 import Profile from './Profile';
 import "antd/dist/antd.css";
-import { Layout, Menu, Modal, notification } from "antd";
+import { Layout, Menu, Modal, notification, Avatar } from "antd";
 import {
     UserOutlined,
     LogoutOutlined,
@@ -19,7 +19,7 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
-const Nav = ({ user, logOutUser, setAuth }) => {
+const Nav = ({ user, logOutUser }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
@@ -61,9 +61,9 @@ const Nav = ({ user, logOutUser, setAuth }) => {
                 {user ? (
                     <SubMenu
                         title={
-                            <span className="submenu-title-wrapper">
-                                <UserOutlined />
-                                {user.name}
+                            <span>
+                                <Avatar style={{backgroundColor: 'white'}} src={user.picture} />
+                                <span>{user.name}</span>
                             </span>
                         }
                     >

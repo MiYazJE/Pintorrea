@@ -8,7 +8,6 @@
 
 + A los usuarios que hayan logeado con Google hay que notificarles que necesitan 
 configurar su contraseña.
-+ Corregir los estilos de cuando subes una imagen, implementar poder eliminar la imágen?
 + Enviar un correo de verificación al email, si lo hace el usuario recibirá bonificaciones.
 
 ---

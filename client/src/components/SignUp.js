@@ -40,7 +40,7 @@ const Register = () => {
     const validateEmailExists = async (email) => {
         const { emailExists } = await Http.get(`/user/exists/email/${email}`);
         if (emailExists) {
-            return Promise.reject('Este email ya se encuentra registrado...');
+            return Promise.reject('Este email ya se encuentra registrado!');
         }
         return Promise.resolve();
     }
@@ -50,7 +50,7 @@ const Register = () => {
         const { userExists } = await Http.get(`/user/exists/name/${nickName}`);
         console.log(userExists)
         if (userExists) {
-            return Promise.reject('Este nombre ya se encuentra registrado...');
+            return Promise.reject('Este nombre ya se encuentra registrado!');
         }
         return Promise.resolve();
     }

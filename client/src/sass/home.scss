@@ -56,6 +56,15 @@ $height-title: 30px;
                 width: 100%;
                 text-align: center;
             }
+
+            .users-profiles {
+                width: 90%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-bottom: 5px;
+            }
         }
     }
 }

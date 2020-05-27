@@ -25,7 +25,7 @@ module.exports = (io) => {
     io.on('connect', (socket) => {
 
         socket.on('requestRooms', () => {
-            socket.emit('rooms', { rooms: Array.from(rooms.values()) });
+            socket.emit('rooms', { rooms: mapRooms([...rooms.values()]) });
         });
 
         socket.on('joinRoom', ({ user, roomName }) => {
@@ -49,7 +49,7 @@ module.exports = (io) => {
             io.to(roomName).emit('message', { admin: true, msg: `${user.name} se ha unido.` });
 
             // Comunicate to everyone that user just joins to a room
-            io.emit('rooms', { rooms: Array.from(rooms.values()) });
+            io.emit('rooms', { rooms: mapRooms([...rooms.values()]) });
         });
 
         socket.on('sendMessage', ({ user, msg, room }) => {
@@ -79,3 +79,7 @@ module.exports = (io) => {
     });
 
 }
+
+const mapRooms = rooms => rooms.map(({ name, max, players, started, game }) => ({
+    name, max, players, started, users: game.getUsers()
+}));

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/profile.css";
-import { Upload, message } from "antd";
+import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import Http from '../Helpers/Http';
 import { connect } from 'react-redux';
@@ -27,7 +27,6 @@ function beforeUpload(file) {
 const Profile = ({ user, logUser }) => {
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(user.picture);
-    console.log(user)
 
     const handleChange = info => {
         if (info.file.status === 'uploading') {
@@ -62,7 +61,9 @@ const Profile = ({ user, logUser }) => {
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
             >
-                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '50%' }} /> : uploadButton}
+                <Tooltip placement="right" style={{color: 'white'}} title="Cambiar imágen">
+                    <img src={imageUrl} alt="avatar" style={{ width: '100px' }} />
+                </Tooltip>
             </Upload>
             <h2>{user.name}</h2>
         </div>
