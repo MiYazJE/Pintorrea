@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import '../css/chat.css';
 import { Form, Input, List } from 'antd';
 
+const MESSAGE_BACKGROUND = '#03213E';
+
 const Chat = ({ messages, sendMessage }) => {
     const [form] = Form.useForm();
     const refScroll = useRef(null);
@@ -23,10 +25,14 @@ const Chat = ({ messages, sendMessage }) => {
             <div className="text-chat">
                 <List
                     dataSource={messages}
-                    renderItem={({ admin, name, msg }) => (
-                        <span className={`item-${admin ? 'admin' : 'user'}-chat`} key={name}>
-                            <p>{admin ? msg : `${name.toUpperCase()}: ${msg}`}</p>
-                            <div ref={refScroll} />
+                    renderItem={({ admin, name, msg }, index) => (
+                        <span
+                            className={`item-${admin ? 'admin' : 'user'}-chat`}
+                            key={name}>
+                                <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
+                                    {admin ? msg : `${name.toUpperCase()}: ${msg}`}
+                                </p>
+                                <div ref={refScroll} />
                         </span>
                     )}
                 />

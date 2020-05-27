@@ -13,6 +13,5 @@ configurar su contraseña.
 ---
 ## Salas
 
-+ Crear un chat para todos los usuarios que esten esperando en el menu.
 + Los usuarios puedan crear salas, estas salas deben de tener un identificador único para que 
 puedan eviarse invitaciones entre amigos.
