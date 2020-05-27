@@ -50,6 +50,7 @@ module.exports = (io) => {
 
             // Comunicate to everyone that user just joins to a room
             io.emit('rooms', { rooms: mapRooms([...rooms.values()]) });
+            io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido a la sala ${roomName}!` });    
         });
 
         socket.on('sendMessage', ({ user, msg, room }) => {
@@ -60,6 +61,15 @@ module.exports = (io) => {
             console.log(drawer, room)
             io.to(room).emit('draw', { drawer, coordinates });
         });
+
+        socket.on('sendMessageToAll', ({ admin, user, msg }) => {
+            if (admin) {
+                io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido!` });                
+            }
+            else {
+                io.emit('globalChat', { name: user.name, msg });
+            }
+        })
 
         socket.on('disconnect', () => {
             const user = listUsers.get(socket.id);

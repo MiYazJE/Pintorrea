@@ -13,6 +13,8 @@ $height-title: 30px;
     background-color: #001529;
     border-radius: 8px;
     padding: 10px;
+    display: flex;
+    justify-content: space-evenly;
 
     .title-rooms {
         height: $height-title;
@@ -22,48 +24,44 @@ $height-title: 30px;
         margin: 0;
     }
 
-    .wrap-rooms {
-        height: calc(100% - #{$height-title} - 40px);
-        overflow: auto;
-        display: flex;
-        justify-content: space-around;
-        align-items: flex-start;
-        flex-wrap: wrap;
+    .containerRooms {
+        width: 50%;
+        min-width: 400px;
 
-        .card-room {
-            margin: 10px;
-            width: 20%;
-            color: white;
-            min-height: 50px;
+        .wrap-rooms {
+            height: calc(100% - #{$height-title} - 40px);
+            overflow: auto;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid white;
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
 
-            @media only screen and (max-width: 1000px) {
-                width: 40%;
-            }
-
-            @media only screen and (max-width: 600px) {
-                width: 100%;
-            }
-
-
-            .title {
-                width: 100%;
-                text-align: center;
-            }
-
-            .users-profiles {
-                width: 90%;
+            .card-room {
+                margin: 10px;
+                width: 80%;
+                color: white;
+                min-height: 50px;
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                flex-wrap: wrap;
-                margin-bottom: 5px;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid white;
+
+                .title {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                .users-profiles {
+                    width: 90%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    margin-bottom: 5px;
+                }
             }
         }
     }

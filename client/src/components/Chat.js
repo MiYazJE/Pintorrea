@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import '../css/chat.css';
 import { Form, Input, List } from 'antd';
 
 const Chat = ({ messages, sendMessage }) => {
     const [form] = Form.useForm();
+    const refScroll = useRef(null);
+
+    const scrollToBottom = () => {
+        refScroll.current && refScroll.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    useEffect(scrollToBottom, [messages]);
 
     const handleSendMessage = ({ msg }) => {
         if (!msg) return;
@@ -17,9 +24,10 @@ const Chat = ({ messages, sendMessage }) => {
                 <List
                     dataSource={messages}
                     renderItem={({ admin, name, msg }) => (
-                        <List.Item className={`item-${admin ? 'admin' : 'user'}-chat`} key={name}>
+                        <span className={`item-${admin ? 'admin' : 'user'}-chat`} key={name}>
                             <p>{admin ? msg : `${name.toUpperCase()}: ${msg}`}</p>
-                        </List.Item>
+                            <div ref={refScroll} />
+                        </span>
                     )}
                 />
             </div>
