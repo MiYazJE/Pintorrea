@@ -1,12 +1,12 @@
 
 .wrap-chat {
-    padding: 10px;
     width: 400px;
     min-width: 400px;
     background-color: #001529;
-    margin-left: 20px;
+    border-radius: 4px;
     
     .text-chat {
+        padding: 10px;
         height: 96%;
         max-height: 96%;
         width: 100%;
@@ -29,6 +29,10 @@
             color: chartreuse;
         }
 
+    }
+
+    .formMessage {
+        width: 100%;
     }
 
 }

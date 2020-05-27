@@ -4,7 +4,7 @@ import { Form, Input, List } from 'antd';
 
 const MESSAGE_BACKGROUND = '#03213E';
 
-const Chat = ({ messages, sendMessage }) => {
+const Chat = ({ messages, sendMessage, placeholderMessage }) => {
     const [form] = Form.useForm();
     const refScroll = useRef(null);
 
@@ -37,11 +37,13 @@ const Chat = ({ messages, sendMessage }) => {
                     )}
                 />
             </div>
-            <Form form={form} onFinish={(msg) => handleSendMessage(msg)}>
-                <Form.Item name="msg">
-                    <Input autoFocus placeholder="Adivina el dibujo..." />
-                </Form.Item>
-            </Form>
+            <div className="formMessage">
+                <Form form={form} onFinish={(msg) => handleSendMessage(msg)}>
+                    <Form.Item name="msg">
+                        <Input autoFocus placeholder={placeholderMessage} />
+                    </Form.Item>
+                </Form>
+            </div>
         </div>
     );
 

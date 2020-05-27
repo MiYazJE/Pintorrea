@@ -123,7 +123,11 @@ const Game = ({ user, room }) => {
                             clear={handleClear}
                         /> : null}
                 </div>
-                <Chat messages={messages} sendMessage={sendMessage} />
+                <Chat 
+                    messages={messages} 
+                    sendMessage={sendMessage} 
+                    placeholderMessage="Adivina el dibujo..."
+                />
             </div>
         </div>
     );

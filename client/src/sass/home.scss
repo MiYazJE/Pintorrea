@@ -8,25 +8,27 @@ $height-title: 30px;
 }
 
 .main-home {
-    max-height: 80%;
+    height: 80%;
     width: 80%;
-    background-color: #001529;
     border-radius: 8px;
     padding: 10px;
     display: flex;
     justify-content: space-evenly;
 
-    .title-rooms {
-        height: $height-title;
-        color: white;
-        text-align: center;
-        padding: 0;
-        margin: 0;
-    }
-
     .containerRooms {
         width: 50%;
         min-width: 400px;
+        background-color: #001529;
+        border-radius: 4px;
+        margin-right: 20px;
+
+        .title-rooms {
+            height: $height-title;
+            color: white;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
 
         .wrap-rooms {
             height: calc(100% - #{$height-title} - 40px);

@@ -54,7 +54,7 @@ const Home = ({ user }) => {
                 {redirect ? <Redirect to="/game" /> : null}
                 <div className="main-home">
                     <Rooms rooms={rooms} setRedirect={setRedirect} />
-                    <Chat messages={messages} sendMessage={handleSendMessage} />
+                    <Chat messages={messages} sendMessage={handleSendMessage} placeholderMessage="Escribe aquí..." />
                 </div>
             </Content>
             <Footer />
