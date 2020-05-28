@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, Avatar, Tooltip, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
-import { joinRoom } from '../Redux/Actions/UserActions';
+import { joinRoom } from '../../Redux/Actions/UserActions';
 
 const Rooms = ({ rooms, joinRoom, setRedirect }) => {
 

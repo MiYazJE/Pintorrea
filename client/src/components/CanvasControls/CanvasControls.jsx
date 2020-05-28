@@ -5,7 +5,7 @@ import { IoIosUndo } from 'react-icons/io';
 import { AiFillDelete } from 'react-icons/ai';
 import { GiPaintBucket } from 'react-icons/gi';
 import { Radio, Tooltip, Slider, Button } from 'antd';
-import '../css/canvasControls.css';
+import './canvasControls.scss';
 
 const COLORS = [
     '#4D4D4D', '#999999', '#FFFFFF', '#F44E3B', '#FE9200', 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import '../css/chat.css';
+import './chat.scss';
 import { Form, Input, List } from 'antd';
 
 const MESSAGE_BACKGROUND = '#03213E';
@@ -26,13 +26,11 @@ const Chat = ({ messages, sendMessage, placeholderMessage }) => {
                 <List
                     dataSource={messages}
                     renderItem={({ admin, name, msg }, index) => (
-                        <span
-                            className={`item-${admin ? 'admin' : 'user'}-chat`}
-                            key={name}>
-                                <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
-                                    {admin ? msg : `${name.toUpperCase()}: ${msg}`}
-                                </p>
-                                <div ref={refScroll} />
+                        <span className={`item-${admin ? 'admin' : 'user'}-chat`}>
+                            <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
+                                {admin ? msg : `${name.toUpperCase()}: ${msg}`}
+                            </p>
+                            <div ref={refScroll} />
                         </span>
                     )}
                 />

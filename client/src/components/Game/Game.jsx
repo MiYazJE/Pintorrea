@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import Chat from './Chat';
-import CanvasControls from './CanvasControls';
+import Chat from '../Chat/Chat';
+import CanvasControls from '../CanvasControls/CanvasControls';
 import CanvasDraw from "react-canvas-draw";
 import { connect } from "react-redux";
-import { readUser, readRoom } from '../Redux/Reducers/UserReducer';
+import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
-import '../css/game.css';
+import './game.scss';
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';

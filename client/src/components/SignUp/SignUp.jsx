@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import "../css/login.css";
 import { Redirect } from "react-router-dom";
-import { signUp } from "../Helpers/auth-helpers";
+import { signUp } from "../../Helpers/auth-helpers";
 import { Form, Input, Button, notification, Layout } from "antd";
 import { MdEmail } from "react-icons/md";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import Nav from "./Nav";
-import Footer from "./Footer";
-import Http from '../Helpers/Http';
-import "../css/login.css";
+import Nav from "../Nav/Nav";
+import Footer from "../Footer/Footer";
+import Http from '../../Helpers/Http';
+import "./signUp.scss";
 
 const { Content } = Layout;
 const key = "updatable";

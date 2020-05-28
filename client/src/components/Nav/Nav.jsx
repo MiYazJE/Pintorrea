@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import "../css/nav.css";
 import { Link, Redirect } from "react-router-dom";
-import Profile from './Profile';
-import "antd/dist/antd.css";
+import Profile from '../Profile/Profile';
 import { Layout, Menu, Modal, notification, Avatar } from "antd";
 import {
     UserOutlined,
@@ -10,10 +8,12 @@ import {
     ProfileOutlined,
     UnorderedListOutlined
 } from "@ant-design/icons";
-import { removeCookie } from '../Helpers/auth-helpers';
+import { removeCookie } from '../../Helpers/auth-helpers';
 import { connect } from 'react-redux';
-import { readUser } from '../Redux/Reducers/UserReducer';
-import { logOutUser } from '../Redux/Actions/UserActions';
+import { readUser } from '../../Redux/Reducers/UserReducer';
+import { logOutUser } from '../../Redux/Actions/UserActions';
+import "antd/dist/antd.css";
+import "./nav.scss";
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
@@ -69,11 +69,11 @@ const Nav = ({ user, logOutUser }) => {
                     >
                         <Menu.Item onClick={toggleShowProfile} key="setting:2">
                             <ProfileOutlined style={{ marginRight: "5px" }} />
-                            Ver Perfil
+                            Ver perfil
                         </Menu.Item>
                         <Menu.Item key="setting:1" onClick={handleLogout}>
                             <LogoutOutlined style={{ marginRight: "5px" }} />
-                            Logout
+                            Cerrar sesión
                         </Menu.Item>
                     </SubMenu>
                 ) : (

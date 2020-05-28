@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import "../css/profile.css";
 import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import Http from '../Helpers/Http';
+import Http from '../../Helpers/Http';
 import { connect } from 'react-redux';
-import { logUser } from '../Redux/Actions/UserActions';
+import { logUser } from '../../Redux/Actions/UserActions';
+import "./profile.scss";
 
 function getBase64(img, callback) {
     const reader = new FileReader();

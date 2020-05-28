@@ -6,11 +6,9 @@
   "author": "Rubén Saiz Serrano",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "concurrently": "^5.2.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "http-proxy-middleware": "^1.0.4",
@@ -24,12 +22,10 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "node-sass": "^4.13.0",
     "nodemon": "^2.0.2",
     "npm": "^6.13.7"
   },
   "scripts": {
-    "sass": "node-sass -w --output-style compressed client/src/sass -o client/src/css",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
     "heroku-postbuild": "npm run install-client && npm run build",

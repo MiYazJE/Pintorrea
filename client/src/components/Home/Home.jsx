@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Footer from './Footer';
-import Nav from './Nav';
-import Rooms from './Rooms';
-import Chat from './Chat';
+import Footer from '../Footer/Footer';
+import Nav from '../Nav/Nav';
+import Rooms from '../Rooms/Rooms';
+import Chat from '../Chat/Chat';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
-import { readUser } from '../Redux/Reducers/UserReducer';
-import '../css/home.css';
+import { readUser } from '../../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
+import './home.scss';
 
 const ENDPOINT = '/socket-io';
 const { Content } = Layout;
@@ -53,8 +53,15 @@ const Home = ({ user }) => {
             <Content className="content">
                 {redirect ? <Redirect to="/game" /> : null}
                 <div className="main-home">
-                    <Rooms rooms={rooms} setRedirect={setRedirect} />
-                    <Chat messages={messages} sendMessage={handleSendMessage} placeholderMessage="Escribe aquí..." />
+                    <Rooms 
+                        rooms={rooms} 
+                        setRedirect={setRedirect} 
+                    />
+                    <Chat 
+                        messages={messages} 
+                        sendMessage={handleSendMessage} 
+                        placeholderMessage="Escribe aquí..." 
+                    />
                 </div>
             </Content>
             <Footer />

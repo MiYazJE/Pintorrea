@@ -15,3 +15,7 @@ configurar su contraseña.
 
 + Los usuarios puedan crear salas, estas salas deben de tener un identificador único para que 
 puedan eviarse invitaciones entre amigos.
+
+## Juego
+
++ Crear un apartado donde se ven los usuarios que hay en una partida.

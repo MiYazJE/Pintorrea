@@ -1,8 +1,7 @@
 import React from "react";
-import "../css/nav.css";
 import "antd/dist/antd.css";
 import { Layout } from "antd";
-import "../css/footer.css";
+import "./footer.scss";
 
 const { Footer: FooterComponent } = Layout;
 

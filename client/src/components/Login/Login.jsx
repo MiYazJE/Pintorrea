@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect} from "react-router-dom";
-import { whoAmI, signIn } from "../Helpers/auth-helpers";
+import { whoAmI, signIn } from "../../Helpers/auth-helpers";
+import Http from "../../Helpers/Http";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
-import Nav from "./Nav";
-import Footer from "./Footer";
+import Nav from "../Nav/Nav";
+import Footer from "../Footer/Footer";
 import { connect } from 'react-redux';
-import { logUser } from '../Redux/Actions/UserActions';
-import "../css/login.css";
-import Http from "../Helpers/Http";
+import { logUser } from '../../Redux/Actions/UserActions';
+import "./login.scss";
 
 const { Content } = Layout;
 const key = "updatable";

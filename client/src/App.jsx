@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import "./css/App.css";
+import "./App.css";
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Redirect
 } from "react-router-dom";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Game from "./components/Game";
-import SignUp from "./components/SignUp";
+import Home from "./components/Home/Home";
+import Login from "./components/Login/Login";
+import Game from "./components/Game/Game";
+import SignUp from "./components/SignUp/SignUp";
+import PrivateRoute from './components/Routes/PrivateRoute';
 import { Spin } from 'antd';
-import PrivateRoute from './components/PrivateRoute';
 import { whoAmI } from './Helpers/auth-helpers';
 import { connect } from 'react-redux';
 import { readAuth } from './Redux/Reducers/UserReducer';
