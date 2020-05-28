@@ -15,6 +15,16 @@
         display: flex;
         justify-content: space-around;
     
+        .puntuationTable {
+            width: 250px;
+            min-width: 250px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
         .drawContainer {
             width: 60%;
             min-width: 700px;

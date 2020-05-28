@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Chat from '../Chat/Chat';
 import CanvasControls from '../CanvasControls/CanvasControls';
+import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from "react-canvas-draw";
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
@@ -100,6 +101,9 @@ const Game = ({ user, room }) => {
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
+                <div className="puntuationTable">
+                    {socket ? <Puntuation socket={socket} room={room} /> : null}
+                </div>
                 <div className="drawContainer">
                     <CanvasDraw
                         ref={canvasRef}

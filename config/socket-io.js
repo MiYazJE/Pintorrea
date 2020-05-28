@@ -1,7 +1,7 @@
-const words     = ['patata', 'rueda', 'raton', 'casa'];
-const game      = require('../lib/pintorrea'); 
+const words = ['patata', 'rueda', 'raton', 'casa'];
+const game = require('../lib/pintorrea');
 const listUsers = new Map();
-const rooms     = new Map();
+const rooms = new Map();
 const nameRooms = ['room1', 'room2', 'room3'];
 
 const getInitialRoomState = room => ({
@@ -50,7 +50,7 @@ module.exports = (io) => {
 
             // Comunicate to everyone that user just joins to a room
             io.emit('rooms', { rooms: mapRooms([...rooms.values()]) });
-            io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido a la sala ${roomName}!` });    
+            io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido a la sala ${roomName}!` });
         });
 
         socket.on('sendMessage', ({ user, msg, room }) => {
@@ -64,12 +64,16 @@ module.exports = (io) => {
 
         socket.on('sendMessageToAll', ({ admin, user, msg }) => {
             if (admin) {
-                io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido!` });                
+                io.emit('globalChat', { admin: true, msg: `${user.name} se ha unido!` });
             }
             else {
                 io.emit('globalChat', { name: user.name, msg });
             }
         })
+
+        socket.on('getGameStatus', ({ room }) => {
+            io.to(room).emit('gameStatus', { users: rooms.get(room).game.getUsers() });
+        });
 
         socket.on('disconnect', () => {
             const user = listUsers.get(socket.id);
@@ -83,6 +87,7 @@ module.exports = (io) => {
             }
             rooms.set(user.roomName, currentRoom);
             io.to(user.room).emit('message', { admin: true, msg: `${user.name} se ha desconectado` });
+            io.to(user.roomName).emit('gameStatus', { users: currentRoom.game.getUsers() });
             console.log(rooms.values());
         });
 
