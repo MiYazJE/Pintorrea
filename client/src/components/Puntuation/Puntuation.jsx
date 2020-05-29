@@ -4,6 +4,7 @@ import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import FlipMove from 'react-flip-move';
 import './puntuation.scss';
+import UserAvatar from '../UsersAvatars/UserAvatar';
 
 /**
  * It uses state components because FlipMove library seems to require it to work properly
@@ -13,8 +14,7 @@ class Puntuation extends Component {
 
     constructor(props) {
         super(props);
-        this.handleViewProfile = this.handleViewProfile.bind(this);
-        this.sortUsers         = this.sortUsers.bind(this);
+        this.sortUsers = this.sortUsers.bind(this);
 
         this.state = {
             users: []
@@ -30,10 +30,6 @@ class Puntuation extends Component {
         });
 
         socket.emit('getGameStatus', { room });
-    }
-
-    handleViewProfile = user => {
-        console.log(user);
     }
 
     sortUsers = (users) => {
@@ -59,7 +55,7 @@ class Puntuation extends Component {
                             <div className="userInfo">
                                 <span>{`#${index + 1}`}</span>
                                 <span>{user.name.toUpperCase()}</span>
-                                <Avatar src={user.picture} onClick={() => this.handleViewProfile(user)} />
+                                <UserAvatar {...user} />
                             </div>
                             <span>{user.puntuation}</span>
                         </div>

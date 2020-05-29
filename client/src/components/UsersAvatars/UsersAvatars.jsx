@@ -1,29 +1,17 @@
 import React from 'react';
 import { Avatar, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import UserAvatar from './UserAvatar';
 
 const UsersAvatars = ({ users }) => {
-
-    const handleViewProfile = (name, id) => {
-        console.log(`view ${name}'s profile`);
-    }
-
     return(
         <div className="users-profiles">
             {users.map((user, index) => (
-                user ?
-                    <Tooltip key={user.id} placement="top" title={user.name}>
-                        <Avatar
-                            style={{ cursor: 'pointer' }}
-                            src={user.picture}
-                            onClick={() => handleViewProfile(user.name, user.id)}
-                        />
-                    </Tooltip>
+                user ? <UserAvatar key={user.id} name={user.name} picture={user.picture} id={user.id} />
                     : <Avatar key={index} icon={<UserOutlined />} />
             ))}
         </div>
     );
-
 }
 
 export default UsersAvatars;

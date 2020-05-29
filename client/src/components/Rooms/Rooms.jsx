@@ -14,7 +14,7 @@ const Room = ({ max, players, users, name, joinRoom }) => {
     }
 
     return (
-        <div className="card-room" key={name}>
+        <div className="card-room">
             <div className="title">{name.toUpperCase()}</div>
             <div className="players" style={{ color: getColorState(players, max) }}>{players}/{max}</div>
             <UsersAvatars users={users} />
@@ -43,7 +43,7 @@ const Rooms = ({ rooms, joinRoom, setRedirect }) => {
             <h1 className="title-rooms">Salas</h1>
             <Divider />
             <div className="wrap-rooms">
-                {rooms.map((user) => <Room joinRoom={handleJoinRoom} {...user} />)}
+                {rooms.map((room) => <Room key={room.name} joinRoom={handleJoinRoom} {...room} />)}
             </div>
         </div>
     );
