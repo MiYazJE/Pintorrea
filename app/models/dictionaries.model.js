@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const dictionariesSchema = mongoose.Schema({
-    topic: String,
+    topic: { type: String, unique: true },
     words: Array
 }, {
     timestamps: true

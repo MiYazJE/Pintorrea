@@ -70,5 +70,5 @@ function initRoutes() {
 
 function initSocketIO(server) {
     const io = socketIO(server);
-    require('./config/socket-io.js')(io);
+    require('./lib/socket-io.js')(io);
 }

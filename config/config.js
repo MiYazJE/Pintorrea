@@ -4,7 +4,7 @@ const {
     DOMAIN_PRODUCTION
 } = process.env;
 
-const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false };
+const DB_PROPERTIES = { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true, };
 let DB_URL, DOMAIN;
 
 if (ENVIROMENT === 'DEVELOPMENT') {

@@ -13,6 +13,7 @@ router.get('/auth/google/',         googleAuthCtrl.signIn);
 router.get('/auth/google/user',     googleAuthCtrl.user);
 router.get('/auth/google/callback', passport.authenticate('google'), googleAuthCtrl.callback);
 
-router.get('/scrap/dictionary/spanish', dictionaryCtrl.scrapSpanishBasic);
+router.get('/dictionary/scrap/spanish', dictionaryCtrl.scrapSpanishBasic);
+router.get('/dictionary/topics',        dictionaryCtrl.topics);
 
 module.exports = router;
