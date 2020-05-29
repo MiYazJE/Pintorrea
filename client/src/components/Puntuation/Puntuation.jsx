@@ -48,10 +48,10 @@ class Puntuation extends Component {
             <FlipMove
                 staggerDurationBy="30"
                 duration={500}
-                style={{ width: '100%' }}
                 enterAnimation="accordionVertical"
                 leaveAnimation="accordionVertical"
                 typeName="div"
+                className="wrapUsers"
             >
                 {
                     users ? users.map((user, index) => (
@@ -59,7 +59,7 @@ class Puntuation extends Component {
                             <div className="userInfo">
                                 <span>{`#${index + 1}`}</span>
                                 <span>{user.name.toUpperCase()}</span>
-                                <Avatar icon={<UserOutlined />} onClick={() => this.handleViewProfile(user)} />
+                                <Avatar src={user.picture} onClick={() => this.handleViewProfile(user)} />
                             </div>
                             <span>{user.puntuation}</span>
                         </div>

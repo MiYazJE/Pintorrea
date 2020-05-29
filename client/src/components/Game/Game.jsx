@@ -101,37 +101,42 @@ const Game = ({ user, room }) => {
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
-                <div className="puntuationTable">
-                    {socket ? <Puntuation socket={socket} room={room} /> : null}
+                <div className="gameProgress">
+                    
                 </div>
-                <div className="drawContainer">
-                    <CanvasDraw
-                        ref={canvasRef}
-                        onChange={sendCoordinates}
-                        brushRadius={fontSize}
-                        hideGrid={true}
-                        canvasHeight="80%"
-                        canvasWidth={'100%'}
-                        brushColor={canvasColor}
-                        lazyRadius={0}
-                        hideInterface={true}
-                        immediateLoading={true}
-                        disabled={!isDrawer}
+                <div className="inlineItems">
+                    <div className="puntuationTable">
+                        {socket ? <Puntuation socket={socket} room={room} /> : null}
+                    </div>
+                    <div className="drawContainer">
+                        <CanvasDraw
+                            ref={canvasRef}
+                            onChange={sendCoordinates}
+                            brushRadius={fontSize}
+                            hideGrid={true}
+                            canvasHeight="80%"
+                            canvasWidth={'100%'}
+                            brushColor={canvasColor}
+                            lazyRadius={0}
+                            hideInterface={true}
+                            immediateLoading={true}
+                            disabled={!isDrawer}
+                        />
+                        {isDrawer ?
+                            <CanvasControls
+                                changeColor={changeColor}
+                                setPaintMode={setPaintMode}
+                                setFontSize={setFontSize}
+                                goBack={handleUndo}
+                                clear={handleClear}
+                            /> : null}
+                    </div>
+                    <Chat
+                        messages={messages}
+                        sendMessage={sendMessage}
+                        placeholderMessage="Adivina el dibujo..."
                     />
-                    {isDrawer ?
-                        <CanvasControls
-                            changeColor={changeColor}
-                            setPaintMode={setPaintMode}
-                            setFontSize={setFontSize}
-                            goBack={handleUndo}
-                            clear={handleClear}
-                        /> : null}
                 </div>
-                <Chat 
-                    messages={messages} 
-                    sendMessage={sendMessage} 
-                    placeholderMessage="Adivina el dibujo..."
-                />
             </div>
         </div>
     );

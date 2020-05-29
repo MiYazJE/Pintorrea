@@ -1,22 +1,29 @@
 
-.user {
-    width: 100%;
-    background-color: #001529;    
-    color: white;
+.wrapUsers {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin-bottom: 10px;
-    padding: 5px;
+    justify-content: space-evenly;
 
-    .userInfo {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    span {
+    .user {
+        width: 100%;
+        background-color: #001529;    
         color: white;
-        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 10px;
+        padding: 5px;
+        border-radius: 4px;
+    
+        .userInfo {
+            display: flex;
+            justify-content: space-evenly;
+        }
+    
+        span {
+            color: white;
+            text-align: center;
+        }
+    
     }
-
 }

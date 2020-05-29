@@ -8,7 +8,7 @@
 
 + A los usuarios que hayan logeado con Google hay que notificarles que necesitan 
 configurar su contraseña.
-+ Enviar un correo de verificación al email, si lo hace el usuario recibirá bonificaciones.
++ Enviar un correo de verificación al email, si el usuario lo verifica recibirá bonificaciones.
 
 ---
 ## Salas
