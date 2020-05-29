@@ -9,6 +9,7 @@ module.exports = {
     userNameExists,
     emailExists,
     uploadPicture,
+    getProfile
 }
 
 async function nameAlreadyRegistered(name) {
@@ -90,5 +91,12 @@ async function uploadPicture(req, res) {
     const { picture, id } = req.body;
     if (!picture || !id) return res.status(401).json({ msg: 'Los campos están vacíos.' });
     const user = await userModel.findOneAndUpdate({ _id: id }, { picture });
+    res.json(user);
+}
+
+async function getProfile(req, res) {
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ msg: 'El id esta vacío.' });
+    const user = await userModel.findById({ _id: id });
     res.json(user);
 }

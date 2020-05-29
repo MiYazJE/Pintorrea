@@ -55,5 +55,6 @@ router.get('/imLogged', (req, res, next) => {
 });
 
 router.post('/uploadPicture', usersCtrl.uploadPicture);
+router.get('/profile/:id', usersCtrl.getProfile);
 
 module.exports = router;
