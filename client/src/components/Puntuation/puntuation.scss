@@ -9,21 +9,31 @@
         background-color: #001529;    
         color: white;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 10px;
         padding: 5px;
         border-radius: 4px;
-    
-        .userInfo {
+        font-size: 1rem;
+        
+        .wrapNamePoints {
             display: flex;
-            justify-content: space-evenly;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-    
-        span {
-            color: white;
-            text-align: center;
-        }
-    
     }
+
+    span {
+        text-align: center;
+    }
+
+    .you {
+        color: #0CFF00;
+    }
+
+}
+
+.guessed {
+    background-color: #E6E82D;
 }

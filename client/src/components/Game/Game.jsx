@@ -144,7 +144,7 @@ const Game = ({ user, room }) => {
                 </div>
                 <div className="inlineItems">
                     <div className="puntuationTable">
-                        {socket ? <Puntuation socket={socket} room={room} /> : null}
+                        {socket ? <Puntuation you={user.name} socket={socket} room={room} /> : null}
                     </div>
                     <div className="drawContainer">
                         <CanvasDraw

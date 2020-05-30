@@ -27,6 +27,8 @@
     width: 100%;
     height: 80%;
     background: url("./img/pintorrea.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .footer {

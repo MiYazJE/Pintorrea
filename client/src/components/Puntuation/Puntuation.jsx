@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { AiOutlineStar } from 'react-icons/ai';
 import FlipMove from 'react-flip-move';
 import './puntuation.scss';
 import UserAvatar from '../UsersAvatars/UserAvatar';
@@ -40,6 +39,8 @@ class Puntuation extends Component {
 
     render() {
         const { users } = this.state;
+        const { you } = this.props;
+        console.log(you)
         return (
             <FlipMove
                 staggerDurationBy="30"
@@ -51,13 +52,17 @@ class Puntuation extends Component {
             >
                 {
                     users ? users.map((user, index) => (
-                        <div key={user.name} className="user">
-                            <div className="userInfo">
-                                <span>{`#${index + 1}`}</span>
-                                <span>{user.name.toUpperCase()}</span>
-                                <UserAvatar {...user} />
+                        <div
+                            key={user.name}
+                            className={`user ${user.guessed ? 'guessed' : ''}`}>
+                            <span className="position">{`#${index + 1}`}</span>
+                            <div className="wrapNamePoints">
+                                <span className={`name ${you === user.name ? 'you' : ''}`}>
+                                    {`${user.name}${user.name === you ? ' (Tú)' : ''}`}
+                                </span>
+                                <span>{user.puntuation} puntos</span>
                             </div>
-                            <span>{user.puntuation}</span>
+                            <UserAvatar className="avatar" {...user} />
                         </div>
                     )) : null}
             </FlipMove >
