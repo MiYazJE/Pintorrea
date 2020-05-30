@@ -9,17 +9,21 @@ import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
 import './game.scss';
+import GameProgress from "../GameProgress/GameProgress";
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
 const INITIAL_FONT_SIZE = 5;
 
+const MAX_SECONDS_CHOOSE_WORD = 15;
+
 let socket;
 
 const Game = ({ user, room }) => {
 
+    const [currentWord, setCurrentWord] = useState(null);
     const [intervalEvent, setIntervalEvent] = useState(null);
-    const [words, setWords] = useState(['pepino', 'rodillo', 'teclado']);
+    const [words, setWords] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [coordinates, setCoordinates] = useState({});
     const [isDrawer, setIsDrawer] = useState(false);
@@ -47,12 +51,13 @@ const Game = ({ user, room }) => {
             setMessages(messages => [...messages, message]);
         });
 
-        socket.on('chooseDrawer', ({ drawer, words }) => {
+        socket.on('chooseDrawer', async ({ drawer, words }) => {
+            canvasRef.current.clear();
             setIsDrawer(drawer === user.name);
             if (drawer !== user.name) return;
-            console.log(words);
+            await new Promise(res => setTimeout(res, 2000));
             setWords(words);
-            startEventChooseWord();
+            startEventChooseWord(words);
         }); 
 
         socket.on('draw', ({ drawer, coordinates }) => {
@@ -63,27 +68,28 @@ const Game = ({ user, room }) => {
         return () => socket.disconnect();
     }, []);
 
-    const startEventChooseWord = async () => {
+    const startEventChooseWord = async (wordsToChoose) => {
         setShowModal(true);
-        let seconds = 0;
+        let currentSeconds = 0;
         let interval = setInterval(() => {
-            console.log(seconds);
-            seconds++;
-            if (seconds === 5) {
+            console.log(currentSeconds);
+            if (currentSeconds === MAX_SECONDS_CHOOSE_WORD) {
                 console.log('timeout, choosing the word randomly...');
-                setShowModal(false);
+                handleChooseWord(wordsToChoose[Math.random() * words.length]);
                 clearInterval(interval);
-                setIntervalEvent(null);
             }
+            currentSeconds++;
         }, 1000);
         setIntervalEvent(interval);
     }
 
     const handleChooseWord = (word) => {
         console.log(word);
+        setCurrentWord(word);
         setShowModal(false);
         clearInterval(intervalEvent);
         setIntervalEvent(null);
+        socket.emit('startDrawing', { word, room, name: user.name });
     }
 
     const setPaintMode = (mode) => {
@@ -112,7 +118,7 @@ const Game = ({ user, room }) => {
         console.log('painting with bucket...');
     }
 
-    const sendMessage = (msg) => socket.emit('sendMessage', { user, msg, room });
+    const sendMessage = (guess) => socket.emit('guessWord', { user, guess, room });
 
     const sendCoordinates = (canvas) => {
         if (!isDrawer) return;
@@ -134,7 +140,7 @@ const Game = ({ user, room }) => {
         <div className="wrapGameContent">
             <div className="gameContent">
                 <div className="gameProgress">
-                    
+                    {socket ? <GameProgress socket={socket} />: null}
                 </div>
                 <div className="inlineItems">
                     <div className="puntuationTable">

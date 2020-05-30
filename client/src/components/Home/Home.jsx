@@ -22,7 +22,7 @@ const Home = ({ user }) => {
 
     useEffect(() => {
         socket = io();
-        socket.emit('requestRooms', {});
+        socket.emit('joinGlobalChat', { user });
 
         socket.on('rooms', ({ rooms }) => {
             rooms.forEach(room => {
@@ -33,8 +33,6 @@ const Home = ({ user }) => {
             console.log(rooms);
             setRooms(rooms);
         });
-
-        socket.emit('sendMessageToAll', { admin: true, user });
 
         socket.on('globalChat', (msg) => {
             setMessages(messages => [...messages, msg]);
