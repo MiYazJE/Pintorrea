@@ -3,6 +3,8 @@ import Chat from '../Chat/Chat';
 import CanvasControls from '../CanvasControls/CanvasControls';
 import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from "react-canvas-draw";
+import ChooseWords from '../ChooseWoords/ChooseWords';
+import CustomModal from '../CustomModal/CustomModal';
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
 import io from 'socket.io-client';
@@ -10,12 +12,15 @@ import './game.scss';
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
-const INITIAL_FONT_SIZE = 10;
+const INITIAL_FONT_SIZE = 5;
 
 let socket;
 
 const Game = ({ user, room }) => {
 
+    const [intervalEvent, setIntervalEvent] = useState(null);
+    const [words, setWords] = useState(['pepino', 'rodillo', 'teclado']);
+    const [showModal, setShowModal] = useState(false);
     const [coordinates, setCoordinates] = useState({});
     const [isDrawer, setIsDrawer] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -42,9 +47,13 @@ const Game = ({ user, room }) => {
             setMessages(messages => [...messages, message]);
         });
 
-        socket.on('startGame', ({ drawer }) => {
+        socket.on('chooseDrawer', ({ drawer, words }) => {
             setIsDrawer(drawer === user.name);
-        });
+            if (drawer !== user.name) return;
+            console.log(words);
+            setWords(words);
+            startEventChooseWord();
+        }); 
 
         socket.on('draw', ({ drawer, coordinates }) => {
             if (drawer === user.name) return;
@@ -53,6 +62,29 @@ const Game = ({ user, room }) => {
 
         return () => socket.disconnect();
     }, []);
+
+    const startEventChooseWord = async () => {
+        setShowModal(true);
+        let seconds = 0;
+        let interval = setInterval(() => {
+            console.log(seconds);
+            seconds++;
+            if (seconds === 5) {
+                console.log('timeout, choosing the word randomly...');
+                setShowModal(false);
+                clearInterval(interval);
+                setIntervalEvent(null);
+            }
+        }, 1000);
+        setIntervalEvent(interval);
+    }
+
+    const handleChooseWord = (word) => {
+        console.log(word);
+        setShowModal(false);
+        clearInterval(intervalEvent);
+        setIntervalEvent(null);
+    }
 
     const setPaintMode = (mode) => {
         if (mode === 'draw') {
@@ -130,6 +162,9 @@ const Game = ({ user, room }) => {
                                 goBack={handleUndo}
                                 clear={handleClear}
                             /> : null}
+                        <CustomModal show={showModal}>
+                            <ChooseWords words={words} chooseWord={handleChooseWord} />
+                        </CustomModal>
                     </div>
                     <Chat
                         messages={messages}

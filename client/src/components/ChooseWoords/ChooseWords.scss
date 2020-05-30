@@ -1,0 +1,22 @@
+
+
+.wrapWords {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+
+    h1 {
+        color: white !important;
+    }
+
+    .title {
+        text-align: center;
+    }
+
+    .words {
+        display: flex;
+        justify-content: space-evenly;
+    }
+}

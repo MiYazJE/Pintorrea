@@ -28,7 +28,12 @@ const Chat = ({ messages, sendMessage, placeholderMessage }) => {
                     renderItem={({ admin, name, msg }, index) => (
                         <span className={`item-${admin ? 'admin' : 'user'}-chat`}>
                             <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
-                                {admin ? msg : `${name.toUpperCase()}: ${msg}`}
+                                {admin ? msg 
+                                    : 
+                                    <span>
+                                        <span style={{fontWeight: 'bold'}}>{name.toUpperCase()}</span>{`: ${msg}`}
+                                    </span>
+                                }
                             </p>
                             <div ref={refScroll} />
                         </span>
