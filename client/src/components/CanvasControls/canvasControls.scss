@@ -1,37 +1,25 @@
 
-.wrapControls {
-    width: 100%;
+.wrapColorPalette {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: auto;
-    background-color: #001529;
-    color: white;
-    font-size: 12px;
+    padding: 20px;
+}
+
+.wrapPaintModes {
+    padding: 20px;
+    min-width: 220px;
+    height: auto;
     display: flex;
     justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-
-    .wrapColorPalette {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        height: auto;
-        padding: 20px;
-    }
-
-    .wrapPaintModes {
-        padding: 20px;
-        min-width: 220px;
-        height: auto;
+    flex-direction: column;
+    
+    .icons {
+        width: 100%;
         display: flex;
         justify-content: space-around;
-        flex-direction: column;
-        
-        .icons {
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
+        align-items: center;
     }
-
 }
+

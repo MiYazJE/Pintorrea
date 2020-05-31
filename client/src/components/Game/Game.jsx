@@ -21,6 +21,10 @@ let socket;
 
 const Game = ({ user, room }) => {
 
+    const [actualWord, setActualWord] = useState('');
+    const [drawerName, setDrawerName] = useState('');
+    const [showChooseWord, setShowChooseWord] = useState(false);
+    const [showUserIsChoosing, setShowUserIsChoosing] = useState(false);
     const [currentWord, setCurrentWord] = useState(null);
     const [intervalEvent, setIntervalEvent] = useState(null);
     const [words, setWords] = useState([]);
@@ -54,15 +58,26 @@ const Game = ({ user, room }) => {
         socket.on('chooseDrawer', async ({ drawer, words }) => {
             canvasRef.current.clear();
             setIsDrawer(drawer === user.name);
-            if (drawer !== user.name) return;
+            if (drawer !== user.name) {
+                showDrawerIsChoosing(drawer);
+                return;
+            }
+            setShowChooseWord(true);
             await new Promise(res => setTimeout(res, 2000));
             setWords(words);
             startEventChooseWord(words);
-        }); 
+        });
 
         socket.on('draw', ({ drawer, coordinates }) => {
             if (drawer === user.name) return;
             canvasRef.current.loadSaveData(coordinates);
+        });
+
+        socket.on('ready', ({ word }) => {
+            setShowModal(false);
+            setShowUserIsChoosing(false);
+            setShowChooseWord(false);
+            setActualWord(word);
         });
 
         return () => socket.disconnect();
@@ -90,6 +105,12 @@ const Game = ({ user, room }) => {
         clearInterval(intervalEvent);
         setIntervalEvent(null);
         socket.emit('startDrawing', { word, room, name: user.name });
+    }
+
+    const showDrawerIsChoosing = (drawer) => {
+        setDrawerName(drawer);
+        setShowUserIsChoosing(true);
+        setShowModal(true);
     }
 
     const setPaintMode = (mode) => {
@@ -140,37 +161,51 @@ const Game = ({ user, room }) => {
         <div className="wrapGameContent">
             <div className="gameContent">
                 <div className="gameProgress">
-                    {socket ? <GameProgress socket={socket} />: null}
+                    {socket ? 
+                        <GameProgress 
+                            socket={socket} 
+                            drawer={drawerName} 
+                            you={user.name} 
+                            word={actualWord} 
+                        /> 
+                    : null}
                 </div>
                 <div className="inlineItems">
                     <div className="puntuationTable">
                         {socket ? <Puntuation you={user.name} socket={socket} room={room} /> : null}
                     </div>
                     <div className="drawContainer">
-                        <CanvasDraw
-                            ref={canvasRef}
-                            onChange={sendCoordinates}
-                            brushRadius={fontSize}
-                            hideGrid={true}
-                            canvasHeight="80%"
-                            canvasWidth={'100%'}
-                            brushColor={canvasColor}
-                            lazyRadius={0}
-                            hideInterface={true}
-                            immediateLoading={true}
-                            disabled={!isDrawer}
+                        <div className="wrapCanvas">
+                            <CanvasDraw
+                                ref={canvasRef}
+                                onChange={sendCoordinates}
+                                brushRadius={fontSize}
+                                hideGrid={true}
+                                canvasHeight="100%"
+                                canvasWidth="100%"
+                                brushColor={canvasColor}
+                                lazyRadius={0}
+                                hideInterface={true}
+                                immediateLoading={true}
+                                disabled={!isDrawer}
+                            />
+                            <CustomModal show={showModal}>
+                                {showChooseWord ? <ChooseWords words={words} chooseWord={handleChooseWord} /> : null}
+                                {showUserIsChoosing ? 
+                                    <div style={{height: '100%', display: 'flex', alignItems: 'center'}}>
+                                        <h1 style={{color: 'white'}}>{drawerName} esta escogiendo una palabra!</h1>
+                                    </div> 
+                                : null}
+                            </CustomModal>
+                        </div>
+                        <CanvasControls
+                            show={isDrawer}
+                            changeColor={changeColor}
+                            setPaintMode={setPaintMode}
+                            setFontSize={setFontSize}
+                            goBack={handleUndo}
+                            clear={handleClear}
                         />
-                        {isDrawer ?
-                            <CanvasControls
-                                changeColor={changeColor}
-                                setPaintMode={setPaintMode}
-                                setFontSize={setFontSize}
-                                goBack={handleUndo}
-                                clear={handleClear}
-                            /> : null}
-                        <CustomModal show={showModal}>
-                            <ChooseWords words={words} chooseWord={handleChooseWord} />
-                        </CustomModal>
                     </div>
                     <Chat
                         messages={messages}

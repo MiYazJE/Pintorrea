@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AiOutlineStar } from 'react-icons/ai';
+import { TiPencil } from 'react-icons/ti';
 import FlipMove from 'react-flip-move';
 import './puntuation.scss';
 import UserAvatar from '../UsersAvatars/UserAvatar';
@@ -56,6 +56,7 @@ class Puntuation extends Component {
                             key={user.name}
                             className={`user ${user.guessed ? 'guessed' : ''}`}>
                             <span className="position">{`#${index + 1}`}</span>
+                            { user.drawer ? <TiPencil className="drawer" /> : null }
                             <div className="wrapNamePoints">
                                 <span className={`name ${you === user.name ? 'you' : ''}`}>
                                     {`${user.name}${user.name === you ? ' (Tú)' : ''}`}

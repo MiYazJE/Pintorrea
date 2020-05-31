@@ -32,6 +32,13 @@
         color: #0CFF00;
     }
 
+    .drawer {
+        position: absolute;
+        left: 50px;
+        top: 52%;
+        transform: translate(-52%, -50px);
+    }
+
 }
 
 .guessed {

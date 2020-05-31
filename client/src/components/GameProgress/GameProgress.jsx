@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './gameProgress.scss';
 
-const GameProgress = ({ socket }) => {
+const GameProgress = ({ socket, drawer, you, word }) => {
     const [time, setTime] = useState('');
 
     useEffect(() => {
@@ -12,7 +12,10 @@ const GameProgress = ({ socket }) => {
 
     return(
         <div className="wrapGameProgress">
-            <h1>{time}</h1>
+            <h1 className="time">{time}</h1>
+            <div className="wrapContent">
+                <h1 className="word">{word.toUpperCase()}</h1>
+            </div>
         </div>
     );
 

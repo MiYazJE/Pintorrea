@@ -1,8 +1,22 @@
 
 .wrapGameProgress {
+    display: flex;
+    padding: 0px 10px;
     
-    h1 {
+    .time {
         color: white;
         text-align: center;
+        width: 50px;
+    }
+    
+    .wrapContent {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        .word {
+            color: white;
+        }
     }
 }
