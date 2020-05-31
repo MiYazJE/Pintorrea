@@ -39,7 +39,7 @@ class Puntuation extends Component {
 
     render() {
         const { users } = this.state;
-        const { you } = this.props;
+        const { you, drawer } = this.props;
         console.log(you)
         return (
             <FlipMove
@@ -54,16 +54,17 @@ class Puntuation extends Component {
                     users ? users.map((user, index) => (
                         <div
                             key={user.name}
-                            className={`user ${user.guessed ? 'guessed' : ''}`}>
-                            <span className="position">{`#${index + 1}`}</span>
-                            { user.drawer ? <TiPencil className="drawer" /> : null }
-                            <div className="wrapNamePoints">
-                                <span className={`name ${you === user.name ? 'you' : ''}`}>
-                                    {`${user.name}${user.name === you ? ' (Tú)' : ''}`}
-                                </span>
-                                <span>{user.puntuation} puntos</span>
-                            </div>
-                            <UserAvatar className="avatar" {...user} />
+                            className={`user ${user.guessed ? 'guessed' : ''}`}
+                            >
+                                <span className="position">{`#${index + 1}`}</span>
+                                { user.name === drawer ? <TiPencil size={30} className="drawer" /> : null }
+                                <div className="wrapNamePoints">
+                                    <span className={`name ${you === user.name ? 'you' : ''}`}>
+                                        {`${user.name}${user.name === you ? ' (Tú)' : ''}`}
+                                    </span>
+                                    <span>{user.puntuation} puntos</span>
+                                </div>
+                                <UserAvatar className="avatar" {...user} />
                         </div>
                     )) : null}
             </FlipMove >

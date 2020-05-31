@@ -3,7 +3,7 @@ import Chat from '../Chat/Chat';
 import CanvasControls from '../CanvasControls/CanvasControls';
 import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from "react-canvas-draw";
-import ChooseWords from '../ChooseWoords/ChooseWords';
+import ChooseWords from '../ChooseWords/ChooseWords';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
@@ -58,6 +58,7 @@ const Game = ({ user, room }) => {
         socket.on('chooseDrawer', async ({ drawer, words }) => {
             canvasRef.current.clear();
             setIsDrawer(drawer === user.name);
+            setDrawerName(drawer);
             if (drawer !== user.name) {
                 showDrawerIsChoosing(drawer);
                 return;
@@ -108,7 +109,6 @@ const Game = ({ user, room }) => {
     }
 
     const showDrawerIsChoosing = (drawer) => {
-        setDrawerName(drawer);
         setShowUserIsChoosing(true);
         setShowModal(true);
     }
@@ -172,7 +172,13 @@ const Game = ({ user, room }) => {
                 </div>
                 <div className="inlineItems">
                     <div className="puntuationTable">
-                        {socket ? <Puntuation you={user.name} socket={socket} room={room} /> : null}
+                        {socket ? 
+                        <Puntuation 
+                            drawer={drawerName} 
+                            you={user.name} 
+                            socket={socket} 
+                            room={room} /> 
+                        : null}
                     </div>
                     <div className="drawContainer">
                         <div className="wrapCanvas">
@@ -192,7 +198,7 @@ const Game = ({ user, room }) => {
                             <CustomModal show={showModal}>
                                 {showChooseWord ? <ChooseWords words={words} chooseWord={handleChooseWord} /> : null}
                                 {showUserIsChoosing ? 
-                                    <div style={{height: '100%', display: 'flex', alignItems: 'center'}}>
+                                    <div style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                                         <h1 style={{color: 'white'}}>{drawerName} esta escogiendo una palabra!</h1>
                                     </div> 
                                 : null}

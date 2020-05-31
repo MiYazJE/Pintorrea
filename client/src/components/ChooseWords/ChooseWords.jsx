@@ -7,8 +7,8 @@ const ChooseWords = ({ words, chooseWord }) => {
         <div className="wrapWords">
             <h1 className="title">Escoge una palabra</h1>
             <div className="words">
-                {words ? words.map(word => (
-                    <Button type="primary" onClick={() => chooseWord(word)}>
+                {words ? words.map((word, i) => (
+                    <Button key={i} type="primary" onClick={() => chooseWord(word)}>
                         {word}
                     </Button>
                 )) : null}
