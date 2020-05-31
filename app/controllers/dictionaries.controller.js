@@ -1,7 +1,7 @@
 const dictionariesModel = require('../models/dictionaries.model');
 const { scrapWords } = require('../lib/dictionariesWords');
 
-module.exports = { scrapSpanishBasic, topics };
+module.exports = { scrapSpanishBasic, topics, get };
 
 async function scrapSpanishBasic(req, res) {
     const dic = await dictionariesModel.findOne({ topic: 'Palabras básicas' });
@@ -22,4 +22,9 @@ async function topics(req, res) {
     const dictionaries = await dictionariesModel.find({});
     const topics = dictionaries.map(({ topic }) => topic);
     res.json({ topics });
+}
+
+async function get(req, res) {
+    const dictionaries = await dictionariesModel.find({});
+    res.json({ dictionaries });
 }

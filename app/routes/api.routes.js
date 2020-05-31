@@ -15,5 +15,6 @@ router.get('/auth/google/callback', passport.authenticate('google'), googleAuthC
 
 router.get('/dictionary/scrap/spanish', dictionaryCtrl.scrapSpanishBasic);
 router.get('/dictionary/topics',        dictionaryCtrl.topics);
+router.get('/dictionary/all',           dictionaryCtrl.get);
 
 module.exports = router;
