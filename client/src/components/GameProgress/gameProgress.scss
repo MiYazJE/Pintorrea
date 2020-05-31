@@ -17,6 +17,8 @@
         
         .word {
             color: white;
+            user-select: none;
+            letter-spacing: 10px;
         }
     }
 }

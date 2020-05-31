@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import './gameProgress.scss';
 
-const GameProgress = ({ socket, drawer, you, word }) => {
+const GameProgress = ({ socket, drawer, you, realWord }) => {
     const [time, setTime] = useState('');
+    const [encryptedWord, setEncryptedWord] = useState('');
 
     useEffect(() => {
-        socket.on('time', ({ time }) => {
+        socket.on('progress', ({ time, encryptedWord }) => {
+            console.log(time, encryptedWord)
             setTime(time);
+            setEncryptedWord(encryptedWord);
         })
     }, []);
 
@@ -14,7 +17,7 @@ const GameProgress = ({ socket, drawer, you, word }) => {
         <div className="wrapGameProgress">
             <h1 className="time">{time}</h1>
             <div className="wrapContent">
-                <h1 className="word">{word.toUpperCase()}</h1>
+                <h1 className="word">{drawer === you ? realWord : encryptedWord}</h1>
             </div>
         </div>
     );

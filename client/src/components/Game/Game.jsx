@@ -166,7 +166,7 @@ const Game = ({ user, room }) => {
                             socket={socket} 
                             drawer={drawerName} 
                             you={user.name} 
-                            word={actualWord} 
+                            realWord={actualWord} 
                         /> 
                     : null}
                 </div>
