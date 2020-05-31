@@ -4,7 +4,7 @@ import { Form, Input, List } from 'antd';
 
 const MESSAGE_BACKGROUND = '#03213E';
 
-const Chat = ({ messages, sendMessage, placeholderMessage }) => {
+const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer }) => {
     const [form] = Form.useForm();
     const refScroll = useRef(null);
 
@@ -25,8 +25,8 @@ const Chat = ({ messages, sendMessage, placeholderMessage }) => {
             <div className="text-chat">
                 <List
                     dataSource={messages}
-                    renderItem={({ admin, name, msg }, index) => (
-                        <span className={`item-${admin ? 'admin' : 'user'}-chat`}>
+                    renderItem={({ admin, name, msg, privateMsg }, index) => (
+                        <span className={`item-${admin ? 'admin' : privateMsg ? 'private' : 'user'}-chat`}>
                             <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
                                 {admin ? msg 
                                     : 

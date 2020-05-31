@@ -3,13 +3,15 @@ import Chat from '../Chat/Chat';
 import CanvasControls from '../CanvasControls/CanvasControls';
 import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from "react-canvas-draw";
-import ChooseWords from '../ChooseWords/ChooseWords';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
+import { readGame } from '../../Redux/Reducers/gameReducer';
+import { setActualWord, setGuessed, resetGame, setDrawerName, setIsDrawer } from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
 import GameProgress from "../GameProgress/GameProgress";
+import ShowInteraction from "./ShowInteraction";
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
@@ -19,18 +21,14 @@ const MAX_SECONDS_CHOOSE_WORD = 15;
 
 let socket;
 
-const Game = ({ user, room }) => {
+const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawerName, setIsDrawer }) => {
 
-    const [actualWord, setActualWord] = useState('');
-    const [drawerName, setDrawerName] = useState('');
-    const [showChooseWord, setShowChooseWord] = useState(false);
-    const [showUserIsChoosing, setShowUserIsChoosing] = useState(false);
-    const [currentWord, setCurrentWord] = useState(null);
+    const [usersPuntuation, setUsersPuntuation] = useState([]);
+    const [interaction, setInteraction] = useState('');
     const [intervalEvent, setIntervalEvent] = useState(null);
     const [words, setWords] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [coordinates, setCoordinates] = useState({});
-    const [isDrawer, setIsDrawer] = useState(false);
     const [messages, setMessages] = useState([]);
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
     const [previousColor, setPreviousColor] = useState(canvasColor);
@@ -46,16 +44,25 @@ const Game = ({ user, room }) => {
             }
         });
     }, []);
-
+    
     useEffect(() => {
         socket = io();
         socket.emit('joinRoom', { user, roomName: room });
-
+        
         socket.on('message', (message) => {
+            console.log(message);
+            console.log(game.isDrawer, game.guessed)
+            if (
+                (message.privateMsg && !game.isDrawer) ||
+                (message.privateMsg && !game.guessed)
+            ) {
+                return;
+            } 
             setMessages(messages => [...messages, message]);
         });
 
         socket.on('chooseDrawer', async ({ drawer, words }) => {
+            resetGame();
             canvasRef.current.clear();
             setIsDrawer(drawer === user.name);
             setDrawerName(drawer);
@@ -63,8 +70,8 @@ const Game = ({ user, room }) => {
                 showDrawerIsChoosing(drawer);
                 return;
             }
-            setShowChooseWord(true);
-            await new Promise(res => setTimeout(res, 2000));
+            setInteraction('chooseWord');
+            // await new Promise(res => setTimeout(res, 2000));
             setWords(words);
             startEventChooseWord(words);
         });
@@ -76,9 +83,19 @@ const Game = ({ user, room }) => {
 
         socket.on('ready', ({ word }) => {
             setShowModal(false);
-            setShowUserIsChoosing(false);
-            setShowChooseWord(false);
             setActualWord(word);
+        });
+
+        socket.on('puntuationTable', ({ users }) => {
+            console.log(users);
+            setUsersPuntuation(users);
+            setInteraction('puntuationTable');
+            setShowModal(true);
+        }); 
+
+        socket.on('setGuessed', () => { 
+            console.log('setting guessed true...');
+            setGuessed()
         });
 
         return () => socket.disconnect();
@@ -101,15 +118,14 @@ const Game = ({ user, room }) => {
 
     const handleChooseWord = (word) => {
         console.log(word);
-        setCurrentWord(word);
         setShowModal(false);
         clearInterval(intervalEvent);
         setIntervalEvent(null);
         socket.emit('startDrawing', { word, room, name: user.name });
     }
 
-    const showDrawerIsChoosing = (drawer) => {
-        setShowUserIsChoosing(true);
+    const showDrawerIsChoosing = () => {
+        setInteraction('userChoosing');
         setShowModal(true);
     }
 
@@ -142,7 +158,7 @@ const Game = ({ user, room }) => {
     const sendMessage = (guess) => socket.emit('guessWord', { user, guess, room });
 
     const sendCoordinates = (canvas) => {
-        if (!isDrawer) return;
+        if (!game.isDrawer) return;
         const coordinates = canvas.getSaveData();
         socket.emit('sendDraw', { drawer: user.name, coordinates, room });
     }
@@ -164,20 +180,16 @@ const Game = ({ user, room }) => {
                     {socket ? 
                         <GameProgress 
                             socket={socket} 
-                            drawer={drawerName} 
-                            you={user.name} 
-                            realWord={actualWord} 
                         /> 
                     : null}
                 </div>
                 <div className="inlineItems">
                     <div className="puntuationTable">
                         {socket ? 
-                        <Puntuation 
-                            drawer={drawerName} 
-                            you={user.name} 
-                            socket={socket} 
-                            room={room} /> 
+                            <Puntuation 
+                                socket={socket} 
+                                room={room} 
+                            /> 
                         : null}
                     </div>
                     <div className="drawContainer">
@@ -193,19 +205,19 @@ const Game = ({ user, room }) => {
                                 lazyRadius={0}
                                 hideInterface={true}
                                 immediateLoading={true}
-                                disabled={!isDrawer}
+                                disabled={!game.isDrawer}
                             />
                             <CustomModal show={showModal}>
-                                {showChooseWord ? <ChooseWords words={words} chooseWord={handleChooseWord} /> : null}
-                                {showUserIsChoosing ? 
-                                    <div style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                        <h1 style={{color: 'white'}}>{drawerName} esta escogiendo una palabra!</h1>
-                                    </div> 
-                                : null}
+                                <ShowInteraction 
+                                    view={interaction}
+                                    chooseWord={handleChooseWord}
+                                    words={words}
+                                    users={usersPuntuation}
+                                />
                             </CustomModal>
                         </div>
                         <CanvasControls
-                            show={isDrawer}
+                            show={game.isDrawer}
                             changeColor={changeColor}
                             setPaintMode={setPaintMode}
                             setFontSize={setFontSize}
@@ -225,7 +237,17 @@ const Game = ({ user, room }) => {
 }
 
 const mapStateToProps = state => {
-    return { user: readUser(state), room: readRoom(state) }
+    return { 
+        user: readUser(state), 
+        room: readRoom(state), 
+        game: readGame(state)
+    }
 }
 
-export default connect(mapStateToProps, {})(Game);
+export default connect(mapStateToProps, { 
+    setActualWord, 
+    setGuessed, 
+    setDrawerName, 
+    setIsDrawer,
+    resetGame 
+})(Game);
