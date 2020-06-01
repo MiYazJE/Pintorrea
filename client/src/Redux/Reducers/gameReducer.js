@@ -38,6 +38,10 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-export const readGame = (state) => state.gameReducer;
+
+export const readIsDrawer   = (state) => state.gameReducer.isDrawer;
+export const readDrawerName = (state) => state.gameReducer.drawerName;
+export const readGuessed    = (state) => state.gameReducer.guessed;
+export const readActualWord = (state) => state.gameReducer.actualWord;
 
 export default reducer;

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './gameProgress.scss';
 import { connect } from "react-redux";
 import { readUser } from '../../Redux/Reducers/UserReducer';
-import { readGame } from '../../Redux/Reducers/gameReducer';
-const GameProgress = ({ socket, user, game: { actualWord, drawerName } }) => {
+import { readActualWord, readDrawerName } from '../../Redux/Reducers/gameReducer';
+
+const GameProgress = ({ socket, user, actualWord, drawerName }) => {
     const [time, setTime] = useState('');
     const [encryptedWord, setEncryptedWord] = useState('');
     
@@ -15,12 +16,11 @@ const GameProgress = ({ socket, user, game: { actualWord, drawerName } }) => {
         })
     }, []);
     
-    const you = user.name;
     return(
         <div className="wrapGameProgress">
             <h1 className="time">{time}</h1>
             <div className="wrapContent">
-                <h1 className="word">{drawerName === you ? actualWord : encryptedWord}</h1>
+                <h1 className="word">{drawerName === user.name ? actualWord : encryptedWord}</h1>
             </div>
         </div>
     );
@@ -29,9 +29,10 @@ const GameProgress = ({ socket, user, game: { actualWord, drawerName } }) => {
 
 const mapStateToProps = state => {
     return { 
-        user: readUser(state), 
-        game: readGame(state)
+        user      : readUser(state), 
+        drawerName: readDrawerName(state),
+        actualWord: readActualWord(state)
     }
 }
 
-export default connect(mapStateToProps, { readGame })(GameProgress);
+export default connect(mapStateToProps, { })(GameProgress);

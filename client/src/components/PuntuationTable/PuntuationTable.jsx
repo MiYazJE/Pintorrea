@@ -1,9 +1,9 @@
 import React from 'react';
 import './PuntuationTable.scss';
 import { connect } from "react-redux";
-import { readGame } from '../../Redux/Reducers/gameReducer';
+import { readActualWord } from '../../Redux/Reducers/gameReducer';
 
-const PuntuationTable = ({ users, game: { actualWord } }) => {
+const PuntuationTable = ({ users, actualWord }) => {
 
     return (
         <div className="wrapPuntuationTable">
@@ -23,7 +23,7 @@ const PuntuationTable = ({ users, game: { actualWord } }) => {
 
 const mapStateToProps = state => {
     return { 
-        game: readGame(state)
+        readActualWord: readActualWord(state)
     }
 }
 

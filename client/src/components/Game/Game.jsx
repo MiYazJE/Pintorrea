@@ -6,7 +6,7 @@ import CanvasDraw from "react-canvas-draw";
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
-import { readGame } from '../../Redux/Reducers/gameReducer';
+import { readIsDrawer, readDrawerName, readGuessed, readActualWord } from '../../Redux/Reducers/gameReducer';
 import { setActualWord, setGuessed, resetGame, setDrawerName, setIsDrawer } from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
@@ -21,7 +21,11 @@ const MAX_SECONDS_CHOOSE_WORD = 15;
 
 let socket;
 
-const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawerName, setIsDrawer }) => {
+const Game = ({ 
+    drawerName, guessed, actualWord, isDrawer, 
+    user, room, setActualWord, setGuessed, 
+    setDrawerName, setIsDrawer, resetGame
+}) => {
 
     const [usersPuntuation, setUsersPuntuation] = useState([]);
     const [interaction, setInteraction] = useState('');
@@ -43,21 +47,14 @@ const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawe
                 handleUndo();
             }
         });
+
+        socket = io();
+        socket.emit('joinRoom', { user, roomName: room });
     }, []);
     
     useEffect(() => {
-        socket = io();
-        socket.emit('joinRoom', { user, roomName: room });
-        
+        console.log('socket events')
         socket.on('message', (message) => {
-            console.log(message);
-            console.log(game.isDrawer, game.guessed)
-            if (
-                (message.privateMsg && !game.isDrawer) ||
-                (message.privateMsg && !game.guessed)
-            ) {
-                return;
-            } 
             setMessages(messages => [...messages, message]);
         });
 
@@ -158,7 +155,7 @@ const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawe
     const sendMessage = (guess) => socket.emit('guessWord', { user, guess, room });
 
     const sendCoordinates = (canvas) => {
-        if (!game.isDrawer) return;
+        if (!isDrawer) return;
         const coordinates = canvas.getSaveData();
         socket.emit('sendDraw', { drawer: user.name, coordinates, room });
     }
@@ -205,7 +202,7 @@ const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawe
                                 lazyRadius={0}
                                 hideInterface={true}
                                 immediateLoading={true}
-                                disabled={!game.isDrawer}
+                                disabled={!isDrawer}
                             />
                             <CustomModal show={showModal}>
                                 <ShowInteraction 
@@ -217,7 +214,7 @@ const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawe
                             </CustomModal>
                         </div>
                         <CanvasControls
-                            show={game.isDrawer}
+                            show={isDrawer}
                             changeColor={changeColor}
                             setPaintMode={setPaintMode}
                             setFontSize={setFontSize}
@@ -238,9 +235,12 @@ const Game = ({ user, room, game, setActualWord, resetGame, setGuessed, setDrawe
 
 const mapStateToProps = state => {
     return { 
-        user: readUser(state), 
-        room: readRoom(state), 
-        game: readGame(state)
+        user      : readUser(state), 
+        room      : readRoom(state), 
+        isDrawer  : readIsDrawer(state), 
+        drawerName: readDrawerName(state), 
+        guessed   : readGuessed(state), 
+        actualWord: readActualWord(state)
     }
 }
 

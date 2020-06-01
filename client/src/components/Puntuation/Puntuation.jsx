@@ -5,7 +5,7 @@ import './puntuation.scss';
 import UserAvatar from '../UsersAvatars/UserAvatar';
 import { connect } from "react-redux";
 import { readUser } from '../../Redux/Reducers/UserReducer';
-import { readGame } from '../../Redux/Reducers/gameReducer';
+import { readDrawerName } from '../../Redux/Reducers/gameReducer';
 
 /**
  * It uses state components because FlipMove library seems to require it to work properly
@@ -40,9 +40,8 @@ class Puntuation extends Component {
     }
 
     render() {
-        const { users } = this.state;
+        const { users, drawerName } = this.state;
         const you = this.props.user.name;
-        const { drawerName } = this.props.game;
         return (
             <FlipMove
                 staggerDurationBy="30"
@@ -77,8 +76,8 @@ class Puntuation extends Component {
 
 const mapStateToProps = state => {
     return { 
-        user: readUser(state), 
-        game: readGame(state)
+        user      : readUser(state), 
+        drawerName: readDrawerName(state)
     }
 }
 

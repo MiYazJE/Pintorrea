@@ -3,9 +3,9 @@ import ChooseWords from '../ChooseWords/ChooseWords';
 import PuntuationTable from '../PuntuationTable/PuntuationTable';
 import { connect } from "react-redux";
 import { readUser } from '../../Redux/Reducers/UserReducer';
-import { readGame } from '../../Redux/Reducers/gameReducer';
+import { readDrawerName } from '../../Redux/Reducers/gameReducer';
 
-const ShowInteraction = ({ view, chooseWord, words, game: { drawerName }, users }) => {
+const ShowInteraction = ({ view, chooseWord, words, drawerName, users }) => {
 
     switch(view) {
         case 'userChoosing':
@@ -30,8 +30,8 @@ const ShowInteraction = ({ view, chooseWord, words, game: { drawerName }, users 
 
 const mapStateToProps = state => {
     return { 
-        user: readUser(state), 
-        game: readGame(state)
+        user      : readUser(state), 
+        drawerName: readDrawerName(state)
     }
 }
 
