@@ -29,3 +29,13 @@ export const resetMessages = () => ({
 export const resetGame = () => ({
     type: 'RESET_GAME'
 });
+
+export const setCurrentRound = (currentRound) => ({
+    type: 'SET_CURRENT_ROUND',
+    currentRound
+});
+
+export const setMaxRound = (maxRound) => ({
+    type: 'SET_MAX_ROUND',
+    maxRound
+})

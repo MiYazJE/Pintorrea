@@ -40,7 +40,8 @@ class Puntuation extends Component {
     }
 
     render() {
-        const { users, drawerName } = this.state;
+        const { users } = this.state;
+        const { drawerName } = this.props;
         const you = this.props.user.name;
         return (
             <FlipMove

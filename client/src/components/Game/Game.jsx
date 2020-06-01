@@ -13,7 +13,8 @@ import {
 } from '../../Redux/Reducers/gameReducer';
 import { 
     setActualWord, setGuessed, resetGame,
-    setDrawerName, setIsDrawer, addMessage, resetMessages 
+    setDrawerName, setIsDrawer, addMessage, 
+    resetMessages, setCurrentRound, setMaxRound
 } from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
@@ -29,10 +30,9 @@ const MAX_SECONDS_CHOOSE_WORD = 15;
 let socket;
 
 const Game = ({ 
-    drawerName, guessed, actualWord, isDrawer, 
-    user, room, setActualWord, setGuessed, 
+    isDrawer, user, room, setActualWord, setGuessed, 
     setDrawerName, setIsDrawer, resetGame, 
-    messages, addMessage
+    addMessage, setCurrentRound, setMaxRound
 }) => {
 
     const [usersPuntuation, setUsersPuntuation] = useState([]);
@@ -86,13 +86,17 @@ const Game = ({
             canvasRef.current.loadSaveData(coordinates);
         });
 
-        socket.on('ready', ({ word }) => {
+        socket.on('ready', ({ word, currentRound, maxRound }) => {
+            console.log(currentRound, maxRound)
             setShowModal(false);
+            setCurrentRound(currentRound);
+            setMaxRound(maxRound);
             setActualWord(word);
         });
 
         socket.on('puntuationTable', ({ users }) => {
             console.log(users);
+            resetGame();
             setUsersPuntuation(users);
             setInteraction('puntuationTable');
             setShowModal(true);
@@ -259,5 +263,7 @@ export default connect(mapStateToProps, {
     setIsDrawer,
     addMessage,
     resetGame,
-    resetMessages
+    resetMessages,
+    setCurrentRound, 
+    setMaxRound
 })(Game);

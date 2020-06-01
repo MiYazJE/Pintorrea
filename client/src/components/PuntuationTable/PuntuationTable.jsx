@@ -5,7 +5,6 @@ import { readActualWord } from '../../Redux/Reducers/gameReducer';
 
 const PuntuationTable = ({ users, actualWord }) => {
 
-    console.log(users);
     return (
         <div className="wrapPuntuationTable">
             <span className="wordWas">La palabra era: {actualWord}</span>
@@ -13,7 +12,9 @@ const PuntuationTable = ({ users, actualWord }) => {
                 {users ? users.map(user => (
                     <div key={user.name} className="userPuntuation">
                         <span className="name">{user.name}</span>
-                        <span className="points">{user.puntuationRound}</span>
+                        <span className="points" style={{color: user.puntuationRound === 0 ? 'red' : null}}>
+                            {user.puntuationRound}
+                        </span>
                     </div>
                 )) : null}
             </div>
@@ -24,7 +25,7 @@ const PuntuationTable = ({ users, actualWord }) => {
 
 const mapStateToProps = state => {
     return { 
-        readActualWord: readActualWord(state)
+        actualWord: readActualWord(state)
     }
 }
 

@@ -1,13 +1,14 @@
 const initialState = {
-    drawerName: null,
-    guessed: false,
-    actualWord: null,
-    isDrawer: false,
-    messages: []
+    drawerName  : null,
+    currentRound: null,
+    maxRound    : null,
+    actualWord  : null,
+    guessed     : false,
+    isDrawer    : false,
+    messages    : [],
 };
 
 const reducer = (state = initialState, action) => {
-    console.log(action)
     switch (action.type) {
         case 'SET_DRAWER_NAME':
             return {
@@ -38,6 +39,16 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 messages: [...state.messages, action.message]
             };
+        case 'SET_CURRENT_ROUND': 
+            return {
+                ...state,
+                currentRound: action.currentRound
+            };
+        case 'SET_MAX_ROUND': 
+            return {
+                ...state,
+                maxRound: action.maxRound
+            };
         case 'RESET_MESSAGES':
             return {
                 ...state,
@@ -45,7 +56,10 @@ const reducer = (state = initialState, action) => {
             };
         case 'RESET_GAME':
             return {
-                ...initialState
+                ...initialState,
+                messages: [...state.messages],
+                currentRound: state.currentRound,
+                maxRound: state.maxRound
             };
         default:
             return {
@@ -54,11 +68,12 @@ const reducer = (state = initialState, action) => {
     }
 };
 
-
-export const readIsDrawer   = (state) => state.gameReducer.isDrawer;
-export const readDrawerName = (state) => state.gameReducer.drawerName;
-export const readGuessed    = (state) => state.gameReducer.guessed;
-export const readActualWord = (state) => state.gameReducer.actualWord;
-export const readMessages   = (state) => state.gameReducer.messages;
+export const readIsDrawer     = (state) => state.gameReducer.isDrawer;
+export const readDrawerName   = (state) => state.gameReducer.drawerName;
+export const readGuessed      = (state) => state.gameReducer.guessed;
+export const readActualWord   = (state) => state.gameReducer.actualWord;
+export const readMessages     = (state) => state.gameReducer.messages;
+export const readMaxRound     = (state) => state.gameReducer.maxRound;
+export const readCurrentRound = (state) => state.gameReducer.currentRound;
 
 export default reducer;
