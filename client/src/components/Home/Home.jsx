@@ -51,6 +51,11 @@ const Home = ({ user, messages, resetMessages, addMessage }) => {
         socket.emit('sendMessageToAll', { user, msg });
     }
 
+    const handleJoinRoom = () => {
+        history.push('/game');
+        resetMessages();
+    }
+
     return (
         <Layout className="layout">
             <Nav />
@@ -58,7 +63,7 @@ const Home = ({ user, messages, resetMessages, addMessage }) => {
                 <div className="main-home">
                     <Rooms 
                         rooms={rooms} 
-                        setRedirect={() => history.push('/game')} 
+                        setRedirect={handleJoinRoom} 
                     />
                     <Chat 
                         messages={messages} 
