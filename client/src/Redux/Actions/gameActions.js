@@ -17,6 +17,15 @@ export const setIsDrawer = (isDrawer) => ({
     isDrawer
 });
 
+export const addMessage = (message) => ({
+    type: 'ADD_MESSAGE',
+    message
+})
+
+export const resetMessages = () => ({
+    type: 'RESET_MESSAGES',
+});
+
 export const resetGame = () => ({
     type: 'RESET_GAME'
 });

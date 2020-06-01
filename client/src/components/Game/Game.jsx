@@ -6,8 +6,15 @@ import CanvasDraw from "react-canvas-draw";
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from "react-redux";
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
-import { readIsDrawer, readDrawerName, readGuessed, readActualWord } from '../../Redux/Reducers/gameReducer';
-import { setActualWord, setGuessed, resetGame, setDrawerName, setIsDrawer } from '../../Redux/Actions/gameActions';
+import { 
+    readIsDrawer, readMessages,
+    readDrawerName, readGuessed,
+    readActualWord 
+} from '../../Redux/Reducers/gameReducer';
+import { 
+    setActualWord, setGuessed, resetGame,
+    setDrawerName, setIsDrawer, addMessage, resetMessages 
+} from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
 import GameProgress from "../GameProgress/GameProgress";
@@ -24,7 +31,8 @@ let socket;
 const Game = ({ 
     drawerName, guessed, actualWord, isDrawer, 
     user, room, setActualWord, setGuessed, 
-    setDrawerName, setIsDrawer, resetGame
+    setDrawerName, setIsDrawer, resetGame, 
+    messages, addMessage
 }) => {
 
     const [usersPuntuation, setUsersPuntuation] = useState([]);
@@ -33,7 +41,6 @@ const Game = ({
     const [words, setWords] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [coordinates, setCoordinates] = useState({});
-    const [messages, setMessages] = useState([]);
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
     const [previousColor, setPreviousColor] = useState(canvasColor);
     const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
@@ -50,12 +57,13 @@ const Game = ({
 
         socket = io();
         socket.emit('joinRoom', { user, roomName: room });
+        resetMessages();
     }, []);
     
     useEffect(() => {
         console.log('socket events')
         socket.on('message', (message) => {
-            setMessages(messages => [...messages, message]);
+            addMessage(message);
         });
 
         socket.on('chooseDrawer', async ({ drawer, words }) => {
@@ -223,7 +231,6 @@ const Game = ({
                         />
                     </div>
                     <Chat
-                        messages={messages}
                         sendMessage={sendMessage}
                         placeholderMessage="Adivina el dibujo..."
                     />
@@ -240,7 +247,8 @@ const mapStateToProps = state => {
         isDrawer  : readIsDrawer(state), 
         drawerName: readDrawerName(state), 
         guessed   : readGuessed(state), 
-        actualWord: readActualWord(state)
+        actualWord: readActualWord(state),
+        messages  : readMessages(state),
     }
 }
 
@@ -249,5 +257,7 @@ export default connect(mapStateToProps, {
     setGuessed, 
     setDrawerName, 
     setIsDrawer,
-    resetGame 
+    addMessage,
+    resetGame,
+    resetMessages
 })(Game);

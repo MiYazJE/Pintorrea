@@ -6,8 +6,10 @@ import Chat from '../Chat/Chat';
 import { Layout } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../Redux/Reducers/UserReducer';
+import { readMessages } from '../../Redux/Reducers/gameReducer';
+import { addMessage, resetMessages } from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import './home.scss';
 
 const ENDPOINT = '/socket-io';
@@ -15,12 +17,15 @@ const { Content } = Layout;
 
 let socket;
 
-const Home = ({ user }) => {
-    const [messages, setMessages] = useState([]);
+const Home = ({ user, messages, resetMessages, addMessage }) => {
+
+    const history = useHistory();
     const [rooms, setRooms] = useState([]);
-    const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
+        resetMessages();
+        addMessage({ admin: true, mag: 'fregrtgrt' })
+
         socket = io();
         socket.emit('joinGlobalChat', { user });
 
@@ -35,7 +40,8 @@ const Home = ({ user }) => {
         });
 
         socket.on('globalChat', (msg) => {
-            setMessages(messages => [...messages, msg]);
+            console.log('adding message', msg);
+            addMessage(msg);
         });
 
         return () => socket.disconnect();
@@ -49,11 +55,10 @@ const Home = ({ user }) => {
         <Layout className="layout">
             <Nav />
             <Content className="content">
-                {redirect ? <Redirect to="/game" /> : null}
                 <div className="main-home">
                     <Rooms 
                         rooms={rooms} 
-                        setRedirect={setRedirect} 
+                        setRedirect={() => history.push('/game')} 
                     />
                     <Chat 
                         messages={messages} 
@@ -68,7 +73,17 @@ const Home = ({ user }) => {
 };
 
 const mapStateToProps = (state) => {
-    return { user: readUser(state) };
+    return { 
+        user    : readUser(state),
+        messages: readMessages(state)
+    }
 }
 
-export default connect(mapStateToProps, { })(Home);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addMessage   : (message) => dispatch(addMessage(message)),
+        resetMessages: ()        => dispatch(resetMessages())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

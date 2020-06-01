@@ -35,7 +35,7 @@ const Rooms = ({ rooms, joinRoom, setRedirect }) => {
 
     const handleJoinRoom = (room) => {
         joinRoom(room);
-        setRedirect(true);
+        setRedirect();
     }
 
     return (

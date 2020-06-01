@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './chat.scss';
 import { Form, Input, List } from 'antd';
 import { connect } from 'react-redux';
-import { readIsDrawer, readGuessed } from '../../Redux/Reducers/gameReducer';
+import { readIsDrawer, readGuessed, readMessages } from '../../Redux/Reducers/gameReducer';
 
 const MESSAGE_BACKGROUND = '#03213E';
 
@@ -30,18 +30,17 @@ const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) 
                 <List
                     dataSource={messages}
                     renderItem={({ admin, name, msg, privateMsg }, index) => (
-                        (privateMsg && !isDrawer) && (privateMsg && !guessed) ? null : 
-                            <span className={`item-${admin ? 'admin' : privateMsg ? 'private' : 'user'}-chat`}>
-                                <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
-                                    {admin ? msg 
-                                        : 
-                                        <span>
-                                            <span style={{fontWeight: 'bold'}}>{name.toUpperCase()}</span>{`: ${msg}`}
-                                        </span>
-                                    }
-                                </p>
-                                <div ref={refScroll} />
-                            </span>
+                        <span className={`item-${admin ? 'admin' : privateMsg ? 'private' : 'user'}-chat`}>
+                            <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
+                                {admin ? msg 
+                                    : 
+                                    <span>
+                                        <span style={{fontWeight: 'bold'}}>{name.toUpperCase()}</span>{`: ${msg}`}
+                                    </span>
+                                }
+                            </p>
+                            <div ref={refScroll} />
+                        </span>
                     )}
                 />
             </div>
@@ -59,7 +58,8 @@ const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) 
 
 const mapStateToProps = (state) => ({
     isDrawer: readIsDrawer(state),
-    guessed : readGuessed(state)
+    guessed : readGuessed(state),
+    messages: readMessages(state),
 });
 
 export default connect(mapStateToProps, {})(Chat);
