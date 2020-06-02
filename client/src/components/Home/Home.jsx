@@ -24,7 +24,6 @@ const Home = ({ user, messages, resetMessages, addMessage }) => {
 
     useEffect(() => {
         resetMessages();
-        addMessage({ admin: true, mag: 'fregrtgrt' })
 
         socket = io();
         socket.emit('joinGlobalChat', { user });
