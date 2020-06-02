@@ -5,6 +5,7 @@ import { readActualWord } from '../../Redux/Reducers/gameReducer';
 
 const PuntuationTable = ({ users, actualWord }) => {
 
+    console.log('word was', actualWord)
     return (
         <div className="wrapPuntuationTable">
             <span className="wordWas">La palabra era: {actualWord}</span>

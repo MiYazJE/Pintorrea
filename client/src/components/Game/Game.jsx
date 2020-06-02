@@ -96,7 +96,6 @@ const Game = ({
 
         socket.on('puntuationTable', ({ users }) => {
             console.log(users);
-            resetGame();
             setUsersPuntuation(users);
             setInteraction('puntuationTable');
             setShowModal(true);
