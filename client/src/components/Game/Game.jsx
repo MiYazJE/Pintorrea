@@ -63,6 +63,7 @@ const Game = ({
     useEffect(() => {
         console.log('socket events')
         socket.on('message', (message) => {
+            console.log(message)
             addMessage(message);
         });
 
@@ -76,7 +77,6 @@ const Game = ({
                 return;
             }
             setInteraction('chooseWord');
-            // await new Promise(res => setTimeout(res, 2000));
             setWords(words);
             startEventChooseWord(words);
         });
@@ -94,9 +94,9 @@ const Game = ({
             setActualWord(word);
         });
 
-        socket.on('puntuationTable', ({ users }) => {
+        socket.on('puntuationTable', ({ users, finalStatus }) => {
             console.log(users);
-            setUsersPuntuation(users);
+            setUsersPuntuation({ users, finalStatus });
             setInteraction('puntuationTable');
             setShowModal(true);
         }); 
@@ -220,7 +220,7 @@ const Game = ({
                                     view={interaction}
                                     chooseWord={handleChooseWord}
                                     words={words}
-                                    users={usersPuntuation}
+                                    puntuation={usersPuntuation}
                                 />
                             </CustomModal>
                         </div>

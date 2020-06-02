@@ -4,13 +4,15 @@ import PuntuationTable from '../PuntuationTable/PuntuationTable';
 import { connect } from "react-redux";
 import { readDrawerName } from '../../Redux/Reducers/gameReducer';
 
-const ShowInteraction = ({ view, chooseWord, words, drawerName, users }) => {
+const ShowInteraction = ({ view, chooseWord, words, drawerName, puntuation }) => {
 
     switch(view) {
         case 'userChoosing':
             return (
                 <div key={drawerName} style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <h1 style={{color: 'white'}}>{drawerName} esta escogiendo una palabra!</h1>
+                    <h1 style={{color: 'white', textAlign: 'center'}}>
+                        {drawerName} esta escogiendo una palabra!
+                    </h1>
                 </div> 
             ) 
         case 'chooseWord':
@@ -19,7 +21,7 @@ const ShowInteraction = ({ view, chooseWord, words, drawerName, users }) => {
             ) 
         case 'puntuationTable': 
             return (
-                <PuntuationTable users={users} />
+                <PuntuationTable puntuation={puntuation} />
             )
         default:
             return null;

@@ -22,17 +22,23 @@ const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) 
         form.resetFields();
     }
 
-    console.log(messages)
-    console.log(isDrawer, guessed)
+    const getClassStatus = (admin, privateMsg, statusMsg, userLeft) => {
+        if (admin) return 'admin';
+        if (privateMsg) return 'private';
+        if (statusMsg) return 'gameStatus';
+        if (userLeft) return 'userLeft';
+        return 'user';
+    }
+
     return (
         <div className="wrap-chat">
             <div className="text-chat">
                 <List
                     dataSource={messages}
-                    renderItem={({ admin, name, msg, privateMsg }, index) => (
-                        <span className={`item-${admin ? 'admin' : privateMsg ? 'private' : 'user'}-chat`}>
+                    renderItem={({ admin, name, msg, privateMsg, statusMsg, userLeft }, index) => (
+                        <span className={getClassStatus(admin, privateMsg, statusMsg, userLeft)}>
                             <p style={{backgroundColor: index % 2 === 0 ? MESSAGE_BACKGROUND : null, borderRadius: '2px', padding: '3px' }}>
-                                {admin ? msg 
+                                {admin || statusMsg || userLeft ? msg 
                                     : 
                                     <span>
                                         <span style={{fontWeight: 'bold'}}>{name.toUpperCase()}</span>{`: ${msg}`}

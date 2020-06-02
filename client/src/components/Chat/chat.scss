@@ -36,7 +36,7 @@
             margin: 5px;
         }
 
-        .item-user-chat {
+        .user {
             color: white;
 
             .username {
@@ -44,11 +44,19 @@
             }
         }
 
-        .item-admin-chat {
+        .admin {
             color: chartreuse;
         }
 
-        .item-private-chat {
+        .gameStatus {
+            color: #00b4d8;
+        }
+
+        .userLeft {
+            color: rgb(187, 10, 10);
+        }
+
+        .private {
             color: rgb(178, 236, 119);
         }
 
