@@ -22,7 +22,7 @@ const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound }) 
         <div className="wrapGameProgress">
             <div className="timeRoundWrap">
                 <h1 className="time">{time}</h1>
-                {time ? <span className="round">Ronda {currentRound} / {maxRound}</span> : null}
+                {time ? <span className="round">Ronda {currentRound} de {maxRound}</span> : null}
             </div>
             <div className="wrapWord">
                 <h1 className="word">{isDrawer ? actualWord : encryptedWord}</h1>

@@ -3,12 +3,12 @@ import './PuntuationTable.scss';
 import { connect } from "react-redux";
 import { readActualWord } from '../../Redux/Reducers/gameReducer';
 
-const PuntuationTable = ({ puntuation: {users, finalStatus}, actualWord }) => {
+const PuntuationTable = ({ puntuation: {users, finalStatusMsg}, actualWord }) => {
 
     return (
         <div className="wrapPuntuationTable">
             <span className="wordWas">La palabra era: <span className="word">{actualWord}</span></span>
-            <span className="finalStatus">{finalStatus}</span>
+            <span className="finalStatus">{finalStatusMsg}</span>
             <div className="usersTable">
                 {users ? users.map(user => (
                     <div key={user.name} className="userPuntuation">

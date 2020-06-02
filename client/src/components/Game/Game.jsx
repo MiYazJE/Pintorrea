@@ -69,7 +69,6 @@ const Game = ({
 
         socket.on('chooseDrawer', async ({ drawer, words }) => {
             resetGame();
-            canvasRef.current.clear();
             setIsDrawer(drawer === user.name);
             setDrawerName(drawer);
             if (drawer !== user.name) {
@@ -87,16 +86,16 @@ const Game = ({
         });
 
         socket.on('ready', ({ word, currentRound, maxRound }) => {
-            console.log(currentRound, maxRound)
+            canvasRef.current.clear();
             setShowModal(false);
             setCurrentRound(currentRound);
             setMaxRound(maxRound);
             setActualWord(word);
         });
 
-        socket.on('puntuationTable', ({ users, finalStatus }) => {
+        socket.on('puntuationTable', ({ users, finalStatusMsg }) => {
             console.log(users);
-            setUsersPuntuation({ users, finalStatus });
+            setUsersPuntuation({ users, finalStatusMsg });
             setInteraction('puntuationTable');
             setShowModal(true);
         }); 

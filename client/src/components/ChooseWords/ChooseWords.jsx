@@ -8,7 +8,7 @@ const ChooseWords = ({ words, chooseWord }) => {
             <h1 className="title">Escoge una palabra</h1>
             <div className="words">
                 {words ? words.map((word, i) => (
-                    <Button key={i} type="primary" onClick={() => chooseWord(word)}>
+                    <Button size="large" key={i} type="primary" onClick={() => chooseWord(word)}>
                         {word}
                     </Button>
                 )) : null}
