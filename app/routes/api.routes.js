@@ -13,8 +13,9 @@ router.get('/auth/google/',         googleAuthCtrl.signIn);
 router.get('/auth/google/user',     googleAuthCtrl.user);
 router.get('/auth/google/callback', passport.authenticate('google'), googleAuthCtrl.callback);
 
-router.get('/dictionary/scrap/spanish', dictionaryCtrl.scrapSpanishBasic);
-router.get('/dictionary/topics',        dictionaryCtrl.topics);
-router.get('/dictionary/all',           dictionaryCtrl.get);
+router.get(   '/dictionary/scrap',  dictionaryCtrl.scrapTargets);
+router.get(   '/dictionary/all',    dictionaryCtrl.get);
+router.get(   '/dictionary/topics', dictionaryCtrl.topics);
+router.delete('/dictionary/:topic',  dictionaryCtrl.dictionary)
 
 module.exports = router;
