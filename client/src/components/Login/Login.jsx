@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Redirect} from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
@@ -7,6 +7,7 @@ import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import { connect } from 'react-redux';
 import { signIn, googleSignIn } from '../../Redux/Actions/UserActions';
+import { readAuth } from '../../Redux/Reducers/UserReducer';
 import "./login.scss";
 
 const { Content } = Layout;
@@ -20,7 +21,8 @@ const validateEmail = (_, email) => {
     return Promise.reject("El email no es válido!");
 }
 
-const Login = ({ signIn, googleSignIn }) => {
+const Login = ({ signIn, googleSignIn, auth }) => {
+    const history = useHistory();
     const [redirect, setRedirect] = useState(false);
     const [localLoading, setLocalLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
@@ -159,9 +161,13 @@ const Login = ({ signIn, googleSignIn }) => {
     );
 };
 
+const mapStateToProps = (state) => ({
+    auth: readAuth(state)
+});
+
 const mapDispatchToProps = (dispatch) => ({
     signIn      : (user, success, error) => dispatch(signIn(user, success, error)),
     googleSignIn: (callback) => dispatch(googleSignIn(callback))
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

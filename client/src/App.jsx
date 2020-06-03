@@ -13,14 +13,14 @@ import SignUp from "./components/SignUp/SignUp";
 import PrivateRoute from './components/Routes/PrivateRoute';
 import { connect } from 'react-redux';
 import { readAuth } from './Redux/Reducers/UserReducer';
-import { checkAuth } from './Redux/Actions/UserActions';
+import { verifyAuth } from './Redux/Actions/UserActions';
 
-const App = ({ checkAuth, auth }) => {
+const App = ({ verifyAuth, auth }) => {
 
     useEffect(() => {
-        checkAuth()
+        verifyAuth();
     }, []); 
-
+    
     return (
         <Router>
             <div className="app" id="app">
@@ -47,7 +47,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    checkAuth: () => dispatch(checkAuth())
+    verifyAuth: () => dispatch(verifyAuth())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -8,7 +8,6 @@ import {
 } from '../../Helpers/auth-helpers';
 
 export const logUser = (user) => {
-    console.log(user);
     return {
         type: 'LOG_USER', 
         user
@@ -32,7 +31,8 @@ export const setPicture = (picture) => ({
 export const signIn = (user, success, error) => async (dispatch) => {
     const res = await logIn(user);
     if (res.success) {
-        dispatch(checkAuth());
+        const data = await whoAmI();
+        dispatch(logUser(data.user));
         success();
     }
     else {
@@ -40,18 +40,12 @@ export const signIn = (user, success, error) => async (dispatch) => {
     }
 }
 
-export const verifyAuth = () => async (dispatch) => {
-    const data = await whoAmI();
-    if (!data.auth) {
-        dispatch(logOutUser());
-    }
-}
-
 export const googleSignIn = (callback) => async (dispatch) => {
     const { auth } = await signInWithGoogle();
-    console.log(auth);
     if (auth) {
-        dispatch(checkAuth(callback));
+        const data = await whoAmI();
+        callback();
+        dispatch(logUser(data.user));
     }
 } 
 
@@ -65,14 +59,22 @@ export const register = (user, success, error) => async (dispatch) => {
     }
 }
 
+export const verifyAuth = () => async (dispatch) => {
+    const data = await whoAmI();
+    console.log(data)
+    if (data.auth) {
+        dispatch(logUser(data.user));
+    }
+}
+
 export const checkAuth = (callback) => async (dispatch) => {
     const data = await whoAmI();
     if (!data.auth) {
-        dispatch(logOut());
+        await removeCookie();
+        dispatch(logOutUser());
     }
     else {
         dispatch(logUser(data.user));
-        console.log(callback)
         if (typeof callback === 'function') callback();
     }
 }
