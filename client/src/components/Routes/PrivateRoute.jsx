@@ -2,22 +2,12 @@ import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { readAuth } from '../../Redux/Reducers/UserReducer';
-import { logOutUser, logUser } from '../../Redux/Actions/UserActions';
-import { removeCookie, whoAmI } from '../../Helpers/auth-helpers';
+import { verifyAuth } from '../../Redux/Actions/UserActions';
 
-const PrivateRoute = ({ component: Component, logOutUser, setAuth, auth, ...rest }) => {
+const PrivateRoute = ({ component: Component, checkAuth, auth, ...rest }) => {
 
     useEffect(() => {
-        (async () => {
-            const data = await whoAmI();
-            if (!data.auth) {
-                logOutUser();
-                removeCookie();
-            }
-            else {
-                logUser(data.user, data.auth);
-            }
-        })();
+        verifyAuth();
     }, []);
 
     return (
@@ -30,4 +20,8 @@ const PrivateRoute = ({ component: Component, logOutUser, setAuth, auth, ...rest
 
 const mapStateToProps = state => ({ auth: readAuth(state) })
 
-export default connect(mapStateToProps, { logOutUser })(PrivateRoute);
+const mapDispatchToProps = dispatch => ({
+    verifyAuth: () => dispatch(verifyAuth())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);

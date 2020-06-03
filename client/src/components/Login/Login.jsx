@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect} from "react-router-dom";
-import { whoAmI, signIn } from "../../Helpers/auth-helpers";
-import Http from "../../Helpers/Http";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import { connect } from 'react-redux';
-import { logUser } from '../../Redux/Actions/UserActions';
+import { signIn, googleSignIn } from '../../Redux/Actions/UserActions';
 import "./login.scss";
 
 const { Content } = Layout;
@@ -22,57 +20,42 @@ const validateEmail = (_, email) => {
     return Promise.reject("El email no es válido!");
 }
 
-const Login = ({ logUser }) => {
+const Login = ({ signIn, googleSignIn }) => {
     const [redirect, setRedirect] = useState(false);
     const [localLoading, setLocalLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
 
     useEffect(() => {
-        (async () => {
-            const { auth } = await Http.get('/auth/google/user');
-            if (auth) {
-                setUser(() => {
-                    notification.success({
-                        message: 'Has sido logeado satisfactoriamente!',
-                        key,
-                        duration: 5,
-                        placement: 'bottomRight'
-                    });
-                });    
-            }
-        })();
+        googleSignIn(() => {
+            notification.success({
+                message: 'Has sido logeado satisfactoriamente!',
+                key,
+                duration: 5,
+                placement: 'bottomRight'
+            });
+        });    
     }, []);
-
-    const setUser = async (success) => {
-        const data = await whoAmI();
-        if (data.auth) {
-            logUser(data.user, data.auth);
-            success();
-        }
-    }
 
     async function handleLogin(user) {
         setLocalLoading(true);
-        const res = await signIn(user);
-        if (res.success) {
-            setUser(() => {
+        signIn(user, 
+            () => {
                 notification.success({
                     message: 'Has sido logeado satisfactoriamente!',
                     key,
                     duration: 5,
                     placement: 'bottomRight'
                 });
-            });
-        }
-        else {
-            notification.error({
-                message: res.message,
-                key,
-                duration: 10,
-                placement: 'bottomRight'
-            });
-        }
-        setLocalLoading(false);
+                setLocalLoading(false);
+            },(message) => {
+                notification.error({
+                    message,
+                    key,
+                    duration: 10,
+                    placement: 'bottomRight'
+                });
+                setLocalLoading(false);
+        });
     }
 
     return (
@@ -176,4 +159,9 @@ const Login = ({ logUser }) => {
     );
 };
 
-export default connect(null, { logUser })(Login);
+const mapDispatchToProps = (dispatch) => ({
+    signIn      : (user, success, error) => dispatch(signIn(user, success, error)),
+    googleSignIn: (callback) => dispatch(googleSignIn(callback))
+});
+
+export default connect(null, mapDispatchToProps)(Login);

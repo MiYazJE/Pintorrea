@@ -1,6 +1,6 @@
 import Http from "../Helpers/Http";
 
-export async function signIn(body) {
+export async function logIn(body) {
     return await Http.post(
         body,
         '/user/logIn'
@@ -40,6 +40,6 @@ export async function imLogged() {
 
 export async function signInWithGoogle() {
     return await Http.get(
-        '/auth/google/signIn'
+        '/auth/google/user'
     )
 }

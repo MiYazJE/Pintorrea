@@ -11,7 +11,7 @@ import {
 import { removeCookie } from '../../Helpers/auth-helpers';
 import { connect } from 'react-redux';
 import { readUser } from '../../Redux/Reducers/UserReducer';
-import { logOutUser } from '../../Redux/Actions/UserActions';
+import { logOut } from '../../Redux/Actions/UserActions';
 import "antd/dist/antd.css";
 import "./nav.scss";
 
@@ -19,7 +19,7 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
-const Nav = ({ user, logOutUser }) => {
+const Nav = ({ user, logOut }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
@@ -28,15 +28,15 @@ const Nav = ({ user, logOutUser }) => {
     };
 
     const handleLogout = () => {
-        logOutUser();
-        removeCookie();
-        notification.success({
-            message: "Sesión cerrada!",
-            key,
-            duration: 5,
-            placement: 'bottomRight'
+        logOut(() => {
+            notification.success({
+                message: "Sesión cerrada!",
+                key,
+                duration: 5,
+                placement: 'bottomRight'
+            });
+            setRedirect(true);
         });
-        setRedirect(true);
     }
 
     return (
@@ -58,7 +58,7 @@ const Nav = ({ user, logOutUser }) => {
                     <Menu.Item key="setting:1">Option 1</Menu.Item>
                     <Menu.Item key="setting:2">Option 2</Menu.Item>
                 </SubMenu>
-                {user ? (
+                {user.auth ? (
                     <SubMenu
                         title={
                             <span>
@@ -89,7 +89,7 @@ const Nav = ({ user, logOutUser }) => {
                 onOk={toggleShowProfile}
                 onCancel={toggleShowProfile}
             >
-                <Profile user={user} />
+                <Profile />
             </Modal>
         </Header>
     );
@@ -97,4 +97,4 @@ const Nav = ({ user, logOutUser }) => {
 
 const mapStateToProps = state => ({ user: readUser(state) });
 
-export default connect(mapStateToProps, { logOutUser })(Nav);
+export default connect(mapStateToProps, { logOut })(Nav);

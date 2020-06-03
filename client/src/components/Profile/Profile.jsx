@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import Http from '../../Helpers/Http';
 import { connect } from 'react-redux';
-import { logUser } from '../../Redux/Actions/UserActions';
+import { uploadPicture } from '../../Redux/Actions/UserActions';
+import { readImage, readName, readID } from '../../Redux/Reducers/UserReducer';
 import "./profile.scss";
 
 function getBase64(img, callback) {
@@ -24,31 +24,20 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const Profile = ({ user, logUser }) => {
-    const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState(user.picture);
+const Profile = ({ picture, uploadPicture, name, id }) => {
 
     const handleChange = info => {
         if (info.file.status === 'uploading') {
-            setLoading(true);
             return;
         }
         if (info.file.status === 'done') {
-            getBase64(info.file.originFileObj, async (picture) => {
-                const newUser = await Http.post({ picture, id: user.id }, '/user/uploadPicture');
-                message.success('La imágen ha sido actualizada');
-                setLoading(false);
-                setImageUrl(picture);
+            getBase64(info.file.originFileObj, async (image) => {
+                uploadPicture(image, id, () => {
+                    message.success('La imágen ha sido actualizada');
+                });
             });
         }
     };
-
-    const uploadButton = (
-        <div>
-          {loading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div className="ant-upload-text">Upload</div>
-        </div>
-    );
 
     return (
         <div className="wrapProfile">
@@ -62,12 +51,18 @@ const Profile = ({ user, logUser }) => {
                 onChange={handleChange}
             >
                 <Tooltip placement="right" style={{color: 'white'}} title="Cambiar imágen">
-                    <img src={imageUrl} alt="avatar" style={{ width: '100px' }} />
+                    <img src={picture} alt="avatar" style={{ width: '100px' }} />
                 </Tooltip>
             </Upload>
-            <h2>{user.name}</h2>
+            <h2>{name}</h2>
         </div>
     );
 }
 
-export default connect(null, { logUser })(Profile);
+const mapStateToProps = (state) => ({
+    name   : readName(state),
+    id     : readID(state),
+    picture: readImage(state),
+});
+
+export default connect(mapStateToProps, { uploadPicture })(Profile);
