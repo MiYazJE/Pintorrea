@@ -20,6 +20,8 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "socket.io": "^2.3.0"
