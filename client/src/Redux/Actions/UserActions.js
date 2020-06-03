@@ -1,5 +1,11 @@
 import Http from '../../Helpers/Http';
-import { removeCookie, whoAmI, signInWithGoogle, logIn } from '../../Helpers/auth-helpers';
+import { 
+    removeCookie, 
+    whoAmI, 
+    signInWithGoogle, 
+    logIn, 
+    signUp 
+} from '../../Helpers/auth-helpers';
 
 export const logUser = (user) => {
     console.log(user);
@@ -48,6 +54,16 @@ export const googleSignIn = (callback) => async (dispatch) => {
         dispatch(checkAuth(callback));
     }
 } 
+
+export const register = (user, success, error) => async (dispatch) => {
+    const res = await signUp(user);
+    if (res.success) {
+        success(res.message);
+    }
+    else {
+        error(res.message);
+    }
+}
 
 export const checkAuth = (callback) => async (dispatch) => {
     const data = await whoAmI();

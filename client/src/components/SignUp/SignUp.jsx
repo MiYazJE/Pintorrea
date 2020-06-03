@@ -1,31 +1,34 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
-import { signUp } from "../../Helpers/auth-helpers";
+import { useHistory } from "react-router-dom";
 import { Form, Input, Button, notification, Layout } from "antd";
 import { MdEmail } from "react-icons/md";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import Http from '../../Helpers/Http';
+import { connect } from 'react-redux';
+import { register } from '../../Redux/Actions/UserActions';
 import "./signUp.scss";
 
 const { Content } = Layout;
 const key = "updatable";
 
-const Register = () => {
+const Register = ({ register }) => {
+    const history = useHistory(null);
     const [loading, setLoading] = useState(false);
-    const [redirectToHome, setRedirectToHome] = useState(false);
 
     async function handleSignUp(user) {
         setLoading(true);
-        const res = await signUp(user);
-        if (res.success) {
-            notification.success({ message: res.message, key, duration: 5 });
-            setTimeout(() => setRedirectToHome(true), 1500);
-        } else {
-            notification.error({ message: res.message, key, duration: 10 });
+        const success = (message) => {
+            notification.success({ message, key, duration: 8 });
+            setLoading(false);
+            history.push('/login');
+        };
+        const error = (message) => {
+            notification.error({ message, key, duration: 8 });
+            setLoading(false);
         }
-        setLoading(false)
+        register(user, success, error);
     }
 
     const validateEmail = (_, email) => {
@@ -47,7 +50,6 @@ const Register = () => {
     const validateUserNameExists = async (_, nickName) => {
         if (!nickName) return;
         const { userExists } = await Http.get(`/user/exists/name/${nickName}`);
-        console.log(userExists)
         if (userExists) {
             return Promise.reject('Este nombre ya se encuentra registrado!');
         }
@@ -65,7 +67,6 @@ const Register = () => {
 
     return (
         <Layout className="layout">
-            {redirectToHome && <Redirect to="/logIn" />}
             <Nav />
             <Content className="content">
                 <div className="wrapForm">
@@ -175,4 +176,8 @@ const Register = () => {
     );
 };
 
-export default Register;
+const mapDispatchToProps = (dispatch) => ({
+    register: (user, success, error) => dispatch(register(user, success, error)) 
+});
+
+export default connect(null, mapDispatchToProps)(Register);
