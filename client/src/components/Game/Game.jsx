@@ -80,7 +80,6 @@ const Game = ({
     }, [wrapCanvasRef.current]);
     
     useEffect(() => {
-        console.log('socket events')
         socket.on('message', (message) => {
             console.log(message)
             addMessage(message);
@@ -131,6 +130,7 @@ const Game = ({
 
         socket.on('endGame', ({ users }) => {
             console.log(users);
+            resetGame();
             setInteraction('showResults');
             setFinalPuntuation(users);
         });
