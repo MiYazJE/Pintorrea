@@ -38,4 +38,9 @@ export const setCurrentRound = (currentRound) => ({
 export const setMaxRound = (maxRound) => ({
     type: 'SET_MAX_ROUND',
     maxRound
-})
+});
+
+export const setIsStarted = (isStarted) => ({
+    type: 'SET_IS_STARTED',
+    isStarted
+});

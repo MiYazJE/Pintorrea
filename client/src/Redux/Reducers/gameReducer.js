@@ -6,6 +6,7 @@ const initialState = {
     guessed     : false,
     isDrawer    : false,
     messages    : [],
+    isStarted   : false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -59,8 +60,13 @@ const reducer = (state = initialState, action) => {
                 ...initialState,
                 messages: [...state.messages],
                 currentRound: state.currentRound,
-                maxRound: state.maxRound
+                maxRound: state.maxRound,
             };
+        case 'SET_IS_STARTED':
+            return {
+                ...state,
+                isStarted: action.isStarted
+            }
         default:
             return {
                 ...state,
@@ -75,5 +81,6 @@ export const readActualWord   = (state) => state.gameReducer.actualWord;
 export const readMessages     = (state) => state.gameReducer.messages;
 export const readMaxRound     = (state) => state.gameReducer.maxRound;
 export const readCurrentRound = (state) => state.gameReducer.currentRound;
+export const readIsStarted    = (state) => state.gameReducer.isStarted;
 
 export default reducer;
