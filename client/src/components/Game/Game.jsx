@@ -20,6 +20,7 @@ import io from 'socket.io-client';
 import './game.scss';
 import GameProgress from "../GameProgress/GameProgress";
 import ShowInteraction from "./ShowInteraction";
+import ResizeObserver from "resize-observer-polyfill";
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
@@ -35,18 +36,24 @@ const Game = ({
     addMessage, setCurrentRound, setMaxRound
 }) => {
 
-    const [usersPuntuation, setUsersPuntuation] = useState([]);
+    const [roundPuntuation, setRoundPuntuation] = useState([]);
+    const [finalPuntuation, setFinalPuntuation] = useState([]);
     const [interaction, setInteraction] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const [intervalEvent, setIntervalEvent] = useState(null);
     const [words, setWords] = useState([]);
-    const [showModal, setShowModal] = useState(false);
     const [coordinates, setCoordinates] = useState({});
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
     const [previousColor, setPreviousColor] = useState(canvasColor);
     const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
     const [previousFontSize, setPreviousFontSize] = useState(fontSize);
     const [bucketPaint, setBucketPaint] = useState(false);
-    const canvasRef = useRef(null);
+    const [wrapCanvasWidth, setWrapCanvasWidth] = useState(0);
+    const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
+    const [canvasOberserver, setCanvasObserver] = useState(null);
+
+    const wrapCanvasRef = useRef(null);
+    const canvasRef     = useRef(null);
 
     useEffect(() => {
         window.addEventListener('keydown', (e) => {
@@ -59,6 +66,18 @@ const Game = ({
         socket.emit('joinRoom', { user, roomName: room });
         resetMessages();
     }, []);
+
+    useEffect(() => {
+        const observer = new ResizeObserver((entries, observer) => {
+            const { width, height } = entries[0].contentRect;
+            console.log(width, height);
+            setWrapCanvasHeight(height);
+            setWrapCanvasWidth(width);
+        });
+        observer.observe(wrapCanvasRef.current);
+
+        return () => observer.unobserve(wrapCanvasRef.current);
+    }, [wrapCanvasRef.current]);
     
     useEffect(() => {
         console.log('socket events')
@@ -95,7 +114,7 @@ const Game = ({
 
         socket.on('puntuationTable', ({ users, finalStatusMsg }) => {
             console.log(users);
-            setUsersPuntuation({ users, finalStatusMsg });
+            setRoundPuntuation({ users, finalStatusMsg });
             setInteraction('puntuationTable');
             setShowModal(true);
         }); 
@@ -103,6 +122,17 @@ const Game = ({
         socket.on('setGuessed', () => { 
             console.log('setting guessed true...');
             setGuessed()
+        });
+
+        socket.on('nextRound', ({ round }) => {
+            setInteraction('nextRound');
+            setCurrentRound(round);
+        });
+
+        socket.on('endGame', ({ users }) => {
+            console.log(users);
+            setInteraction('showResults');
+            setFinalPuntuation(users);
         });
 
         return () => socket.disconnect();
@@ -200,26 +230,31 @@ const Game = ({
                         : null}
                     </div>
                     <div className="drawContainer">
-                        <div className="wrapCanvas">
+                        <div className="wrapCanvas" ref={wrapCanvasRef}>
                             <CanvasDraw
                                 ref={canvasRef}
                                 onChange={sendCoordinates}
                                 brushRadius={fontSize}
                                 hideGrid={true}
-                                canvasHeight="100%"
-                                canvasWidth="100%"
+                                canvasHeight={wrapCanvasHeight}
+                                canvasWidth={wrapCanvasWidth}
                                 brushColor={canvasColor}
                                 lazyRadius={0}
                                 hideInterface={true}
                                 immediateLoading={true}
                                 disabled={!isDrawer}
                             />
-                            <CustomModal show={showModal}>
+                            <CustomModal 
+                                show={showModal} 
+                                width={wrapCanvasWidth} 
+                                height={wrapCanvasHeight}
+                            >
                                 <ShowInteraction 
                                     view={interaction}
                                     chooseWord={handleChooseWord}
                                     words={words}
-                                    puntuation={usersPuntuation}
+                                    puntuation={roundPuntuation}
+                                    finalPuntuation={finalPuntuation}
                                 />
                             </CustomModal>
                         </div>

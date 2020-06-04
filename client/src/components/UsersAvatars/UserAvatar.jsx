@@ -3,7 +3,7 @@ import { Avatar, Tooltip } from 'antd';
 import Drawer from 'react-drag-drawer'
 import UserProfile from '../UserProfile/UserProfile';
 
-const UserAvatar = ({ name, picture, id }) => {
+const UserAvatar = ({ name, picture, id, size }) => {
     const [showProfile, setShowProfile] = useState(false);
 
     const handleViewProfile = () => {
@@ -19,6 +19,7 @@ const UserAvatar = ({ name, picture, id }) => {
                     style={{ cursor: 'pointer' }}
                     src={picture}
                     onClick={() => handleViewProfile()}
+                    size={size} 
                 />
             </Tooltip>
             <Drawer

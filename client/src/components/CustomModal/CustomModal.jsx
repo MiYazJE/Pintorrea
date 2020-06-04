@@ -2,10 +2,14 @@ import React from 'react';
 import { Button } from 'antd';
 import './CustomModal.scss';
 
-const CustomModal = ({ show, children }) => {
+const CustomModal = ({ show, children, height, width }) => {
 
+    console.log(width, height);
     return(
-        <div className={`wrapModal ${show ? 'show' : 'hide'}`}>
+        <div 
+            style={{ width: `${width}px`, height: `${height}px` }}    
+            className={`wrapModal ${show ? 'show' : 'hide'}`}
+        >
             {children}
         </div>
     )
