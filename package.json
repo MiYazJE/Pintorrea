@@ -24,6 +24,7 @@
     "redux-thunk": "^2.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
+    "resize-observer-polyfill": "^1.5.1",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
