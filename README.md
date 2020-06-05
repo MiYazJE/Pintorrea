@@ -6,6 +6,10 @@
 ---
 ## INFORMACIÓN
 
+Las palabras son principalmente extraídas de:
+ + https://www.aleatorios.com/
+ + https://www.palabrasaleatorias.com/
+
 ---
 
 ## TECNOLOGÍAS
