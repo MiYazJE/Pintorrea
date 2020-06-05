@@ -155,6 +155,7 @@ const Game = ({
 
     const startEventChooseWord = async (wordsToChoose) => {
         setShowModal(true);
+        clearInterval(intervalEvent);
         let currentSeconds = 0;
         let interval = setInterval(() => {
             console.log(currentSeconds);
