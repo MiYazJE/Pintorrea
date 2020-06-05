@@ -16,6 +16,7 @@ router.get('/auth/google/callback', passport.authenticate('google'), googleAuthC
 // router.get(   '/dictionary/scrap',  dictionaryCtrl.scrapTargets);
 // router.get(   '/dictionary/all',    dictionaryCtrl.get);
 // router.get(   '/dictionary/topics', dictionaryCtrl.topics);
-// router.delete('/dictionary/:topic',  dictionaryCtrl.dictionary)
+// router.delete('/dictionary/:topic',  dictionaryCtrl.dictionary);
+router.get('/dictionary/randomWords',  dictionaryCtrl.randomWords);
 
 module.exports = router;

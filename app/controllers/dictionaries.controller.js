@@ -1,11 +1,13 @@
 const dictionariesModel = require('../models/dictionaries.model');
 const scrapWords = require('../lib/scrapWords');
+const fetch = require('node-fetch');
 
 module.exports = { 
     scrapTargets, 
     get, 
     topics, 
-    dictionary 
+    dictionary,
+    randomWords
 };
 
 async function scrapTargets(req, res) {
@@ -51,4 +53,10 @@ async function dictionary(req, res) {
 
 async function deleteDictionary(topic) {
     await dictionariesModel.deleteOne({ topic });
+}
+
+async function randomWords(req, res) {
+    const data    = await fetch('https://www.aleatorios.com/random-words?dictionary=2&size=2&words=3');
+    const records = await data.json();
+    res.json({ ...records });
 }
