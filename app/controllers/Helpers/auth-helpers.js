@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const createToken = (payload) => {
     return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: 60 * 60 * 24
+        expiresIn: '7d'
     });
 }
 
