@@ -136,10 +136,7 @@ const Game = ({
             setShowModal(true);
         });
 
-        socket.on('setGuessed', () => {
-            console.log('setting guessed true...');
-            setGuessed();
-        });
+        socket.on('setGuessed', () => setGuessed());
 
         socket.on('nextRound', ({ round }) => {
             setInteraction('nextRound');
