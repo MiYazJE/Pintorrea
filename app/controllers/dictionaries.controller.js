@@ -56,7 +56,7 @@ async function deleteDictionary(topic) {
 }
 
 async function randomWords(req, res) {
-    const data    = await fetch('https://www.aleatorios.com/random-words?dictionary=2&size=2&words=3');
+    const data        = await fetch('https://www.aleatorios.com/random-kids?new=%5B0%5D&type=0&words=3');
     const { records } = await data.json();
     res.json({ words: [...removeDiacritics(records)] });
 }
@@ -64,5 +64,6 @@ async function randomWords(req, res) {
 function removeDiacritics(words) {
     return words.map(word => word.normalize('NFD')
         .replace(/([aeio])\u0301|(u)[\u0301\u0308]/gi,"$1$2")
-        .normalize());
+        .normalize()
+        .split(',')[0]);
 }
