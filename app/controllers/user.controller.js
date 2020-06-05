@@ -3,7 +3,7 @@ const userModel = require('../models/user.model');
 module.exports = {
     nameAlreadyRegistered,
     emailAlreadyRegistered,
-    createUser,
+    create,
     getUsers,
     deleteAll,
     userNameExists,
@@ -24,7 +24,7 @@ async function emailAlreadyRegistered(email) {
     return usersEmails.includes(email);
 }
 
-async function createUser(req, res) {
+async function create(req, res) {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
