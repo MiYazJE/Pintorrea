@@ -18,5 +18,6 @@ router.get(  '/exists/name/:userName', usersCtrl.userNameExists);
 router.get(  '/exists/email/:email',   usersCtrl.emailExists);
 router.post( '/uploadPicture',         usersCtrl.uploadPicture);
 router.get(  '/profile/:id',           usersCtrl.getProfile);
+router.post( '/profile/avatar',        usersCtrl.changeAvatar);
 
 module.exports = router;

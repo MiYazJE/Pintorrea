@@ -1,5 +1,7 @@
 const userModel = require('../models/user.model');
 
+const { avatarFemale, avatarMale } = require('../models/user.defaults');
+
 module.exports = {
     nameAlreadyRegistered,
     emailAlreadyRegistered,
@@ -10,6 +12,7 @@ module.exports = {
     emailExists,
     uploadPicture,
     getProfile,
+    changeAvatar,
 };
 
 async function nameAlreadyRegistered(name) {
@@ -25,19 +28,24 @@ async function emailAlreadyRegistered(email) {
 }
 
 async function create(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, sex } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !sex) {
         return res.status(400).json({ msg: 'Empty fields.' });
     }
+
+    const avatar = sex === 'male'
+        ? avatarMale
+        : avatarFemale;
 
     const user = new userModel({
         name,
         email,
         password,
+        sex,
+        avatar
     });
 
-    // Check if there is an existing user with the same name already registered
     if (await nameAlreadyRegistered(name)) {
         return res.status(400).send({
             message: `El usuari@ ${name} ya existe, por favor pruebe con otro.`,
@@ -45,7 +53,6 @@ async function create(req, res) {
         });
     }
 
-    // Check if there is an existing email already registered
     if (await emailAlreadyRegistered(email)) {
         return res.status(400).send({
             message: `El email ${email} ya se encuentra registrado, por favor pruebe con otro.`,
@@ -54,8 +61,6 @@ async function create(req, res) {
     }
 
     user.password = await user.encryptPassword(password);
-
-    // Creating the user
     await user.save();
 
     res.send({
@@ -99,4 +104,11 @@ async function getProfile(req, res) {
     if (!id) return res.status(401).json({ msg: 'El id esta vacío.' });
     const user = await userModel.findById({ _id: id });
     res.json(user);
+}
+
+async function changeAvatar(req, res) {
+    const { avatar, id } = req.body;
+    if (!avatar || !id) return res.status(400).json({ msg: 'Los campos están vacíos.' });
+    await userModel.updateOne({ _id: id }, { avatar });
+    res.json({ msg: 'El avatar se ha guardado correctamente.' });
 }
