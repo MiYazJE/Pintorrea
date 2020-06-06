@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
 import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { connect } from 'react-redux';
@@ -41,7 +42,8 @@ const Profile = ({ picture, uploadPicture, name, id }) => {
 
     return (
         <div className="wrapProfile">
-            <Upload
+            <h1>{name}</h1>
+            {/* <Upload
                 name="avatar"
                 listType="picture"
                 className="avatar-uploader"
@@ -53,8 +55,8 @@ const Profile = ({ picture, uploadPicture, name, id }) => {
                 <Tooltip placement="right" style={{color: 'white'}} title="Cambiar imágen">
                     <img src={picture} alt="avatar" style={{ width: '100px' }} />
                 </Tooltip>
-            </Upload>
-            <h2>{name}</h2>
+            </Upload> */}
+            <AvatarCustomizer />
         </div>
     );
 }

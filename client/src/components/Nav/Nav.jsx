@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import Profile from '../Profile/Profile';
+import Drawer from 'react-drag-drawer';
 import { Layout, Menu, Modal, notification, Avatar } from "antd";
 import {
     UserOutlined,

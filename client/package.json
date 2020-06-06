@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^4.0.4",
+    "avataaars": "^1.2.1",
     "env-cmd": "^10.1.0",
     "http-proxy-middleware": "^1.0.4",
     "lodash": "^4.17.15",

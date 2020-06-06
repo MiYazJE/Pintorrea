@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Tooltip } from 'antd';
+import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import UserAvatar from './UserAvatar';
 

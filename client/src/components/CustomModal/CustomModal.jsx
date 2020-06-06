@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'antd';
 import './CustomModal.scss';
 
 const CustomModal = ({ show, children, height, width }) => {

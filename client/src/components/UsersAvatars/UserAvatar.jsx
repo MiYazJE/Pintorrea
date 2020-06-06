@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Avatar, Tooltip } from 'antd';
-import Drawer from 'react-drag-drawer'
+import Drawer from 'react-drag-drawer';
 import UserProfile from '../UserProfile/UserProfile';
 
 const UserAvatar = ({ name, picture, id, size }) => {
