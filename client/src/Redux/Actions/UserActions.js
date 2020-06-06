@@ -18,6 +18,11 @@ const logOutUser = () => ({
     type: 'LOGOUT_USER',
 });
 
+const setAvatar = (avatar) => ({
+    type: 'SET_AVATAR',
+    avatar
+});
+
 export const joinRoom = (room) => ({
     type: 'JOIN_ROOM', 
     room
@@ -91,3 +96,8 @@ export const uploadPicture = (picture, id, success) => async (dispatch) => {
     dispatch(setPicture(data.picture));
 }
 
+export const uploadAvatar = ({ avatar, id }, callback) => async (dispatch) => {
+    const data = await Http.post({ avatar, id }, '/user/profile/avatar');
+    callback(data.msg);
+    dispatch(setAvatar(avatar));
+}

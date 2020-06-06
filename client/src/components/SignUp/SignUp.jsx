@@ -1,24 +1,33 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { Form, Input, Button, notification, Layout } from "antd";
-import { MdEmail } from "react-icons/md";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import Nav from "../Nav/Nav";
-import Footer from "../Footer/Footer";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Form, Input, Button, notification, Layout, Radio } from 'antd';
+import { MdEmail } from 'react-icons/md';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { IoIosMale, IoIosFemale } from 'react-icons/io';
+import Nav from '../Nav/Nav';
+import Footer from '../Footer/Footer';
 import Http from '../../Helpers/Http';
 import { connect } from 'react-redux';
 import { register } from '../../Redux/Actions/UserActions';
-import "./signUp.scss";
+import './signUp.scss';
 
 const { Content } = Layout;
-const key = "updatable";
+const key = 'updatable';
 
 const Register = ({ register }) => {
+    const [form] = Form.useForm();
     const history = useHistory(null);
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        form.setFieldsValue({
+            sex: 'male'
+        });
+    }, []);
+
     async function handleSignUp(user) {
         setLoading(true);
+        console.log(user)
         const success = (message) => {
             notification.success({ message, key, duration: 8 });
             setLoading(false);
@@ -27,7 +36,7 @@ const Register = ({ register }) => {
         const error = (message) => {
             notification.error({ message, key, duration: 8 });
             setLoading(false);
-        }
+        };
         register(user, success, error);
     }
 
@@ -36,8 +45,8 @@ const Register = ({ register }) => {
         if (re.test(String(email).toLowerCase())) {
             return validateEmailExists(email);
         }
-        return Promise.reject("El email no es válido!");
-    }
+        return Promise.reject('El email no es válido!');
+    };
 
     const validateEmailExists = async (email) => {
         const { emailExists } = await Http.get(`/user/exists/email/${email}`);
@@ -45,7 +54,7 @@ const Register = ({ register }) => {
             return Promise.reject('Este email ya se encuentra registrado!');
         }
         return Promise.resolve();
-    }
+    };
 
     const validateUserNameExists = async (_, nickName) => {
         if (!nickName) return;
@@ -54,83 +63,71 @@ const Register = ({ register }) => {
             return Promise.reject('Este nombre ya se encuentra registrado!');
         }
         return Promise.resolve();
-    }
+    };
 
     const validatePasswords = ({ getFieldValue }) => ({
         validator(rule, value) {
-            if (getFieldValue("password") === value) {
+            if (getFieldValue('password') === value) {
                 return Promise.resolve();
             }
-            return Promise.reject("Las contraseñas no coinciden!");
-        }
-    })
+            return Promise.reject('Las contraseñas no coinciden!');
+        },
+    });
 
     return (
         <Layout className="layout">
             <Nav />
             <Content className="content">
                 <div className="wrapForm">
-                    <Form className="login-form" onFinish={handleSignUp}>
-                        <h1 style={{ textAlign: "center", color: "white" }}>
-                            Registrarse
-                        </h1>
+                    <Form form={form} className="login-form" onFinish={handleSignUp}>
+                        <h1 style={{ textAlign: 'center', color: 'white' }}>Registrarse</h1>
                         <Form.Item
                             name="email"
                             hasFeedback
-                            rules={
-                                [
-                                    { 
-                                        required: true,
-                                        message: 'Por favor introduce el correo.'
-                                    },
-                                    { validator: validateEmail }
-                                ]
-                            }
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Por favor introduce el correo.',
+                                },
+                                { validator: validateEmail },
+                            ]}
                         >
                             <Input
                                 size="large"
-                                prefix={
-                                    <MdEmail className="site-form-item-icon" />
-                                }
+                                prefix={<MdEmail className="site-form-item-icon" />}
                                 placeholder="Introduce el email..."
                             />
                         </Form.Item>
                         <Form.Item
                             name="name"
                             hasFeedback
-                            rules={
-                                [
-                                    {
-                                        required: true,
-                                        message: "Por favor introduce el nickname!"
-                                    }, 
-                                    { validator: validateUserNameExists }
-                                ]
-                            }
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Por favor introduce el nickname!',
+                                },
+                                { validator: validateUserNameExists },
+                            ]}
                         >
                             <Input
                                 size="large"
-                                prefix={
-                                    <UserOutlined className="site-form-item-icon" />
-                                }
+                                prefix={<UserOutlined className="site-form-item-icon" />}
                                 placeholder="Introduce el nickname..."
                             />
                         </Form.Item>
                         <Form.Item
                             name="password"
                             hasFeedback
-                            rules={
-                                [{
+                            rules={[
+                                {
                                     required: true,
-                                    message: "Por favor introduce la contraseña!" 
-                                }]
-                            }
+                                    message: 'Por favor introduce la contraseña!',
+                                },
+                            ]}
                         >
                             <Input.Password
                                 size="large"
-                                prefix={
-                                    <LockOutlined className="site-form-item-icon" />
-                                }
+                                prefix={<LockOutlined className="site-form-item-icon" />}
                                 type="password"
                                 placeholder="Introduce la contraseña..."
                             />
@@ -139,32 +136,39 @@ const Register = ({ register }) => {
                             size="large"
                             name="passwordCheck"
                             hasFeedback
-                            rules={
-                                [
-                                    {
-                                        required : true,
-                                        message  : "Por favor vuelve a repetir la contraseña!"
-                                    }, 
-                                    validatePasswords
-                                ]
-                            }
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Por favor vuelve a repetir la contraseña!',
+                                },
+                                validatePasswords,
+                            ]}
                         >
                             <Input.Password
                                 size="large"
-                                prefix={
-                                    <LockOutlined className="site-form-item-icon" />
-                                }
+                                prefix={<LockOutlined className="site-form-item-icon" />}
                                 type="password"
                                 placeholder="Introduce de nuevo la contraseña..."
                             />
                         </Form.Item>
+                        <Form.Item name="sex">
+                                <Radio.Group size="middle">
+                                    <Radio.Button value="male">
+                                        <span className="radioItem">
+                                            <IoIosMale />Hombre
+                                        </span>
+                                    </Radio.Button>
+                                    <Radio.Button value="female">
+                                        <span className="radioItem">
+                                            <IoIosFemale />Mujer
+                                        </span>
+                                    </Radio.Button>
+                                </Radio.Group>
+                            {/* <div className="wrapRadioButtons">
+                            </div> */}
+                        </Form.Item>
                         <Form.Item>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                                className="login-form-button"
-                                loading={loading}
-                            >
+                            <Button type="primary" htmlType="submit" className="login-form-button" loading={loading}>
                                 Registrar
                             </Button>
                         </Form.Item>
@@ -177,7 +181,7 @@ const Register = ({ register }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    register: (user, success, error) => dispatch(register(user, success, error)) 
+    register: (user, success, error) => dispatch(register(user, success, error)),
 });
 
 export default connect(null, mapDispatchToProps)(Register);

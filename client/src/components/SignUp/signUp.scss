@@ -23,6 +23,18 @@
         display: flex;
         justify-content: space-around;
     }
+
+    .wrapRadioButtons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .radioItem {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 }
 
 .ant-form-item-label > label {

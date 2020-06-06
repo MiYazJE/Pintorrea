@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
 import { Upload, message, Tooltip } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { connect } from 'react-redux';
-import { uploadPicture } from '../../Redux/Actions/UserActions';
-import { readImage, readName, readID } from '../../Redux/Reducers/UserReducer';
+import { uploadPicture, uploadAvatar } from '../../Redux/Actions/UserActions';
+import { readImage, readName, readID, readAvatar } from '../../Redux/Reducers/UserReducer';
 import "./profile.scss";
 
 function getBase64(img, callback) {
@@ -25,7 +25,7 @@ function beforeUpload(file) {
     return isJpgOrPng && isLt2M;
 }
 
-const Profile = ({ picture, uploadPicture, name, id }) => {
+const Profile = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => {
 
     const handleChange = info => {
         if (info.file.status === 'uploading') {
@@ -39,6 +39,12 @@ const Profile = ({ picture, uploadPicture, name, id }) => {
             });
         }
     };
+
+    const handleSaveAvatar = (avatar) => {
+        uploadAvatar({ avatar, id }, (msg) => {
+            message.success(msg);
+        });
+    }
 
     return (
         <div className="wrapProfile">
@@ -56,15 +62,16 @@ const Profile = ({ picture, uploadPicture, name, id }) => {
                     <img src={picture} alt="avatar" style={{ width: '100px' }} />
                 </Tooltip>
             </Upload> */}
-            <AvatarCustomizer />
+            <AvatarCustomizer onSave={handleSaveAvatar} initIndexes={avatar} />
         </div>
     );
 }
 
 const mapStateToProps = (state) => ({
-    name   : readName(state),
     id     : readID(state),
+    name   : readName(state),
     picture: readImage(state),
+    avatar : readAvatar(state),
 });
 
-export default connect(mapStateToProps, { uploadPicture })(Profile);
+export default connect(mapStateToProps, { uploadPicture, uploadAvatar })(Profile);

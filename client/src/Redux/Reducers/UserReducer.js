@@ -1,10 +1,14 @@
+import ActionButton from "antd/lib/modal/ActionButton";
+
 const initialState = { 
     id     : null,
+    sex    : null,
     name   : null,
     room   : null, 
     auth   : false, 
     email  : null,
     picture: null,
+    avatar : null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -15,6 +19,8 @@ const reducer = (state = initialState, action) => {
                 email: action.user.email,
                 name: action.user.name,
                 picture: action.user.picture,
+                sex: action.user.sex,
+                avatar: action.user.avatar,
                 auth: true,
             };
         case 'LOGOUT_USER':
@@ -25,6 +31,11 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 picture: action.picture
+            }
+        case 'SET_AVATAR': 
+            return {
+                ...state,
+                avatar: action.avatar
             }
         case 'JOIN_ROOM':
             return {
@@ -40,16 +51,20 @@ const reducer = (state = initialState, action) => {
 
 export const readUser = (state) => ({
     id     : state.UserReducer.id,
+    sex    : state.UserReducer.sex,
     name   : state.UserReducer.name,
     room   : state.UserReducer.room,
     auth   : state.UserReducer.auth,
     email  : state.UserReducer.email,
     picture: state.UserReducer.picture,
+    avatar : state.UserReducer.avatar,
 });
-export const readImage = (state) => state.UserReducer.picture;
-export const readName  = (state) => state.UserReducer.name;
-export const readID    = (state) => state.UserReducer.id;
-export const readAuth  = (state) => state.UserReducer.auth;
-export const readRoom  = (state) => state.UserReducer.room;
+export const readImage  = (state) => state.UserReducer.picture;
+export const readName   = (state) => state.UserReducer.name;
+export const readID     = (state) => state.UserReducer.id;
+export const readAuth   = (state) => state.UserReducer.auth;
+export const readRoom   = (state) => state.UserReducer.room;
+export const readAvatar = (state) => state.UserReducer.avatar;
+export const readSex    = (state) => state.UserReducer.sex;
 
 export default reducer;
