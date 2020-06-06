@@ -1,4 +1,6 @@
 .content {
+    width: 100%;
+    min-height: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -6,8 +8,8 @@
 }
 
 .main-home {
-    height: 80%;
-    width: 80%;
+    height: 90%;
+    width: 90%;
     border-radius: 8px;
     padding: 10px;
     display: flex;
