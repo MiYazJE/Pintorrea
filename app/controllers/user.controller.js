@@ -115,7 +115,12 @@ async function getProfile(req, res) {
 async function changeAvatar(req, res) {
     const { avatar, id, imageUrl } = req.body;
     if (!avatar || !id || !imageUrl) return res.status(400).json({ msg: 'Los campos están vacíos.' });
-    const picture = await imageDataURi.encodeFromURL(imageUrl);
-    await userModel.updateOne({ _id: id }, { avatar, picture });
-    res.json({ picture, msg: 'El avatar se ha guardado correctamente.' });
+    try {
+        const picture = await imageDataURi.encodeFromURL(imageUrl);
+        await userModel.updateOne({ _id: id }, { avatar, picture });
+        res.json({ picture, msg: 'El avatar se ha guardado correctamente.' });
+    }
+    catch(err) {
+        res.status(400).json({ error: true, msg: 'Han surgido problemas creando el avatar.' })
+    }
 }

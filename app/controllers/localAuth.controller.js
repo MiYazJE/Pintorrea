@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 const { createToken } = require('../controllers/Helpers/auth-helpers');
 
 const optsCookie = {
-    expires: new Date(Date.now() + 3600000 * 24 * 7),
+    expires: new Date(Date.now() + (3600000 * 24 * 7)),
 	secure: process.env.ENVIROMENT === 'PRODUCTION',
 	httpOnly: true
 }
@@ -42,6 +42,7 @@ function whoAmI(req, res) {
     if (!user) {
         return res.status(401).send({ auth: false, message: 'No valid token' });
     }
+    res.cookie('jwt', req.cookies.jwt, optsCookie);
     res.status(200).send({
         auth: true,
         user

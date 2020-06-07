@@ -152,4 +152,5 @@ export default {
         'Vomit',
     ],
     skinColor: ['Tanned', 'Yellow', 'Pale', 'Light', 'Brown', 'DarkBrown', 'Black'],
+    avatarStyle: ['Circle'],
 };

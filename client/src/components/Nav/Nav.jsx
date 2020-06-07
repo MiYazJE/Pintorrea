@@ -89,6 +89,7 @@ const Nav = ({ user, logOut }) => {
                 title="Perfil"
                 onOk={toggleShowProfile}
                 onCancel={toggleShowProfile}
+                destroyOnClose={true}
             >
                 <Profile />
             </Modal>

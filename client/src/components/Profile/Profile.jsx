@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
 import { notification } from "antd";
 import { connect } from 'react-redux';
@@ -9,15 +9,20 @@ import "./profile.scss";
 const Profile = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => {
 
     const handleSaveAvatar = async (avatar, imageUrl) => {
-        uploadAvatar({ avatar, id, imageUrl }, (msg) => {
-            notification.success({ message: msg, duration: 8 });
-        });
+        uploadAvatar({ avatar, id, imageUrl }, 
+            (msg) => notification.success({ message: msg, duration: 5 }),
+            (msg) => notification.error({ message: msg, duration: 5 }),
+        );
     }
 
+    console.log(avatar)
     return (
         <div className="wrapProfile">
             <h1>{name}</h1>
-            <AvatarCustomizer onSave={handleSaveAvatar} initIndexes={avatar} />
+            <AvatarCustomizer 
+                onSave={handleSaveAvatar} 
+                initIndexes={{ ...avatar }} 
+            />
         </div>
     );
 }
