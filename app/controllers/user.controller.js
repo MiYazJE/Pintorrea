@@ -1,7 +1,7 @@
 const userModel = require('../models/user.model');
 const imageDataURi = require('image-data-uri');
 
-const { avatarFemale, avatarMale } = require('../models/user.defaults');
+const { avatarFemale, avatarMale, pictureFemale, pictureMale } = require('../models/user.defaults');
 
 module.exports = {
     nameAlreadyRegistered,
@@ -39,12 +39,17 @@ async function create(req, res) {
         ? avatarMale
         : avatarFemale;
 
+    const picture = sex === 'male'
+        ? pictureMale
+        : pictureFemale;
+
     const user = new userModel({
         name,
         email,
         password,
         sex,
-        avatar
+        avatar,
+        picture,
     });
 
     if (await nameAlreadyRegistered(name)) {

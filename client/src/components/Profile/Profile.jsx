@@ -17,19 +17,6 @@ const Profile = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => 
     return (
         <div className="wrapProfile">
             <h1>{name}</h1>
-            {/* <Upload
-                name="avatar"
-                listType="picture"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-            >
-                <Tooltip placement="right" style={{color: 'white'}} title="Cambiar imágen">
-                    <img src={picture} alt="avatar" style={{ width: '100px' }} />
-                </Tooltip>
-            </Upload> */}
             <AvatarCustomizer onSave={handleSaveAvatar} initIndexes={avatar} />
         </div>
     );
