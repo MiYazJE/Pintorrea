@@ -1,4 +1,5 @@
 const userModel = require('../models/user.model');
+const imageDataURi = require('image-data-uri');
 
 const { avatarFemale, avatarMale } = require('../models/user.defaults');
 
@@ -107,8 +108,9 @@ async function getProfile(req, res) {
 }
 
 async function changeAvatar(req, res) {
-    const { avatar, id } = req.body;
-    if (!avatar || !id) return res.status(400).json({ msg: 'Los campos están vacíos.' });
-    await userModel.updateOne({ _id: id }, { avatar });
-    res.json({ msg: 'El avatar se ha guardado correctamente.' });
+    const { avatar, id, imageUrl } = req.body;
+    if (!avatar || !id || !imageUrl) return res.status(400).json({ msg: 'Los campos están vacíos.' });
+    const picture = await imageDataURi.encodeFromURL(imageUrl);
+    await userModel.updateOne({ _id: id }, { avatar, picture });
+    res.json({ picture, msg: 'El avatar se ha guardado correctamente.' });
 }
