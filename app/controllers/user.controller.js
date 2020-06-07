@@ -14,6 +14,7 @@ module.exports = {
     uploadPicture,
     getProfile,
     changeAvatar,
+    changePictureFromAvatar
 };
 
 async function nameAlreadyRegistered(name) {
@@ -29,17 +30,17 @@ async function emailAlreadyRegistered(email) {
 }
 
 async function create(req, res) {
-    const { name, email, password, sex } = req.body;
+    const { name, email, password, gender } = req.body;
 
-    if (!name || !email || !password || !sex) {
+    if (!name || !email || !password || !gender) {
         return res.status(400).json({ msg: 'Empty fields.' });
     }
 
-    const avatar = sex === 'male'
+    const avatar = gender === 'male'
         ? avatarMale
         : avatarFemale;
 
-    const picture = sex === 'male'
+    const picture = gender === 'male'
         ? pictureMale
         : pictureFemale;
 
@@ -47,7 +48,7 @@ async function create(req, res) {
         name,
         email,
         password,
-        sex,
+        gender,
         avatar,
         picture,
     });
@@ -101,8 +102,8 @@ async function userNameExists(req, res) {
 async function uploadPicture(req, res) {
     const { picture, id } = req.body;
     if (!picture || !id) return res.status(401).json({ msg: 'Los campos están vacíos.' });
-    const user = await userModel.findOneAndUpdate({ _id: id }, { picture });
-    res.json({ picture: user.picture });
+    const user = await userModel.updateOne({ _id: id }, { picture, imageType: 'image' });
+    res.json({ picture });
 }
 
 async function getProfile(req, res) {
@@ -113,14 +114,39 @@ async function getProfile(req, res) {
 }
 
 async function changeAvatar(req, res) {
-    const { avatar, id, imageUrl } = req.body;
-    if (!avatar || !id || !imageUrl) return res.status(400).json({ msg: 'Los campos están vacíos.' });
+    const { avatar, id } = req.body;
+    if (!avatar || !id) return res.status(400).json({ msg: 'Los campos están vacíos.' });
     try {
-        const picture = await imageDataURi.encodeFromURL(imageUrl);
-        await userModel.updateOne({ _id: id }, { avatar, picture });
-        res.json({ picture, msg: 'El avatar se ha guardado correctamente.' });
+        await userModel.updateOne({ _id: id }, { avatar });
+        res.json({ msg: 'El avatar se ha guardado correctamente.' });
     }
     catch(err) {
         res.status(400).json({ error: true, msg: 'Han surgido problemas creando el avatar.' })
     }
 }
+
+async function changePictureFromAvatar(req, res) {
+    const { id, imageUrl } = req.body;
+    if (!id || !imageUrl) return res.status(400).json({ msg: 'Los campos están vacíos.' });
+    try {
+        const picture = await imageDataURi.encodeFromURL(imageUrl);
+        await userModel.updateOne({ _id: id }, { picture, imageType: 'avatar' });
+        res.json({ picture, msg: 'Ahora tienes el avatar como imágen de usuario.' });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(400).json({ error: true, msg: 'Problemas subiendo la imágen.' });
+    }
+}
+
+// async function update(req, res) {
+    // await userModel.update({}, { $rename : { 'sex' : 'gender' } }, { multi: true });
+    // await userModel.update({}, { gender: 'male' }, { multi: true });
+    // const users = await userModel.find({ });
+    // const promises = users.map((user) => {
+    //     console.log(user.name);
+    //     return userModel.updateOne({ _id: user._id }, { gender: 'male', avatar: avatarMale })
+    // });
+    // Promise.all(promises);
+    // res.status(201).send('test');
+// }

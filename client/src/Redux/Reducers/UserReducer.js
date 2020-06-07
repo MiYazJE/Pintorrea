@@ -1,14 +1,13 @@
-import ActionButton from "antd/lib/modal/ActionButton";
-
-const initialState = { 
-    id     : null,
-    sex    : null,
-    name   : null,
-    room   : null, 
-    auth   : false, 
-    email  : null,
+const initialState = {
+    id: null,
+    gender: null,
+    name: null,
+    room: null,
+    auth: false,
+    email: null,
     picture: null,
-    avatar : null,
+    avatar: null,
+    imageType: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -19,28 +18,34 @@ const reducer = (state = initialState, action) => {
                 email: action.user.email,
                 name: action.user.name,
                 picture: action.user.picture,
-                sex: action.user.sex,
+                gender: action.user.gender,
                 avatar: action.user.avatar,
+                imageType: action.user.imageType,
                 auth: true,
             };
         case 'LOGOUT_USER':
             return {
-                ...initialState
+                ...initialState,
             };
         case 'SET_PICTURE':
             return {
                 ...state,
-                picture: action.picture
-            }
-        case 'SET_AVATAR': 
+                picture: action.picture,
+            };
+        case 'SET_AVATAR':
             return {
                 ...state,
-                avatar: action.avatar
-            }
+                avatar: action.avatar,
+            };
         case 'JOIN_ROOM':
             return {
                 ...state,
                 room: action.room,
+            };
+        case 'SET_TYPE_IMAGE_SELECTED':
+            return {
+                ...state,
+                imageType: action.imageType,
             };
         default:
             return {
@@ -50,21 +55,23 @@ const reducer = (state = initialState, action) => {
 };
 
 export const readUser = (state) => ({
-    id     : state.UserReducer.id,
-    sex    : state.UserReducer.sex,
-    name   : state.UserReducer.name,
-    room   : state.UserReducer.room,
-    auth   : state.UserReducer.auth,
-    email  : state.UserReducer.email,
+    id: state.UserReducer.id,
+    gender: state.UserReducer.gender,
+    name: state.UserReducer.name,
+    room: state.UserReducer.room,
+    auth: state.UserReducer.auth,
+    email: state.UserReducer.email,
     picture: state.UserReducer.picture,
-    avatar : state.UserReducer.avatar,
+    avatar: state.UserReducer.avatar,
+    imageType: state.UserReducer.imageType,
 });
-export const readImage  = (state) => state.UserReducer.picture;
-export const readName   = (state) => state.UserReducer.name;
-export const readID     = (state) => state.UserReducer.id;
-export const readAuth   = (state) => state.UserReducer.auth;
-export const readRoom   = (state) => state.UserReducer.room;
+export const readImage = (state) => state.UserReducer.picture;
+export const readName = (state) => state.UserReducer.name;
+export const readID = (state) => state.UserReducer.id;
+export const readAuth = (state) => state.UserReducer.auth;
+export const readRoom = (state) => state.UserReducer.room;
 export const readAvatar = (state) => state.UserReducer.avatar;
-export const readSex    = (state) => state.UserReducer.sex;
+export const readSex = (state) => state.UserReducer.gender;
+export const readImageType = (state) => state.UserReducer.imageType;
 
 export default reducer;

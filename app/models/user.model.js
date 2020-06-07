@@ -6,14 +6,18 @@ const userSchema = mongoose.Schema({
     name: String,
     email: String,
     password: String,
-    sex: {
+    gender: {
         type: String,
         enum: ['male', 'female'],
     },
     picture: {
         type: String
     },
-    avatar: mongoose.Schema.Types.Mixed
+    avatar: mongoose.Schema.Types.Mixed,
+    imageType: {
+        type: String,
+        default: 'avatar'
+    }
 }, {
     timestamps: true
 })

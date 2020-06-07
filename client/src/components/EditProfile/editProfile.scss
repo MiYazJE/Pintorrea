@@ -1,0 +1,66 @@
+$sizeImages: 200px;
+
+.flex-column {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.wrapEditProfile {
+    width: 100%;
+    height: 350px;
+    background-color: #001529;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+
+    h1 {
+        text-align: center;
+        color: white;
+    }
+
+    .wrapImages {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .avatar {
+            @extend .flex-column;
+            width: $sizeImages;
+            height: $sizeImages;
+
+            button {
+                margin-top: 10px;
+            }
+        }
+
+        .profileImage {
+            @extend .flex-column;
+            width: $sizeImages;
+            height: $sizeImages;
+            span {
+                display: block;
+                padding: 0;
+            }
+            img {
+                width: $sizeImages;
+                height: $sizeImages;
+                object-fit: contain;
+            }
+        }
+
+    }
+
+    .wrapButtonsSelect {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+} 

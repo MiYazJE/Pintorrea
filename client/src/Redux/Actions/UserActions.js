@@ -92,18 +92,36 @@ export const logOut = (callback) => async (dispatch) => {
 
 export const uploadPicture = (picture, id, success) => async (dispatch) => {
     const data = await Http.post({ picture, id }, '/user/uploadPicture');
+    console.log(success)
     success();
+    dispatch(setTypeImage('image', id));
     dispatch(setPicture(data.picture));
 }
 
-export const uploadAvatar = ({ avatar, id, imageUrl }, success, error) => async (dispatch) => {
-    const data = await Http.post({ avatar, id, imageUrl }, '/user/profile/avatar');
+export const uploadAvatar = ({ avatar, id }, success, error) => async (dispatch) => {
+    const data = await Http.post({ avatar, id }, '/user/profile/avatar');
     if (!data.error) {
         success(data.msg);
-        dispatch(setPicture(data.picture))
         dispatch(setAvatar(avatar));
     }
     else {
         error(data.msg);
     }
 }
+
+export const uploadAvatarImage = ({ imageUrl, id }, success, error) => async (dispatch) => {
+    const data = await Http.post({ imageUrl, id }, '/user/profile/avatar/image');
+    if (!data.error) {
+        success(data.msg, data.picture);
+        dispatch(setTypeImage('avatar'));
+        dispatch(setPicture(data.picture));
+    }
+    else {
+        error(data.msg);
+    }
+}
+
+export const setTypeImage = (imageType) => ({
+    type: 'SET_TYPE_IMAGE_SELECTED',
+    imageType
+});

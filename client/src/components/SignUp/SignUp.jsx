@@ -21,7 +21,7 @@ const Register = ({ register }) => {
 
     useEffect(() => {
         form.setFieldsValue({
-            sex: 'male'
+            gender: 'male'
         });
     }, []);
 
@@ -151,7 +151,7 @@ const Register = ({ register }) => {
                                 placeholder="Introduce de nuevo la contraseña..."
                             />
                         </Form.Item>
-                        <Form.Item name="sex">
+                        <Form.Item name="gender">
                                 <Radio.Group size="middle">
                                     <Radio.Button value="male">
                                         <span className="radioItem">
