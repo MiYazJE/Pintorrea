@@ -1,48 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
-import { Upload, message, Tooltip } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import { notification } from "antd";
 import { connect } from 'react-redux';
 import { uploadPicture, uploadAvatar } from '../../Redux/Actions/UserActions';
 import { readImage, readName, readID, readAvatar } from '../../Redux/Reducers/UserReducer';
 import "./profile.scss";
 
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-        message.error('Solo puedes subir ficheros jpeg y png!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-        message.error('La imágen no debe superar 2mb!');
-    }
-    return isJpgOrPng && isLt2M;
-}
-
 const Profile = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => {
 
-    const handleChange = info => {
-        if (info.file.status === 'uploading') {
-            return;
-        }
-        if (info.file.status === 'done') {
-            getBase64(info.file.originFileObj, async (image) => {
-                uploadPicture(image, id, () => {
-                    message.success('La imágen ha sido actualizada');
-                });
-            });
-        }
-    };
-
-    const handleSaveAvatar = (avatar) => {
-        uploadAvatar({ avatar, id }, (msg) => {
-            message.success(msg);
+    const handleSaveAvatar = async (avatar, imageUrl) => {
+        uploadAvatar({ avatar, id, imageUrl }, (msg) => {
+            notification.success({ message: msg, duration: 8 });
         });
     }
 

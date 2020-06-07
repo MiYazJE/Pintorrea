@@ -62,15 +62,15 @@ const Nav = ({ user, logOut }) => {
                 {user.auth ? (
                     <SubMenu
                         title={
-                            <span>
+                            <span style={{display: 'flex', alignItems: 'center'}}>
                                 <Avatar style={{backgroundColor: 'white'}} src={user.picture} />
-                                <span>{user.name}</span>
+                                <span style={{marginLeft: '5px'}}>{user.name}</span>
                             </span>
                         }
                     >
                         <Menu.Item onClick={toggleShowProfile} key="setting:2">
                             <ProfileOutlined style={{ marginRight: "5px" }} />
-                            Ver perfil
+                            Avatar
                         </Menu.Item>
                         <Menu.Item key="setting:1" onClick={handleLogout}>
                             <LogoutOutlined style={{ marginRight: "5px" }} />

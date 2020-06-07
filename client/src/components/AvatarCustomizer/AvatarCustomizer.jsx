@@ -5,6 +5,8 @@ import './avatarCustomizer.scss';
 import { Button } from 'antd';
 import options from './options';
 
+const URL_IMG = 'https://avataaars.io/';
+
 const AvatarCustomizer = ({ onSave, initIndexes }) => {
     const [indexes, setIndexes]                 = useState(initIndexes);
     const [topType, setTopType]                 = useState(['LongHairMiaWallace', 0]);
@@ -28,6 +30,7 @@ const AvatarCustomizer = ({ onSave, initIndexes }) => {
         clotheType     : [clotheType, setClotheType],
         clotheColor    : [clotheColor, setClotheColor],
         eyebrowType    : [eyebrowType, setEyebrowType],
+        avatarStyle    : [avatarStyle, setAvatarStyle],
         facialHairType : [facialHairType, setFacialHairType],
         accessoriesType: [accessoriesType, setAccessoriesType],
     };
@@ -63,7 +66,20 @@ const AvatarCustomizer = ({ onSave, initIndexes }) => {
     }
 
     const handleSaveAvatar = () => {
-        if (typeof onSave === 'function') onSave(indexes);
+        if (typeof onSave === 'function') {
+            const url = getUrlImage();
+            onSave(indexes, url);
+        }
+    }
+
+    const getUrlImage = () => {
+        let url = URL_IMG + '?';
+        Object.keys(selectors).forEach((key, index) => {
+            url += `${key}=${selectors[key][0][0]}`;
+            if (index < Object.keys(selectors).length - 1)
+                url += '&';
+        });
+        return url;
     }
 
     return (

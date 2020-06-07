@@ -96,8 +96,9 @@ export const uploadPicture = (picture, id, success) => async (dispatch) => {
     dispatch(setPicture(data.picture));
 }
 
-export const uploadAvatar = ({ avatar, id }, callback) => async (dispatch) => {
-    const data = await Http.post({ avatar, id }, '/user/profile/avatar');
+export const uploadAvatar = ({ avatar, id, imageUrl }, callback) => async (dispatch) => {
+    const data = await Http.post({ avatar, id, imageUrl }, '/user/profile/avatar');
     callback(data.msg);
+    dispatch(setPicture(data.picture))
     dispatch(setAvatar(avatar));
 }
