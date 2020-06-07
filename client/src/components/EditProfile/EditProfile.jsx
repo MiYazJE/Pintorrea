@@ -55,14 +55,14 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
     };
 
     const handleSelectAvatar = () => {
-        if (avatarSelected) return;
         const { imageUrl } = refAvatar.current.save();
         uploadAvatarImage(
             { imageUrl, id },
             (msg, picture) => {
                 notification.success({ message: msg, duration: 5 })
-                toggleSelectedButtons();
                 setImageUploaded(picture)
+                if (!avatarSelected)
+                    toggleSelectedButtons();
             },  
             (msg) => notification.error({ message: msg, duration: 5 }),  
         );
