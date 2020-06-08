@@ -46,7 +46,7 @@ const Nav = ({ user, logOut, picture }) => {
             {redirect ? <Redirect to="/login" /> : null}
             <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
-                <Menu.Item key="1">
+                <Menu.Item key="link-inicio">
                     <Link to="/">Inicio</Link>
                 </Menu.Item>
                 <SubMenu
@@ -57,8 +57,8 @@ const Nav = ({ user, logOut, picture }) => {
                         </span>
                     }
                 >
-                    <Menu.Item key="setting:1" onClick={() => setShowEditAvatar(true)}>Option 1</Menu.Item>
-                    <Menu.Item key="setting:2" onClick={() => setShowProfile(true)}>Option 2</Menu.Item>
+                    <Menu.Item>Option 1</Menu.Item>
+                    <Menu.Item>Option 2</Menu.Item>
                 </SubMenu>
                 {user.auth ? (
                     <SubMenu
@@ -70,39 +70,36 @@ const Nav = ({ user, logOut, picture }) => {
                         }
                     >
                         <Menu.ItemGroup title="Perfil">
-                            <Menu.Item onClick={() => setShowProfile(true)} key="setting:3">
+                            <Menu.Item key="link-profile" onClick={() => setShowProfile(true)}>
                                 <ProfileOutlined style={{ marginRight: "5px" }} />
                                 Editar
                             </Menu.Item>
-                            <Menu.Item onClick={() => setShowEditAvatar(true)} key="setting:4">
+                            <Menu.Item key="link-avatar" onClick={() => setShowEditAvatar(true)}>
                                 <ProfileOutlined style={{ marginRight: "5px" }} />
                                 Avatar
                             </Menu.Item>
                         </Menu.ItemGroup>
-                        <Menu.Item key="setting:5" onClick={handleLogout}>
+                        <Menu.Item key="link-logout" onClick={handleLogout}>
                             <LogoutOutlined style={{ marginRight: "5px" }} />
                             Cerrar sesión
                         </Menu.Item>
                     </SubMenu>
                 ) : (
-                        <Menu.Item key="alipay">
+                        <Menu.Item>
                             <UserOutlined />
                             <Link to="/login">Iniciar sesión</Link>
                         </Menu.Item>
                     )}
             </Menu>
-            <Modal
+            {/* <Modal
                 visible={showEditAvatar || showProfile}
                 onOk={toggleShowModal}
                 onCancel={toggleShowModal}
                 destroyOnClose={true}
             >
-                {/* <div>
-                    Hola mundo
-                </div> */}
                 {showProfile ? <EditProfile /> : null}
                 {showEditAvatar ? <EditAvatar /> : null}
-            </Modal>
+            </Modal> */}
         </Header>
     );
 }
