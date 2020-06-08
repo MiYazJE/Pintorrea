@@ -2,11 +2,9 @@ const passport        = require('passport');
 const { createToken } = require('../controllers/Helpers/auth-helpers');
 const userModel       = require('../models/user.model');
 
-const { DOMAIN } = require('../../config/config');
-
 const optsCookie = {
-    expires: new Date(Date.now() + (3600000 * 24 * 7)),
-	secure: process.env.ENVIROMENT === 'PRODUCTION',
+    expires: new Date(Date.now() + 3600000),
+	secure: false, 
 	httpOnly: true
 }
 
@@ -16,7 +14,7 @@ const scope = [
     'https://mail.google.com/'	
 ];
 
-const REDIRECT_CALLBACK = process.env.ENVIROMENT === 'DEVELOPMENT' ? 'http://localhost:3000/login' : `${DOMAIN}/login`;
+const REDIRECT_CALLBACK = process.env.ENVIROMENT === 'DEVELOPMENT' ? 'http://localhost:3000/login' : '/login';
 
 module.exports = {
     strategy,
