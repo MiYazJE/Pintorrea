@@ -134,6 +134,7 @@ async function changePictureFromAvatar(req, res) {
         res.json({ picture, msg: 'Ahora tienes el avatar como imágen de usuario.' });
     }
     catch (err) {
+        console.log(imageUrl)
         console.log(err);
         res.status(400).json({ error: true, msg: 'Problemas subiendo la imágen.' });
     }
