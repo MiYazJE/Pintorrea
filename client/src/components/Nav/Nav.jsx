@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import EditAvatar from '../EditAvatar/EditAvatar';
 import EditProfile from '../EditProfile/EditProfile'
-import { Layout, Menu, Modal, notification, Avatar } from "antd";
+import { Layout, Menu, notification, Avatar } from "antd";
+import Drawer from 'react-drag-drawer';
 import {
     UserOutlined,
     LogoutOutlined,
@@ -98,15 +99,13 @@ const Nav = ({ user, logOut, picture }) => {
                         </Menu.Item>
                     )}
             </Menu>
-            <Modal
-                visible={showModal}
-                onOk={toggleShowModal}
-                onCancel={toggleShowModal}
-                destroyOnClose={true}
+            <Drawer
+                open={showModal}
+                onRequestClose={toggleShowModal}
             >
                 {showProfile ? <EditProfile /> : null}
                 {showEditAvatar ? <EditAvatar /> : null}
-            </Modal>
+            </Drawer>
         </Header>
     );
 }

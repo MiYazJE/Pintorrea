@@ -25,11 +25,11 @@ const EditAvatar = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) 
     return (
         <div className="wrapProfile">
             <h1>{name}</h1>
-            {/* <AvatarCustomizer ref={refAvatar} onSave={handleSaveAvatar} initIndexes={{ ...avatar }} />
+            <AvatarCustomizer ref={refAvatar} onSave={handleSaveAvatar} initIndexes={{ ...avatar }} />
             <div className="wrapButtons">
                 <Button onClick={handleSaveAvatar}>Guardar avatar</Button>
                 <Button onClick={handleRandomGenerator}>Generar aleatoriamente</Button>
-            </div> */}
+            </div>
         </div>
     );
 };

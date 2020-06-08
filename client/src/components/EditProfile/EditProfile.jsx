@@ -76,7 +76,7 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
     return (
         <div className="wrapEditProfile">
             <h1>{name}</h1>
-            {/* <div className="wrapImages">
+            <div className="wrapImages">
                 <div className="avatar">
                     <AvatarCustomizer ref={refAvatar} initIndexes={{ ...avatar }} onlyAvatar={true} />
                     <Button type={avatarSelected ? 'primary' : null} onClick={handleSelectAvatar}>
@@ -99,7 +99,7 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
                         Utiliza tu propia imágen
                     </Button>
                 </div>
-            </div> */}
+            </div>
         </div>
     );
 };
