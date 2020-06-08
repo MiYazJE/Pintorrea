@@ -21,12 +21,14 @@ const key = 'updatable';
 
 const Nav = ({ user, logOut, picture }) => {
     const [showProfile, setShowProfile] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [showEditAvatar, setShowEditAvatar] = useState(false);
     const [redirect, setRedirect] = useState(false);
 
     const toggleShowModal = () => {
         setShowEditAvatar(false);
-        setShowProfile(false)
+        setShowProfile(false);
+        setShowModal(false);
     }
 
     const handleLogout = () => {
@@ -39,6 +41,11 @@ const Nav = ({ user, logOut, picture }) => {
             });
             setRedirect(true);
         });
+    }
+
+    const handleShowModal = (set) => {
+        set(true);
+        setShowModal(true)
     }
 
     return (
@@ -70,11 +77,11 @@ const Nav = ({ user, logOut, picture }) => {
                         }
                     >
                         <Menu.ItemGroup title="Perfil">
-                            <Menu.Item key="link-profile" onClick={() => setShowProfile(true)}>
+                            <Menu.Item key="link-profile" onClick={() => handleShowModal(setShowProfile)}>
                                 <ProfileOutlined style={{ marginRight: "5px" }} />
                                 Editar
                             </Menu.Item>
-                            <Menu.Item key="link-avatar" onClick={() => setShowEditAvatar(true)}>
+                            <Menu.Item key="link-avatar" onClick={() => handleShowModal(setShowEditAvatar)}>
                                 <ProfileOutlined style={{ marginRight: "5px" }} />
                                 Avatar
                             </Menu.Item>
@@ -91,15 +98,15 @@ const Nav = ({ user, logOut, picture }) => {
                         </Menu.Item>
                     )}
             </Menu>
-            {/* <Modal
-                visible={showEditAvatar || showProfile}
+            <Modal
+                visible={showModal}
                 onOk={toggleShowModal}
                 onCancel={toggleShowModal}
                 destroyOnClose={true}
             >
-            </Modal> */}
                 {showProfile ? <EditProfile /> : null}
                 {showEditAvatar ? <EditAvatar /> : null}
+            </Modal>
         </Header>
     );
 }
