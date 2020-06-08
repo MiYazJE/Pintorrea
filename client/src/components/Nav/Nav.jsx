@@ -57,8 +57,8 @@ const Nav = ({ user, logOut, picture }) => {
                         </span>
                     }
                 >
-                    <Menu.Item key="setting:1">Option 1</Menu.Item>
-                    <Menu.Item key="setting:2">Option 2</Menu.Item>
+                    <Menu.Item key="setting:1" onClick={() => setShowEditAvatar(true)}>Option 1</Menu.Item>
+                    <Menu.Item key="setting:2" onClick={() => setShowProfile(true)}>Option 2</Menu.Item>
                 </SubMenu>
                 {user.auth ? (
                     <SubMenu
@@ -97,11 +97,11 @@ const Nav = ({ user, logOut, picture }) => {
                 onCancel={toggleShowModal}
                 destroyOnClose={true}
             >
-                <div>
+                {/* <div>
                     Hola mundo
-                </div>
-                {/* {showProfile ? <EditProfile /> : null}
-                {showEditAvatar ? <EditAvatar /> : null} */}
+                </div> */}
+                {showProfile ? <EditProfile /> : null}
+                {showEditAvatar ? <EditAvatar /> : null}
             </Modal>
         </Header>
     );
