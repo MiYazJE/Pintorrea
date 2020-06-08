@@ -91,7 +91,7 @@ const Nav = ({ user, logOut, picture }) => {
                         </Menu.Item>
                     )}
             </Menu>
-            {/* <Modal
+            <Modal
                 visible={showEditAvatar || showProfile}
                 onOk={toggleShowModal}
                 onCancel={toggleShowModal}
@@ -99,7 +99,7 @@ const Nav = ({ user, logOut, picture }) => {
             >
                 {showProfile ? <EditProfile /> : null}
                 {showEditAvatar ? <EditAvatar /> : null}
-            </Modal> */}
+            </Modal>
         </Header>
     );
 }
