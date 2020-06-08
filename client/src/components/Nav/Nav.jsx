@@ -97,8 +97,11 @@ const Nav = ({ user, logOut, picture }) => {
                 onCancel={toggleShowModal}
                 destroyOnClose={true}
             >
-                {showProfile ? <EditProfile /> : null}
-                {showEditAvatar ? <EditAvatar /> : null}
+                <div>
+                    Hola mundo
+                </div>
+                {/* {showProfile ? <EditProfile /> : null}
+                {showEditAvatar ? <EditAvatar /> : null} */}
             </Modal>
         </Header>
     );
