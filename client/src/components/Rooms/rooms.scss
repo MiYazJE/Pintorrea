@@ -7,6 +7,12 @@ $height-title: 30px;
     margin-right: 20px;
     min-width: 535px;
 
+    .btnPreRoom {
+        background-color: #008CFF;
+        color: white;
+        border: none;
+    }
+
     .title-rooms {
         height: $height-title;
         color: white;

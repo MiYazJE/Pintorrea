@@ -28,6 +28,10 @@ export const joinRoom = (room) => ({
     room
 });
 
+export const leaveRoom = () => ({
+    type: 'LEAVE_ROOM', 
+});
+
 export const setPicture = (picture) => ({
     type: 'SET_PICTURE', 
     picture

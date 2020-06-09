@@ -14,7 +14,9 @@ module.exports = {
     uploadPicture,
     getProfile,
     changeAvatar,
-    changePictureFromAvatar
+    changePictureFromAvatar,
+    createRoom,
+    joinRoom
 };
 
 async function nameAlreadyRegistered(name) {
@@ -137,6 +139,20 @@ async function changePictureFromAvatar(req, res) {
         console.log(err);
         res.status(400).json({ error: true, msg: 'Problemas subiendo la imágen.' });
     }
+}
+
+function createRoom(req, res) {
+    const { user } = req.body;
+    if (!user) return res.status(400).json({ msg: 'El usuario esta vacío.' });
+    const { ioCtrl } = req.app.locals;
+    const id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+    ioCtrl.roomsCtrl.createPrivateRoom(user, id);
+    const room = ioCtrl.roomsCtrl.getRoom(id);
+    res.json(room);
+}
+
+function joinRoom(req, res)  {
+    
 }
 
 // async function update(req, res) {

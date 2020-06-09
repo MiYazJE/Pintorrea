@@ -47,6 +47,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 imageType: action.imageType,
             };
+        case 'LEAVE_ROOM':
+            return {
+                ...state,
+                room: null,
+            };
         default:
             return {
                 ...state,

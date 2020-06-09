@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { readAuth } from '../../Redux/Reducers/UserReducer';
 import { verifyAuth } from '../../Redux/Actions/UserActions';
 
-const PrivateRoute = ({ component: Component, checkAuth, auth, ...rest }) => {
+const PrivateRoute = ({ component: Component, verifyAuth, auth, ...rest }) => {
 
     useEffect(() => {
         verifyAuth();

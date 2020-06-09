@@ -1,3 +1,5 @@
+import io from 'socket.io-client';
+
 const initialState = {
     drawerName  : null,
     currentRound: null,
@@ -7,6 +9,11 @@ const initialState = {
     isDrawer    : false,
     messages    : [],
     isStarted   : false,
+    privateRoom : null,
+    loadingRoom : false,
+    rooms       : [],
+    coordinates : [],
+    socket      : io.connect()
 };
 
 const reducer = (state = initialState, action) => {
@@ -67,6 +74,27 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 isStarted: action.isStarted
             }
+        case 'SET_PRIVATE_ROOM':
+            return {
+                ...state,
+                privateRoom: action.privateRoom,
+                loadingRoom: true,
+            }
+        case 'SET_LOADING_ROOM':
+            return {
+                ...state,
+                loadingRoom: false,
+            }
+        case 'SET_ROOMS':
+            return {
+                ...state,
+                rooms: action.rooms,
+            }
+        case 'SET_COORDINATES':
+            return {
+                ...state,
+                coordinates: action.coordinates,
+            }
         default:
             return {
                 ...state,
@@ -82,5 +110,10 @@ export const readMessages     = (state) => state.gameReducer.messages;
 export const readMaxRound     = (state) => state.gameReducer.maxRound;
 export const readCurrentRound = (state) => state.gameReducer.currentRound;
 export const readIsStarted    = (state) => state.gameReducer.isStarted;
+export const readPrivateRoom  = (state) => state.gameReducer.privateRoom;
+export const readLoadingRoom  = (state) => state.gameReducer.loadingRoom;
+export const readRooms        = (state) => state.gameReducer.rooms;
+export const readCoordinates  = (state) => state.gameReducer.coordinates;
+export const readSocket       = (state) => state.gameReducer.socket;
 
 export default reducer;

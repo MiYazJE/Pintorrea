@@ -19,4 +19,7 @@ router.get('/auth/google/callback', passport.authenticate('google'), googleAuthC
 // router.delete('/dictionary/:topic',  dictionaryCtrl.dictionary);
 router.get('/dictionary/randomWords',  dictionaryCtrl.randomWords);
 
+router.post('/user/game/createRoom',       usersCtrl.createRoom);
+router.get( '/user/game/joinRoom/:idRoom', usersCtrl.joinRoom);
+
 module.exports = router;

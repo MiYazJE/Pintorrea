@@ -13,11 +13,6 @@ const dev = process.env.ENVIROMENT === 'DEVELOPMENT';
 (async function initApp() {
 
     require('dotenv').config();
-    if (!dev) {
-        app.use(express.static(path.join(__dirname, 'client/build')));
-        app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, 'client/build', 'index.html')));
-    }
-
     app.use(require('morgan')('tiny'));
 
     initSession();
@@ -64,11 +59,13 @@ function initRoutes() {
     app.use('/',  require('./app/routes/api.routes'));
     app.use('/user', require('./app/routes/users.routes'));
     if (!dev) {
+        app.use(express.static(path.join(__dirname, 'client/build')));
         app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'client/build', 'index.html')));
     }
 }
 
 function initSocketIO(server) {
     const io = socketIO(server);
-    require('./lib/socket-io.js')(io);
+    const ioCtrl = require('./lib/socket-io.js')(io);
+    app.locals.ioCtrl = ioCtrl;
 }

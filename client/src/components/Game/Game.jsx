@@ -5,6 +5,7 @@ import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from 'react-canvas-draw';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from 'react-redux';
+import { leaveRoom } from '../../Redux/Actions/UserActions';
 import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
 import {
     readIsDrawer,
@@ -24,6 +25,7 @@ import {
     setCurrentRound,
     setMaxRound,
     setIsStarted,
+    setRooms,
 } from '../../Redux/Actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
@@ -51,7 +53,8 @@ const Game = ({
     addMessage,
     setCurrentRound,
     setMaxRound,
-    setIsStarted
+    setIsStarted,
+    leaveRoom
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
@@ -73,6 +76,7 @@ const Game = ({
     const canvasRef = useRef(null);
 
     useEffect(() => {
+        console.log('wow')
         window.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'z') {
                 handleUndo();
@@ -150,7 +154,10 @@ const Game = ({
             setFinalPuntuation(users);
         });
 
-        return () => socket.disconnect();
+        return () => {
+            leaveRoom();
+            socket.disconnect();
+        }
     }, []);
 
     const startEventChooseWord = async (wordsToChoose) => {
@@ -291,5 +298,6 @@ export default connect(mapStateToProps, {
     resetMessages,
     setCurrentRound,
     setMaxRound,
-    setIsStarted
+    setIsStarted,
+    leaveRoom
 })(Game);
