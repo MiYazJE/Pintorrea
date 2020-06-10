@@ -16,7 +16,7 @@ module.exports = {
     changeAvatar,
     changePictureFromAvatar,
     createRoom,
-    joinRoom
+    isValidRoom
 };
 
 async function nameAlreadyRegistered(name) {
@@ -151,8 +151,12 @@ function createRoom(req, res) {
     res.json(room);
 }
 
-function joinRoom(req, res)  {
-    
+function isValidRoom(req, res) {
+    const { idRoom } = req.params;
+    if (!idRoom) return res.status(401).json({ valid: false });
+    const { ioCtrl } = req.app.locals;
+    const room = ioCtrl.roomsCtrl.getRoom(idRoom);
+    res.json({ valid: room && room.isPrivate });
 }
 
 // async function update(req, res) {
