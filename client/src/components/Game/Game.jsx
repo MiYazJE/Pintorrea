@@ -32,6 +32,7 @@ import './game.scss';
 import GameProgress from '../GameProgress/GameProgress';
 import ShowInteraction from './ShowInteraction';
 import ResizeObserver from 'resize-observer-polyfill';
+import { useHistory } from 'react-router-dom';
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
@@ -54,7 +55,7 @@ const Game = ({
     setCurrentRound,
     setMaxRound,
     setIsStarted,
-    leaveRoom
+    leaveRoom,
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
@@ -71,12 +72,14 @@ const Game = ({
     const [wrapCanvasWidth, setWrapCanvasWidth] = useState(0);
     const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
     const [canvasOberserver, setCanvasObserver] = useState(null);
+    const history = useHistory();
 
     const wrapCanvasRef = useRef(null);
     const canvasRef = useRef(null);
 
     useEffect(() => {
-        console.log('wow')
+        if (!user.room) return history.push('/');
+
         window.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'z') {
                 handleUndo();
@@ -101,6 +104,7 @@ const Game = ({
     }, [wrapCanvasRef.current]);
 
     useEffect(() => {
+        if (!user.room) return history.push('/');
         socket.on('message', (message) => {
             console.log(message);
             addMessage(message);
@@ -157,7 +161,7 @@ const Game = ({
         return () => {
             leaveRoom();
             socket.disconnect();
-        }
+        };
     }, []);
 
     const startEventChooseWord = async (wordsToChoose) => {
@@ -279,13 +283,13 @@ const Game = ({
 };
 
 const mapStateToProps = (state) => ({
-    user      : readUser(state),
-    room      : readRoom(state),
-    isDrawer  : readIsDrawer(state),
+    user: readUser(state),
+    room: readRoom(state),
+    isDrawer: readIsDrawer(state),
     drawerName: readDrawerName(state),
-    guessed   : readGuessed(state),
+    guessed: readGuessed(state),
     actualWord: readActualWord(state),
-    messages  : readMessages(state),
+    messages: readMessages(state),
 });
 
 export default connect(mapStateToProps, {
@@ -299,5 +303,5 @@ export default connect(mapStateToProps, {
     setCurrentRound,
     setMaxRound,
     setIsStarted,
-    leaveRoom
+    leaveRoom,
 })(Game);
