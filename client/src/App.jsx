@@ -9,8 +9,7 @@ const App = ({ verifyAuth }) => {
     useEffect(() => {
         verifyAuth();
     }, []);
-
-    console.log('aaaa')
+    
     return (
         <Router>
             <Routes />

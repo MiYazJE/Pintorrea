@@ -4,7 +4,7 @@ const initialState = {
     name: null,
     room: null,
     auth: false,
-    userLoading: false,
+    userLoading: true,
     email: null,
     picture: null,
     avatar: null,
