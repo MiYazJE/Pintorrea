@@ -4,6 +4,7 @@ const initialState = {
     name: null,
     room: null,
     auth: false,
+    userLoading: false,
     email: null,
     picture: null,
     avatar: null,
@@ -21,7 +22,7 @@ const reducer = (state = initialState, action) => {
                 gender: action.user.gender,
                 avatar: action.user.avatar,
                 imageType: action.user.imageType,
-                auth: true,
+                auth: true
             };
         case 'LOGOUT_USER':
             return {
@@ -52,6 +53,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 room: null,
             };
+        case 'SET_USER_AUTH_LOADING':
+            return {
+                ...state,
+                userLoading: action.loading,
+            };
         default:
             return {
                 ...state,
@@ -78,5 +84,6 @@ export const readRoom = (state) => state.UserReducer.room;
 export const readAvatar = (state) => state.UserReducer.avatar;
 export const readSex = (state) => state.UserReducer.gender;
 export const readImageType = (state) => state.UserReducer.imageType;
+export const readUserLoading = (state) => state.UserReducer.userLoading;
 
 export default reducer;

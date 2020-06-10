@@ -52,25 +52,25 @@ export const setCoordinates = (coordinates) => ({
     coordinates
 });
 
-export const joinPrivateRoom = (user, callback) => async (dispatch) => {
-    dispatch(setLoadingRoom(true));
-    const room = await Http.post({ user }, '/user/game/createRoom');
-    dispatch(setPrivateRoom(room));
-    dispatch(setLoadingRoom(false));
-    callback();
-}
-
 export const setPrivateRoom = (privateRoom) => ({
     type: 'SET_PRIVATE_ROOM',
     privateRoom
 });
 
-const setLoadingRoom = (loadingRoom) => ({
-    type: 'SET_LOADING_ROOM',
-    loadingRoom
-});
 
 export const setRooms = (rooms) => ({
     type: 'SET_ROOMS',
     rooms
+});
+
+export const joinPrivateRoom = (user, callback) => async (dispatch) => {
+    dispatch(setLoadingRoom(true));
+    const room = await Http.post({ user }, '/user/game/createRoom');
+    dispatch(setLoadingRoom(false));
+    callback(room.id);
+}
+
+const setLoadingRoom = (loadingRoom) => ({
+    type: 'SET_LOADING_ROOM',
+    loadingRoom
 });

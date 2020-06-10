@@ -1,16 +1,15 @@
-import { createStore, applyMiddleware } from 'redux';
-import reducers from './Reducers';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+import rootReducer from './Reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { persistStore } from 'redux-persist';
 
-const devTools = 
+const composeFunction =
     process.env.REACT_APP_ENVIROMENT === 'PRODUCTION'
-        ? applyMiddleware(thunk)
-        : composeWithDevTools(applyMiddleware(thunk));
+    ? compose 
+    : composeWithDevTools; 
 
-const store = createStore(
-    reducers, 
-    devTools
-);
+export const store     = createStore(rootReducer, {}, composeFunction(applyMiddleware(thunk)));
+export const persistor = persistStore(store);
 
-export default store;
+export default { store, persistor };

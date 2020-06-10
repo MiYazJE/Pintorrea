@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, InputNumber, Select, Divider, Tooltip } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../Redux/Reducers/UserReducer';
@@ -6,6 +7,7 @@ import './privateRoom.scss';
 import io from 'socket.io-client';
 import { readPrivateRoom } from '../../Redux/Reducers/gameReducer';
 import { setPrivateRoom } from '../../Redux/Actions/gameActions';
+import Http from '../../Helpers/Http';
 
 const { Option } = Select;
 
@@ -23,56 +25,67 @@ const getOptions = (start, final, increment) => {
 
 let socket;
 
-const PrivateRoom = ({ user, match, room }) => {
-    const [currentPlayers, setCurrentPlayers] = useState(room.players);
-    const [maxPlayers, setMaxPlayers] = useState(room.max);
-    const [drawingTime, setDrawingTime] = useState(room.drawingTime);
-    const [rounds, setRounds] = useState(room.rounds);
+const PrivateRoom = ({ user, match }) => {
+    const [room, setRoom] = useState({});
+    const [isHost, setIsHost] = useState(true);
+    const [currentPlayers, setCurrentPlayers] = useState(0);
+    const [maxPlayers, setMaxPlayers] = useState(0);
+    const [drawingTime, setDrawingTime] = useState(0);
+    const [rounds, setRounds] = useState(0);
     const [optionsTime, setOptionsTime] = useState(getOptions(60, 150, 10));
     const [optionsRounds, setOptionsRounds] = useState(getOptions(3, 10, 1));
+    const history = useHistory();
+
+    useEffect(() => {
+        console.log(user);  
+        (async () => {
+            // const { id } = match.params;
+            // if (!id || (!await isValidRoom(id)))
+            //     return history.push('/login');
+    
+            // socket = io();
+            // console.log(user.name, 'join room');
+            // socket.emit('joinPrivateRoom', { user, id });
+    
+            // socket.on('updateSettings', ({ room }) => {
+            //     console.log('updating room settings', room);
+            //     setRoom(room);
+            // });
+    
+            // return () => socket.disconnect();
+        })();
+    }, []);
 
     useEffect(() => {
         setCurrentPlayers(room.players);
         setMaxPlayers(room.max);
-        setDrawingTime(drawingTime);
-        setRounds(rounds);
+        setDrawingTime(room.drawingTime);
+        setRounds(room.rounds);
     }, [room]);
 
-    useEffect(() => {
-        socket = io();
-
-        console.log(room)
-        socket.emit('joinPrivateRoom', { user, id: room.id });
-
-        socket.on('updateSettings', ({ room }) => {
-            console.log(room);
-            setPrivateRoom(room)
-        });
-
-        return () => socket.disconnect();
-    }, []);
-
-    const setConfiguration = ({}) => {
-        console.log();
-    };
+    const isValidRoom = async (id) => {
+        const { valid } = await Http.get(`/user/game/room/valid/${id}`);
+        console.log(valid)
+        return valid;
+    }
 
     const handleChangeDrawingTime = (drawingTime) => {
-        socket.emit('changeSettingsPrivateRoom', { 
+        socket.emit('changeSettingsPrivateRoom', {
             newRoom: { ...room, drawingTime },
         });
     };
 
     const handleChangeMaxPlayers = (max) => {
-        socket.emit('changeSettingsPrivateRoom', { 
+        socket.emit('changeSettingsPrivateRoom', {
             newRoom: { ...room, max },
         });
-    }
-    
+    };
+
     const handleChangeGameRounds = (rounds) => {
-        socket.emit('changeSettingsPrivateRoom', { 
+        socket.emit('changeSettingsPrivateRoom', {
             newRoom: { ...room, rounds },
         });
-    }
+    };
 
     return (
         <div className="wrapPreRoom">
@@ -83,11 +96,17 @@ const PrivateRoom = ({ user, match, room }) => {
                     <Form layout="vertical" initialValues={initialFormValues}>
                         <Form.Item label="Jugadores">
                             <Form.Item name="fieldCurrentPlayers" noStyle>
-                                <InputNumber style={{ width: 200 }} onChange={handleChangeMaxPlayers} min={currentPlayers} max={20} />
+                                <InputNumber
+                                    disabled={!isHost}
+                                    style={{ width: 200 }}
+                                    onChange={handleChangeMaxPlayers}
+                                    min={currentPlayers}
+                                    max={20}
+                                />
                             </Form.Item>
                         </Form.Item>
                         <Form.Item label="Tiempo de dibujado por turno">
-                            <Select defaultValue="80" onChange={handleChangeDrawingTime} style={{ width: 200 }}>
+                            <Select disabled={!isHost} defaultValue="80" onChange={handleChangeDrawingTime} style={{ width: 200 }}>
                                 {optionsTime}
                             </Select>
                         </Form.Item>
@@ -96,8 +115,8 @@ const PrivateRoom = ({ user, match, room }) => {
                                 {optionsRounds}
                             </Select>
                         </Form.Item>
-                        <Tooltip title={currentPlayers === 1 ? 'Necesario ser mas de 1 jugador.' : null}>
-                            <Button className="btnStart" disabled={currentPlayers === 1}>
+                        <Tooltip title={isHost && currentPlayers === 1 ? 'Necesario ser mas de 1 jugador.' : ''}>
+                            <Button className="btnStart" disabled={!isHost || currentPlayers === 1}>
                                 Empezar partida
                             </Button>
                         </Tooltip>
@@ -114,7 +133,7 @@ const PrivateRoom = ({ user, match, room }) => {
 
 const mapStateToProps = (state) => ({
     user: readUser(state),
-    room: readPrivateRoom(state)
+    room: readPrivateRoom(state),
 });
 
 export default connect(mapStateToProps, { setPrivateRoom })(PrivateRoom);

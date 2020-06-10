@@ -6,27 +6,35 @@ import Chat from '../Chat/Chat';
 import { Layout, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../Redux/Reducers/UserReducer';
-import { readLoadingRoom, readSocket } from '../../Redux/Reducers/gameReducer';
+import { readLoadingRoom, readRooms } from '../../Redux/Reducers/gameReducer';
 import { joinRoom } from '../../Redux/Actions/UserActions';
 import { resetMessages, joinPrivateRoom, addMessage, setRooms } from '../../Redux/Actions/gameActions';
 import { useHistory } from 'react-router-dom';
 import './home.scss';
+import io from 'socket.io-client';
 
 const { Content } = Layout;
 
-const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadingRoom, socket, addMessage, setRooms }) => {
+let socket;
+
+const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadingRoom, addMessage, setRooms }) => {
     const history = useHistory();
 
     useEffect(() => {
         resetMessages();
-        socket.emit('joinGlobalChat', { user });
 
+        socket = io.connect();
+        socket.emit('joinGlobalChat', { user });
+    }, []);
+
+    useEffect(() => {
         socket.on('globalChat', (msg) => {
             console.log('adding message', msg);
             addMessage(msg);
         });
 
         socket.on('rooms', ({ rooms }) => {
+            console.log(rooms)
             rooms.forEach((room) => {
                 for (let i = room.users.length; i < room.max; i++) {
                     room.users[i] = null;
@@ -49,10 +57,9 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
         history.push('/game');
     };
 
-    const createPreRoom = () => {
-        joinPrivateRoom(user, () => {
-            resetMessages();
-            history.push('/privateRoom');
+    const createPrivateRoom = () => {
+        joinPrivateRoom(user, (id) => {
+            history.push(`/privateRoom/${id}`);
         });
     };
 
@@ -64,7 +71,7 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
                     <Spin />
                 ) : (
                     <div className="main-home">
-                        <Rooms joinRoom={handleJoinRoom} createPreRoom={createPreRoom} />
+                        <Rooms joinRoom={handleJoinRoom} createPreRoom={createPrivateRoom} />
                         <Chat
                             sendMessage={handleSendMessage}
                             placeholderMessage="Escribe aquí..."
@@ -81,7 +88,7 @@ const mapStateToProps = (state) => {
     return {
         user: readUser(state),
         loadingRoom: readLoadingRoom(state),
-        socket: readSocket(state),
+        rooms: readRooms(state)
     };
 };
 
@@ -91,7 +98,7 @@ const mapDispatchToProps = (dispatch) => {
         joinRoom: (roomName) => dispatch(joinRoom(roomName)),
         joinPrivateRoom: (user, callback) => dispatch(joinPrivateRoom(user, callback)),
         addMessage: (msg) => dispatch(addMessage(msg)),
-        setRooms: (rooms) => dispatch(setRooms(rooms)),
+        setRooms: (rooms) => dispatch(setRooms(rooms))
     };
 };
 

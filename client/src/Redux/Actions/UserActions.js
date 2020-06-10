@@ -37,6 +37,11 @@ export const setPicture = (picture) => ({
     picture
 });
 
+const setUserAuthLoading = (loading) => ({
+    type: 'SET_USER_AUTH_LOADING',
+    loading
+});
+
 export const signIn = (user, success, error) => async (dispatch) => {
     const res = await logIn(user);
     if (res.success) {
@@ -69,11 +74,16 @@ export const register = (user, success, error) => async (dispatch) => {
 }
 
 export const verifyAuth = () => async (dispatch) => {
+    dispatch(setUserAuthLoading(true));
     const data = await whoAmI();
     console.log(data)
     if (data.auth) {
         dispatch(logUser(data.user));
     }
+    else {
+        dispatch(logOutUser());
+    }
+    dispatch(setUserAuthLoading(false));
 }
 
 export const checkAuth = (callback) => async (dispatch) => {

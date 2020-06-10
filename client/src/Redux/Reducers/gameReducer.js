@@ -1,5 +1,3 @@
-import io from 'socket.io-client';
-
 const initialState = {
     drawerName  : null,
     currentRound: null,
@@ -12,8 +10,7 @@ const initialState = {
     privateRoom : null,
     loadingRoom : false,
     rooms       : [],
-    coordinates : [],
-    socket      : io.connect()
+    coordinates : []
 };
 
 const reducer = (state = initialState, action) => {
@@ -114,6 +111,5 @@ export const readPrivateRoom  = (state) => state.gameReducer.privateRoom;
 export const readLoadingRoom  = (state) => state.gameReducer.loadingRoom;
 export const readRooms        = (state) => state.gameReducer.rooms;
 export const readCoordinates  = (state) => state.gameReducer.coordinates;
-export const readSocket       = (state) => state.gameReducer.socket;
 
 export default reducer;
