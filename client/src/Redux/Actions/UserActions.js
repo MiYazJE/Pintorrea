@@ -75,13 +75,18 @@ export const register = (user, success, error) => async (dispatch) => {
 
 export const verifyAuth = () => async (dispatch) => {
     dispatch(setUserAuthLoading(true));
-    const data = await whoAmI();
-    console.log(data)
-    if (data.auth) {
-        dispatch(logUser(data.user));
+    try {
+        const data = await whoAmI();
+        console.log(data)
+        if (data.auth) {
+            dispatch(logUser(data.user));
+        }
+        else {
+            dispatch(logOutUser());
+        }
     }
-    else {
-        dispatch(logOutUser());
+    catch(e) {
+        // console.log(e)
     }
     dispatch(setUserAuthLoading(false));
 }

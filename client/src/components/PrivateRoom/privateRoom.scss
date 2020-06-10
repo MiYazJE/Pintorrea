@@ -6,52 +6,79 @@
     justify-content: center;
     align-items: center;
 
-    .preRoom {
-        max-width: 1000px;
-        padding: 10px;
+    .wrapper {
         background-color: #001529;
-        width: 50%;
-        min-width: 700px;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
 
-        h3, h2 {
-            padding: 0;
-            margin: 0;
-            color: white;
-            text-align: center;
-        }
-
-        .settings {
-            min-height: 100%;
+        .preRoom {
+            max-width: 1000px;
             width: 50%;
+            min-width: 700px;
             display: flex;
-            align-items: center;
-            flex-direction: column;
+            justify-content: space-between;
 
-            .btnStart {
-                width: 200px;
+            h3, h2 {
+                padding: 0;
+                margin: 0;
                 color: white;
-                border: none;
-                background-color: rgb(105, 160, 22);
-            }            
+                text-align: center;
+            }
+
+            .settings {
+                min-height: 100%;
+                width: 50%;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+
+                .btnStart {
+                    width: 200px;
+                    color: white;
+                    border: none;
+                    background-color: rgb(105, 160, 22);
+                }            
+
+            }
+            
+            .players {
+                margin-left: 5px;
+                padding-left: 5px;
+                width: 50%;
+                display: flex;
+                justify-content: flex-start;
+                flex-direction: column;
+                border-left: 1px solid white;
+            }
 
         }
-        
-        .players {
-            margin-left: 5px;
-            padding-left: 5px;
-            width: 50%;
+
+        .shareLink {
             display: flex;
-            justify-content: flex-start;
             flex-direction: column;
-            border-left: 1px solid white;
-        }
-
-        .divider {
+            justify-content: center;
+            align-items: center;
             margin-top: 5px;
+            width: 100%;
+            border-top: 1px solid white;
+
+            .wrapUrl {
+                display: block;
+                width: 70%;
+            }
+
+            h2 {
+                color: white;
+                text-align: center;
+            }
         }
 
+    }
+
+    .divider {
+        margin-top: 5px;
     }
 }
 

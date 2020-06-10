@@ -27,6 +27,7 @@ const reducer = (state = initialState, action) => {
         case 'LOGOUT_USER':
             return {
                 ...initialState,
+                userLoading: false
             };
         case 'SET_PICTURE':
             return {
