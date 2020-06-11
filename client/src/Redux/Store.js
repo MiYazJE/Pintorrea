@@ -8,6 +8,6 @@ const composeFunction =
     ? compose 
     : composeWithDevTools; 
 
-export const store = createStore(rootReducer, {}, composeFunction(applyMiddleware(thunk)));
+const store = createStore(rootReducer, {}, composeFunction(applyMiddleware(thunk)));
 
-export default { store };
+export default store;
