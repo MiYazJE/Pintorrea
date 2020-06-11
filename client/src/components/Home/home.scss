@@ -1,6 +1,5 @@
-.content {
+.app .content {
     width: 100%;
-    min-height: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,14 +7,26 @@
 }
 
 .main-home {
-    height: 90%;
-    width: 90%;
+    height: 80%;
+    width: 80%;
     max-width: 1500px;
-    max-height: 600px;
     border-radius: 8px;
     padding: 10px;
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.wrap-chat {
+    max-height: 80%;
+}
+
+@media (max-width: 1200px) {
+    .wrap-chat {
+        min-height: 400px; 
+        max-height: 400px;
+        margin-bottom: 20px;
+    }
 }
 
 .wrapQuestion {

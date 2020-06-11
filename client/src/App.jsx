@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { verifyAuth } from './actions/userActions';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Routes from './routes/Routes';
-import './App.css';
+import './App.scss';
 
 const App = ({ verifyAuth }) => {
     useEffect(() => {

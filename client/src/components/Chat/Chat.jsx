@@ -14,12 +14,11 @@ const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) 
         refScroll.current && refScroll.current.scrollIntoView({ behavior: "smooth" });
     }
 
-    useEffect(scrollToBottom, [messages]);
-
     const handleSendMessage = ({ msg }) => {
         if (!msg) return;
         sendMessage(msg);
         form.resetFields();
+        scrollToBottom();
     }
 
     const getClassStatus = (admin, privateMsg, statusMsg, userLeft) => {

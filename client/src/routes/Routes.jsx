@@ -8,7 +8,7 @@ import PrivateRoute from './PrivateRoute';
 import { connect } from 'react-redux';
 import { readAuth, readUserLoading } from '../reducers/userReducer';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import '../App.css';
+import '../App.scss';
 import { Spin } from 'antd';
 
 const Routes = ({ auth, userLoading }) => {
