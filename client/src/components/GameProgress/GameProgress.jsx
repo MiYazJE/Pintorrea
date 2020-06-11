@@ -8,7 +8,7 @@ import {
     readMaxRound,
     readGuessed,
     readIsStarted,
-} from '../../Redux/Reducers/gameReducer';
+} from '../../reducers/gameReducer';
 
 const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, guessed, isStarted }) => {
     const [time, setTime] = useState(null);

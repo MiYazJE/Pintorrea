@@ -8,7 +8,7 @@ import Nav from '../Nav/Nav';
 import Footer from '../Footer/Footer';
 import Http from '../../Helpers/Http';
 import { connect } from 'react-redux';
-import { register } from '../../Redux/Actions/UserActions';
+import { register } from '../../actions/userActions';
 import './signUp.scss';
 
 const { Content } = Layout;

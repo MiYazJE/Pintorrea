@@ -1,7 +1,7 @@
 import React from 'react';
 import './PuntuationTable.scss';
 import { connect } from "react-redux";
-import { readActualWord } from '../../Redux/Reducers/gameReducer';
+import { readActualWord } from '../../reducers/gameReducer';
 
 const PuntuationTable = ({ puntuation: {users, finalStatusMsg}, actualWord }) => {
 

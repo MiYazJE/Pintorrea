@@ -1,4 +1,4 @@
-import Http from '../../Helpers/Http';
+import Http from '../Helpers/Http';
 
 export const setDrawerName = (drawerName) => ({
     type: 'SET_DRAWER_NAME',

@@ -3,7 +3,7 @@ import { Avatar, Tooltip } from 'antd';
 import Drawer from 'react-drag-drawer';
 import UserProfile from '../UserProfile/UserProfile';
 import { connect } from 'react-redux';
-import { readName } from '../../Redux/Reducers/UserReducer';
+import { readName } from '../../reducers/userReducer';
 
 const UserAvatar = ({ name, picture, id, size, showName, me }) => {
     const [showProfile, setShowProfile] = useState(false);

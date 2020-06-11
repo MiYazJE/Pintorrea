@@ -3,7 +3,7 @@ import UsersAvatars from '../UsersAvatars/UsersAvatars';
 import { RiGitRepositoryPrivateLine } from 'react-icons/ri';
 import { Divider, Tooltip, Button } from 'antd';
 import { connect } from 'react-redux';
-import { readRooms } from '../../Redux/Reducers/gameReducer';
+import { readRooms } from '../../reducers/gameReducer';
 import './rooms.scss';
 
 const Room = ({ max, players, users, name, joinRoom }) => {

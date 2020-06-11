@@ -5,15 +5,15 @@ import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from 'react-canvas-draw';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect } from 'react-redux';
-import { leaveRoom } from '../../Redux/Actions/UserActions';
-import { readUser, readRoom } from '../../Redux/Reducers/UserReducer';
+import { leaveRoom } from '../../actions/userActions';
+import { readUser, readRoom } from '../../reducers/userReducer';
 import {
     readIsDrawer,
     readMessages,
     readDrawerName,
     readGuessed,
     readActualWord,
-} from '../../Redux/Reducers/gameReducer';
+} from '../../reducers/gameReducer';
 import {
     setActualWord,
     setGuessed,
@@ -26,7 +26,7 @@ import {
     setMaxRound,
     setIsStarted,
     setRooms,
-} from '../../Redux/Actions/gameActions';
+} from '../../actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
 import GameProgress from '../GameProgress/GameProgress';

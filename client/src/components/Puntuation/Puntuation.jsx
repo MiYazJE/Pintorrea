@@ -4,8 +4,8 @@ import FlipMove from 'react-flip-move';
 import './puntuation.scss';
 import UserAvatar from '../UsersAvatars/UserAvatar';
 import { connect } from "react-redux";
-import { readUser } from '../../Redux/Reducers/UserReducer';
-import { readDrawerName } from '../../Redux/Reducers/gameReducer';
+import { readUser } from '../../reducers/userReducer';
+import { readDrawerName } from '../../reducers/gameReducer';
 
 /**
  * It uses state components because FlipMove library seems to require it to work properly

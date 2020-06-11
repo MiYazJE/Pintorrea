@@ -6,7 +6,7 @@ import SignUp from '../components/SignUp/SignUp';
 import PrivateRoom from '../components/PrivateRoom/PrivateRoom';
 import PrivateRoute from './PrivateRoute';
 import { connect } from 'react-redux';
-import { readAuth, readUserLoading } from '../Redux/Reducers/UserReducer';
+import { readAuth, readUserLoading } from '../reducers/userReducer';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import '../App.css';
 import { Spin } from 'antd';

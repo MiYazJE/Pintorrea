@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { verifyAuth } from './Redux/Actions/UserActions';
+import { verifyAuth } from './actions/userActions';
 import { BrowserRouter as Router } from 'react-router-dom'
 import Routes from './routes/Routes';
 import './App.css';

@@ -6,8 +6,8 @@ import { MdEmail } from "react-icons/md";
 import Nav from "../Nav/Nav";
 import Footer from "../Footer/Footer";
 import { connect } from 'react-redux';
-import { signIn, googleSignIn } from '../../Redux/Actions/UserActions';
-import { readAuth } from '../../Redux/Reducers/UserReducer';
+import { signIn, googleSignIn } from '../../actions/userActions';
+import { readAuth } from '../../reducers/userReducer';
 import "./login.scss";
 
 const { Content } = Layout;

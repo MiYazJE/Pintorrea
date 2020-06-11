@@ -3,7 +3,7 @@ import ChooseWords from '../ChooseWords/ChooseWords';
 import PuntuationTable from '../PuntuationTable/PuntuationTable';
 import Results from './Results';
 import { connect } from "react-redux";
-import { readDrawerName, readCurrentRound } from '../../Redux/Reducers/gameReducer';
+import { readDrawerName, readCurrentRound } from '../../reducers/gameReducer';
 
 const ShowInteraction = ({ currentRound, view, chooseWord, words, drawerName, puntuation, finalPuntuation }) => {
 

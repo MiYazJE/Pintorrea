@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
 import { notification, Button } from 'antd';
 import { connect } from 'react-redux';
-import { uploadPicture, uploadAvatar } from '../../Redux/Actions/UserActions';
-import { readImage, readName, readID, readAvatar } from '../../Redux/Reducers/UserReducer';
+import { uploadPicture, uploadAvatar } from '../../actions/userActions';
+import { readImage, readName, readID, readAvatar } from '../../reducers/userReducer';
 import './editAvatar.scss';
 
 const EditAvatar = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => {

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import AvatarCustomizer from '../AvatarCustomizer/AvatarCustomizer';
 import { Upload, notification, Button } from 'antd';
 import { connect } from 'react-redux';
-import { readAvatar, readID, readName, readImage, readImageType } from '../../Redux/Reducers/UserReducer';
-import { uploadPicture, uploadAvatarImage } from '../../Redux/Actions/UserActions';
+import { readAvatar, readID, readName, readImage, readImageType } from '../../reducers/userReducer';
+import { uploadPicture, uploadAvatarImage } from '../../actions/userActions';
 import './editProfile.scss';
 
 function getBase64(img, callback) {

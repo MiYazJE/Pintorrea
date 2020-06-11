@@ -11,8 +11,8 @@ import {
     UnorderedListOutlined
 } from "@ant-design/icons";
 import { connect } from 'react-redux';
-import { readUser, readImage } from '../../Redux/Reducers/UserReducer';
-import { logOut } from '../../Redux/Actions/UserActions';
+import { readUser, readImage } from '../../reducers/userReducer';
+import { logOut } from '../../actions/userActions';
 import "antd/dist/antd.css";
 import "./nav.scss";
 

@@ -1,11 +1,11 @@
-import Http from '../../Helpers/Http';
+import Http from '../Helpers/Http';
 import { 
     removeCookie, 
     whoAmI, 
     signInWithGoogle, 
     logIn, 
     signUp 
-} from '../../Helpers/auth-helpers';
+} from '../Helpers/auth-helpers';
 
 export const logUser = (user) => {
     return {

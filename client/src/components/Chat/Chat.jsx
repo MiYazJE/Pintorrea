@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './chat.scss';
 import { Form, Input, List } from 'antd';
 import { connect } from 'react-redux';
-import { readIsDrawer, readGuessed, readMessages } from '../../Redux/Reducers/gameReducer';
+import { readIsDrawer, readGuessed, readMessages } from '../../reducers/gameReducer';
 
 const MESSAGE_BACKGROUND = '#03213E';
 
