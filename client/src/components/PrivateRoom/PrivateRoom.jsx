@@ -28,11 +28,12 @@ const getOptions = (start, final, increment) => {
 let socket;
 
 const PrivateRoom = ({ user, match }) => {
+    const [roomId, setRoomId] = useState(match.params.id);
     const [url, setUrl] = useState(window.location.href);
     const [room, setRoom] = useState({});
     const [isHost, setIsHost] = useState(true);
     const [currentPlayers, setCurrentPlayers] = useState(0);
-    const [maxPlayers, setMaxPlayers] = useState(3);
+    const [maxPlayers, setMaxPlayers] = useState(0);
     const [drawingTime, setDrawingTime] = useState(0);
     const [rounds, setRounds] = useState(0);
     const [players, setPlayers] = useState([]);
@@ -40,6 +41,7 @@ const PrivateRoom = ({ user, match }) => {
     const [optionsRounds, setOptionsRounds] = useState(getOptions(3, 10, 1));
     const history = useHistory();
     const refUrl = useRef();
+    const refCode = useRef();
 
     useEffect(() => {
         (async () => {
@@ -55,7 +57,8 @@ const PrivateRoom = ({ user, match }) => {
             console.log(user.name, 'join room');
             socket.emit('joinPrivateRoom', { user, id });
 
-            socket.on('updateSettings', ({ room }) => {
+            socket.on('updateSettings', (data) => {
+                const { room } = JSON.parse(data);
                 setRoom(room);
             });
 
@@ -81,27 +84,39 @@ const PrivateRoom = ({ user, match }) => {
     };
 
     const handleChangeDrawingTime = (drawingTime) => {
-        socket.emit('changeSettingsPrivateRoom', {
-            newRoom: { ...room, drawingTime },
-        });
+        socket.emit('changeSettingsPrivateRoom', 
+            JSON.stringify({
+              newRoom: { ...room, drawingTime },
+            })
+        );
     };
 
     const handleChangeMaxPlayers = (max) => {
-        socket.emit('changeSettingsPrivateRoom', {
-            newRoom: { ...room, max },
-        });
+        socket.emit('changeSettingsPrivateRoom', 
+            JSON.stringify({
+                newRoom: { ...room, max },
+            })
+        );
     };
 
     const handleChangeGameRounds = (rounds) => {
-        socket.emit('changeSettingsPrivateRoom', {
-            newRoom: { ...room, rounds },
-        });
+        socket.emit('changeSettingsPrivateRoom', 
+            JSON.stringify({
+                newRoom: { ...room, rounds },
+            })
+        );
     };
 
-    const clipBoard = () => {
+    const clipBoardUrl = () => {
         refUrl.current.select();
         navigator.clipboard.writeText(url);
         notification.success({ message: 'Link copiado en tu portapapeles!', placement: 'bottomRight' });
+    }
+
+    const clipBoardCode = () => {
+        refCode.current.select();
+        navigator.clipboard.writeText(roomId);
+        notification.success({ message: 'Código de la sala copiado en tu portapapeles!', placement: 'bottomRight' });
     }
 
     return (
@@ -164,7 +179,17 @@ const PrivateRoom = ({ user, match }) => {
                             value={url}
                             style={{ width: '80%' }}
                         />
-                        <Button onClick={clipBoard} type="primary" icon={<CopyOutlined />}>Copiar</Button>
+                        <Button onClick={clipBoardUrl} type="primary" icon={<CopyOutlined />}>Copiar</Button>
+                    </div>
+                    <span>O comparte el código de la sala</span>
+                    <div className="wrapUrl">
+                        <Input
+                            ref={refCode}
+                            onChange={() => setRoomId(match.params.id)}
+                            value={roomId}
+                            style={{ width: '80%' }}
+                        />
+                        <Button onClick={clipBoardCode} type="primary" icon={<CopyOutlined />}>Copiar</Button>
                     </div>
                 </div>
             </div>
