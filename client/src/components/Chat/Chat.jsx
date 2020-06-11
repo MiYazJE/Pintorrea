@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './chat.scss';
 import { Form, Input, List } from 'antd';
 import { connect } from 'react-redux';
@@ -6,7 +6,7 @@ import { readIsDrawer, readGuessed, readMessages } from '../../reducers/gameRedu
 
 const MESSAGE_BACKGROUND = '#03213E';
 
-const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) => {
+const Chat = ({ messages, sendMessage, placeholderMessage }) => {
     const [form] = Form.useForm();
     const refScroll = useRef(null);
 
@@ -14,11 +14,12 @@ const Chat = ({ messages, sendMessage, placeholderMessage, isDrawer, guessed }) 
         refScroll.current && refScroll.current.scrollIntoView({ behavior: "smooth" });
     }
 
+    useEffect(scrollToBottom, [messages]);
+
     const handleSendMessage = ({ msg }) => {
         if (!msg) return;
         sendMessage(msg);
         form.resetFields();
-        scrollToBottom();
     }
 
     const getClassStatus = (admin, privateMsg, statusMsg, userLeft) => {
