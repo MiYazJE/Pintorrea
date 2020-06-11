@@ -7,11 +7,26 @@ $height-title: 30px;
     margin-right: 20px;
     min-width: 535px;
 
-    .btnPreRoom {
-        background-color: #008CFF;
-        color: white;
-        border: none;
+    .wrapBtn {
+        display: block;
+        
+        .btnCreatePrivate {
+            text-align: center;
+            width: 50%;
+            max-width: 50%;
+            background-color: #008CFF;
+            color: white;
+            border: none;
+        }
+        
+        .btnJoinPrivate {
+            width: 50%;
+            background-color: red;
+            color: white;
+            border: none;
+        }
     }
+
 
     .title-rooms {
         height: $height-title;

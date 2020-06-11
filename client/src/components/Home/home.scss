@@ -17,3 +17,26 @@
     display: flex;
     justify-content: space-evenly;
 }
+
+.wrapQuestion {
+    border-radius: 4px;
+    background-color: #001529;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+
+    .center {
+        display: flex;
+        justify-content: center;
+
+        .btnJoin {
+            border: none;
+            background-color: rgb(36, 192, 36);
+        }
+    }
+
+    span {
+        color: white;
+        font-size: 15px;
+    }
+}

@@ -57,17 +57,26 @@ export const setPrivateRoom = (privateRoom) => ({
     privateRoom
 });
 
-
 export const setRooms = (rooms) => ({
     type: 'SET_ROOMS',
     rooms
 });
 
-export const joinPrivateRoom = (user, callback) => async (dispatch) => {
+export const createPrivateRoom = (user, callback) => async (dispatch) => {
     dispatch(setLoadingRoom(true));
     const room = await Http.post({ user }, '/user/game/createRoom');
     dispatch(setLoadingRoom(false));
     callback(room.id);
+}
+
+export const verifyPrivateRoom = (roomName, success, error) => async (dispatch) => {
+    const { valid } = await Http.get(`/user/game/room/valid/${roomName}`);
+    if (valid) {
+        success(`Entrando a la sala ${roomName}`);
+    }
+    else {
+        error(`La sala ${roomName} no es válida.`);
+    }
 }
 
 const setLoadingRoom = (loadingRoom) => ({

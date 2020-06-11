@@ -32,7 +32,7 @@ const PrivateRoom = ({ user, match }) => {
     const [room, setRoom] = useState({});
     const [isHost, setIsHost] = useState(true);
     const [currentPlayers, setCurrentPlayers] = useState(0);
-    const [maxPlayers, setMaxPlayers] = useState(0);
+    const [maxPlayers, setMaxPlayers] = useState(3);
     const [drawingTime, setDrawingTime] = useState(0);
     const [rounds, setRounds] = useState(0);
     const [players, setPlayers] = useState([]);
@@ -45,7 +45,11 @@ const PrivateRoom = ({ user, match }) => {
         (async () => {
             const { id } = match.params;
             console.log(id);
-            if (!id || !(await isValidRoom(id))) return history.push('/login');
+            if (!id || !(await isValidRoom(id))) {
+                notification.error({ message: 'La sala a la que intentas acceder no es válida!' });
+                history.push('/login');
+                return;
+            }
 
             socket = io();
             console.log(user.name, 'join room');
@@ -97,7 +101,7 @@ const PrivateRoom = ({ user, match }) => {
     const clipBoard = () => {
         refUrl.current.select();
         navigator.clipboard.writeText(url);
-        notification.success({ message: 'Link copiado en tu cortapapeles!', placement: 'bottomRight' });
+        notification.success({ message: 'Link copiado en tu portapapeles!', placement: 'bottomRight' });
     }
 
     return (
@@ -120,7 +124,7 @@ const PrivateRoom = ({ user, match }) => {
                                     />
                                 </Form.Item>
                             </Form.Item>
-                            <Form.Item label="Tiempo de dibujado por turno">
+                            <Form.Item label="Tiempo de dibujado">
                                 <Select
                                     disabled={!isHost}
                                     value={drawingTime}
@@ -152,7 +156,7 @@ const PrivateRoom = ({ user, match }) => {
                     </div>
                 </div>
                 <div className="shareLink">
-                    <h2>Comparte el link para invitar a amigos</h2>
+                    <span>Comparte este link para invitar a amigos</span>
                     <div className="wrapUrl">
                         <Input
                             ref={refUrl}

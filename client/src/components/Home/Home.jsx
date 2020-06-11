@@ -1,24 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Footer from '../Footer/Footer';
 import Nav from '../Nav/Nav';
 import Rooms from '../Rooms/Rooms';
 import Chat from '../Chat/Chat';
-import { Layout, Spin } from 'antd';
+import { Layout, Spin, Input, Button, Form, notification } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../reducers/userReducer';
 import { readLoadingRoom, readRooms } from '../../reducers/gameReducer';
 import { joinRoom } from '../../actions/userActions';
-import { resetMessages, joinPrivateRoom, addMessage, setRooms } from '../../actions/gameActions';
+import { resetMessages, createPrivateRoom, addMessage, setRooms, verifyPrivateRoom } from '../../actions/gameActions';
 import { useHistory } from 'react-router-dom';
 import './home.scss';
 import io from 'socket.io-client';
+import Drawer from 'react-drag-drawer';
 
 const { Content } = Layout;
 
 let socket;
 
-const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadingRoom, addMessage, setRooms }) => {
+const Home = ({
+    user,
+    resetMessages,
+    joinRoom,
+    verifyPrivateRoom,
+    createPrivateRoom,
+    loadingRoom,
+    addMessage,
+    setRooms,
+}) => {
     const history = useHistory();
+    const [showModal, setShowModal] = useState(false);
+    const [btnLoad, setBtnLoad] = useState(false);
 
     useEffect(() => {
         resetMessages();
@@ -34,7 +46,7 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
         });
 
         socket.on('rooms', ({ rooms }) => {
-            console.log(rooms)
+            console.log(rooms);
             rooms.forEach((room) => {
                 for (let i = room.users.length; i < room.max; i++) {
                     room.users[i] = null;
@@ -47,7 +59,7 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
     }, []);
 
     const handleSendMessage = (msg) => {
-        console.log(msg)
+        console.log(msg);
         socket.emit('sendMessageToAll', { user, msg });
     };
 
@@ -57,10 +69,26 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
         history.push('/game');
     };
 
-    const createPrivateRoom = () => {
-        joinPrivateRoom(user, (id) => {
+    const handleCreateRoom = () => {
+        createPrivateRoom(user, (id) => {
             history.push(`/privateRoom/${id}`);
         });
+    };
+
+    const handleJoinPrivateRoom = async ({ roomName }) => {
+        setBtnLoad(true)
+        verifyPrivateRoom(
+            roomName,
+            (message) => {
+                setBtnLoad(false)
+                notification.success({ message });
+                history.push(`/privateRoom/${roomName}`);
+            },
+            (message) => {
+                setBtnLoad(false)
+                notification.error({ message });
+            }
+        );
     };
 
     return (
@@ -71,11 +99,26 @@ const Home = ({ user, messages, resetMessages, joinRoom, joinPrivateRoom, loadin
                     <Spin />
                 ) : (
                     <div className="main-home">
-                        <Rooms joinRoom={handleJoinRoom} createPreRoom={createPrivateRoom} />
-                        <Chat
-                            sendMessage={handleSendMessage}
-                            placeholderMessage="Escribe aquí..."
+                        <Rooms
+                            joinRoom={handleJoinRoom}
+                            joinPrivateRoom={() => setShowModal(true)}
+                            createPrivateRoom={handleCreateRoom}
                         />
+                        <Chat sendMessage={handleSendMessage} placeholderMessage="Escribe aquí..." />
+                        <Drawer open={showModal} onRequestClose={() => setShowModal(false)}>
+                            <div className="wrapQuestion">
+                                <Form onFinish={handleJoinPrivateRoom} layout="vertical">
+                                    <Form.Item name="roomName" label="Introduce el código de la sala:">
+                                        <Input style={{ width: '200px' }}></Input>
+                                    </Form.Item>
+                                    <div className="center">
+                                        <Button loading={btnLoad} className="btnJoin" htmlType="submit" type="primary">
+                                            Entrar
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </div>
+                        </Drawer>
                     </div>
                 )}
             </Content>
@@ -88,7 +131,7 @@ const mapStateToProps = (state) => {
     return {
         user: readUser(state),
         loadingRoom: readLoadingRoom(state),
-        rooms: readRooms(state)
+        rooms: readRooms(state),
     };
 };
 
@@ -96,9 +139,10 @@ const mapDispatchToProps = (dispatch) => {
     return {
         resetMessages: () => dispatch(resetMessages()),
         joinRoom: (roomName) => dispatch(joinRoom(roomName)),
-        joinPrivateRoom: (user, callback) => dispatch(joinPrivateRoom(user, callback)),
+        createPrivateRoom: (user, callback) => dispatch(createPrivateRoom(user, callback)),
         addMessage: (msg) => dispatch(addMessage(msg)),
-        setRooms: (rooms) => dispatch(setRooms(rooms))
+        setRooms: (rooms) => dispatch(setRooms(rooms)),
+        verifyPrivateRoom: (roomName, success, error) => dispatch(verifyPrivateRoom(roomName, success, error)),
     };
 };
 

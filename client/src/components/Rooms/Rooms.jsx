@@ -1,6 +1,6 @@
 import React from 'react';
 import UsersAvatars from '../UsersAvatars/UsersAvatars';
-import { RiGitRepositoryPrivateLine } from 'react-icons/ri';
+import { ToolOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Divider, Tooltip, Button } from 'antd';
 import { connect } from 'react-redux';
 import { readRooms } from '../../reducers/gameReducer';
@@ -29,7 +29,7 @@ const Room = ({ max, players, users, name, joinRoom }) => {
     );
 };
 
-const Rooms = ({ rooms, joinRoom, setRedirect, createPreRoom }) => {
+const Rooms = ({ rooms, joinRoom, setRedirect, createPrivateRoom, joinPrivateRoom }) => {
     return (
         <div className="containerRooms">
             <h1 className="title-rooms">Salas</h1>
@@ -39,9 +39,14 @@ const Rooms = ({ rooms, joinRoom, setRedirect, createPreRoom }) => {
                     <Room key={room.name} joinRoom={() => joinRoom(room.name)} {...room} />
                 ))}
             </div>
-            <Button onClick={createPreRoom} block className="btnPreRoom" icon={<RiGitRepositoryPrivateLine />}>
-                Crear sala privada
-            </Button>
+            <div className="wrapBtn">
+                <Button onClick={createPrivateRoom} className="btnCreatePrivate" icon={<ToolOutlined />}>
+                    Crear sala privada
+                </Button>
+                <Button onClick={joinPrivateRoom} className="btnJoinPrivate" icon={<UserAddOutlined />}>
+                    Entrar a una sala privada
+                </Button>
+            </div>
         </div>
     );
 };
