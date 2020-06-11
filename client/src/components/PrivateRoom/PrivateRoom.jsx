@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import { readUser } from '../../reducers/userReducer';
 import './privateRoom.scss';
 import io from 'socket.io-client';
+import { addMessage, resetMessages } from '../../actions/gameActions';
 import { readPrivateRoom } from '../../reducers/gameReducer';
-import { setPrivateRoom } from '../../actions/gameActions';
 import Http from '../../Helpers/Http';
 import UsersAvatars from '../UsersAvatars/UsersAvatars';
 import { CopyOutlined } from '@ant-design/icons';
+import Chat from '../Chat/Chat';
 
 const { Option } = Select;
 
@@ -27,7 +28,7 @@ const getOptions = (start, final, increment) => {
 
 let socket;
 
-const PrivateRoom = ({ user, match }) => {
+const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
     const [roomId, setRoomId] = useState(match.params.id);
     const [url, setUrl] = useState(window.location.href);
     const [room, setRoom] = useState({});
@@ -53,6 +54,7 @@ const PrivateRoom = ({ user, match }) => {
                 return;
             }
 
+            resetMessages();
             socket = io();
             console.log(user.name, 'join room');
             socket.emit('joinPrivateRoom', { user, id });
@@ -60,6 +62,10 @@ const PrivateRoom = ({ user, match }) => {
             socket.on('updateSettings', (data) => {
                 const { room } = JSON.parse(data);
                 setRoom(room);
+            });
+
+            socket.on('message', (msg) => {
+                addMessage(msg);
             });
 
             return () => socket.disconnect();
@@ -84,15 +90,17 @@ const PrivateRoom = ({ user, match }) => {
     };
 
     const handleChangeDrawingTime = (drawingTime) => {
-        socket.emit('changeSettingsPrivateRoom', 
+        socket.emit(
+            'changeSettingsPrivateRoom',
             JSON.stringify({
-              newRoom: { ...room, drawingTime },
+                newRoom: { ...room, drawingTime },
             })
         );
     };
 
     const handleChangeMaxPlayers = (max) => {
-        socket.emit('changeSettingsPrivateRoom', 
+        socket.emit(
+            'changeSettingsPrivateRoom',
             JSON.stringify({
                 newRoom: { ...room, max },
             })
@@ -100,7 +108,8 @@ const PrivateRoom = ({ user, match }) => {
     };
 
     const handleChangeGameRounds = (rounds) => {
-        socket.emit('changeSettingsPrivateRoom', 
+        socket.emit(
+            'changeSettingsPrivateRoom',
             JSON.stringify({
                 newRoom: { ...room, rounds },
             })
@@ -111,12 +120,21 @@ const PrivateRoom = ({ user, match }) => {
         refUrl.current.select();
         navigator.clipboard.writeText(url);
         notification.success({ message: 'Link copiado en tu portapapeles!', placement: 'bottomRight' });
-    }
+    };
 
     const clipBoardCode = () => {
         refCode.current.select();
         navigator.clipboard.writeText(roomId);
         notification.success({ message: 'Código de la sala copiado en tu portapapeles!', placement: 'bottomRight' });
+    };
+
+    const handleStartGame = () => {
+        console.log('starting the game...');
+    };
+
+    const handleSendMessage = (msg) => {
+        console.log(msg);
+        socket.emit('sendMessageToRoom', { room: roomId, name: user.name, msg });
     }
 
     return (
@@ -126,70 +144,87 @@ const PrivateRoom = ({ user, match }) => {
                     <div className="settings">
                         <h2>Configuración</h2>
                         <Divider className="divider"></Divider>
-                        <Form layout="vertical" initialValues={initialFormValues}>
-                            <Form.Item label="Jugadores">
-                                <Form.Item name="fieldCurrentPlayers" noStyle>
-                                    <InputNumber
-                                        disabled={!isHost}
-                                        style={{ width: 200 }}
-                                        onChange={handleChangeMaxPlayers}
-                                        value={maxPlayers}
-                                        min={currentPlayers}
-                                        max={20}
-                                    />
+                        <div className="center">
+                            {players ? <UsersAvatars size={40} showNames={true} users={players} /> : null}
+                            <Form layout="vertical" initialValues={initialFormValues}>
+                                <Form.Item label="Jugadores">
+                                    <Form.Item name="fieldCurrentPlayers" noStyle>
+                                        <InputNumber
+                                            size="middle"
+                                            disabled={!isHost}
+                                            style={{ width: 200 }}
+                                            onChange={handleChangeMaxPlayers}
+                                            value={maxPlayers}
+                                            min={currentPlayers}
+                                            max={20}
+                                        />
+                                    </Form.Item>
                                 </Form.Item>
-                            </Form.Item>
-                            <Form.Item label="Tiempo de dibujado">
-                                <Select
-                                    disabled={!isHost}
-                                    value={drawingTime}
-                                    onChange={handleChangeDrawingTime}
-                                    style={{ width: 200 }}
+                                <Form.Item label="Tiempo de dibujado">
+                                    <Select
+                                        size="middle"
+                                        disabled={!isHost}
+                                        value={drawingTime}
+                                        onChange={handleChangeDrawingTime}
+                                        style={{ width: 200 }}
+                                    >
+                                        {optionsTime}
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item label="Rondas">
+                                    <Select
+                                        size="middle"
+                                        disabled={!isHost}
+                                        value={rounds}
+                                        onChange={handleChangeGameRounds}
+                                        style={{ width: 200 }}
+                                    >
+                                        {optionsRounds}
+                                    </Select>
+                                </Form.Item>
+                                <Button
+                                    size="large"
+                                    className="btnStart"
+                                    onClick={handleStartGame}
+                                    disabled={!isHost || currentPlayers === 1}
                                 >
-                                    {optionsTime}
-                                </Select>
-                            </Form.Item>
-                            <Form.Item label="Rondas">
-                                <Select
-                                    disabled={!isHost}
-                                    value={rounds}
-                                    onChange={handleChangeGameRounds}
-                                    style={{ width: 200 }}
-                                >
-                                    {optionsRounds}
-                                </Select>
-                            </Form.Item>
-                            <Button className="btnStart" disabled={!isHost || currentPlayers === 1}>
-                                Empezar partida
-                            </Button>
-                        </Form>
+                                    Empezar partida
+                                </Button>
+                            </Form>
+                        </div>
                     </div>
                     <div className="players">
-                        <h2>Jugadores</h2>
+                        <h2>Chat</h2>
                         <Divider className="divider"></Divider>
-                        {players ? <UsersAvatars size={80} showNames={true} users={players} /> : null}
+                        <Chat sendMessage={handleSendMessage} placeholderMessage="Escribe algo..." />
                     </div>
                 </div>
                 <div className="shareLink">
                     <span>Comparte este link para invitar a amigos</span>
                     <div className="wrapUrl">
                         <Input
+                            size="large"
                             ref={refUrl}
                             onChange={() => setUrl(window.location.href)}
                             value={url}
                             style={{ width: '80%' }}
                         />
-                        <Button onClick={clipBoardUrl} type="primary" icon={<CopyOutlined />}>Copiar</Button>
+                        <Button size="large" onClick={clipBoardUrl} type="primary" icon={<CopyOutlined />}>
+                            Copiar
+                        </Button>
                     </div>
                     <span>O comparte el código de la sala</span>
                     <div className="wrapUrl">
                         <Input
+                            size="large"
                             ref={refCode}
                             onChange={() => setRoomId(match.params.id)}
                             value={roomId}
                             style={{ width: '80%' }}
                         />
-                        <Button onClick={clipBoardCode} type="primary" icon={<CopyOutlined />}>Copiar</Button>
+                        <Button size="large" onClick={clipBoardCode} type="primary" icon={<CopyOutlined />}>
+                            Copiar
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -202,4 +237,9 @@ const mapStateToProps = (state) => ({
     room: readPrivateRoom(state),
 });
 
-export default connect(mapStateToProps, { setPrivateRoom })(PrivateRoom);
+const mapDispatchToProps = (dispatch) => ({
+    addMessage: (message) => dispatch(addMessage(message)),
+    resetMessages: () => dispatch(resetMessages())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoom);

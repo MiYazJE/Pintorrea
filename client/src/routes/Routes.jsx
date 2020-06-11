@@ -26,7 +26,7 @@ const Routes = ({ auth, userLoading }) => {
                     <Route path="/signUp" exact>
                         {!auth ? <SignUp /> : <Redirect to="/" />}
                     </Route>
-                    <Route path="/privateRoom/:id" component={PrivateRoom} />
+                    <PrivateRoute component={PrivateRoom} path="/privateRoom/:id" />
                     <Route path="*">
                         <Redirect to="/" />
                     </Route>

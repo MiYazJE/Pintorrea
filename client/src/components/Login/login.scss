@@ -1,4 +1,10 @@
 
+@media (max-width: 1200px) {
+    #app, #root {
+        height: 100vh !important;
+    }
+}
+
 .wrapForm {
     width: 100%;
     display: flex;

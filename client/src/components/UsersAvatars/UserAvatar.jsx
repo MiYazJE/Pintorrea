@@ -25,7 +25,7 @@ const UserAvatar = ({ name, picture, id, size, showName, me }) => {
                         size={size}
                     />
                     {showName ? (
-                        <span style={{ color: name === me ? 'green' : null }}>
+                        <span style={{ color: name === me ? 'green' : null, fontSize: '11px' }}>
                             {name} {name === me ? '(Tú)' : null}
                         </span>
                     ) : null}
