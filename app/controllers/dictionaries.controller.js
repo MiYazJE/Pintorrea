@@ -8,7 +8,7 @@ module.exports = {
     topics, 
     dictionary,
     randomWords,
-    getWords
+    getRandomWords
 };
 
 async function scrapTargets(req, res) {
@@ -57,12 +57,40 @@ async function deleteDictionary(topic) {
 }
 
 async function randomWords(req, res) {
-    const words = await getWords();
-    res.json({ words });
+    const data = await getRandomWords();
+    res.json(data);
 }
 
-async function getWords() {
-    const data        = await fetch('https://www.aleatorios.com/random-kids?new=%5B0%5D&type=0&words=3');
-    const { records } = await data.json();
-    return records;
+async function getRandomWords() {
+    try {
+        const data = await fetchWithTimeout('https://www.aleatorios.com/random-words?dictionary=2&words=3', 1000);
+        const { records } = await data.json();
+        return { words: records };
+    }
+    catch(err) { }
+    const words = await getWordsFromModel();
+    return { words };
 }
+
+function fetchWithTimeout(url, timeout = 2000) {
+    return Promise.race([
+        fetch(url),
+        new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('timeout')), timeout)
+        })
+    ])
+}
+
+async function getWordsFromModel() {
+    const data = await dictionariesModel.aggregate([{ $sample: { size: 1 }}]);
+    const randomWords = getThreeWords(data[0].words);
+    return randomWords;
+}
+
+function getThreeWords(words, many = 3) {
+    const arr = [];
+    while (many-- != 0) {
+        arr.push(words[parseInt(Math.random() * words.length)]);
+    }
+    return arr;
+} 

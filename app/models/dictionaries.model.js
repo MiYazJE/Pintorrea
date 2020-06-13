@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
 
-const dictionariesSchema = mongoose.Schema({
+const DictionarySchema = new Schema({
     topic: { type: String, unique: true },
     words: Array
 }, {
     timestamps: true
 });
 
-module.exports = mongoose.model('dictionaries', dictionariesSchema);
+module.exports = model('Dictionary', DictionarySchema);
