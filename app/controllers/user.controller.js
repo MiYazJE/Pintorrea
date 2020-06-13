@@ -134,11 +134,11 @@ async function changePictureFromAvatar(req, res) {
     try {
         const picture = await imageDataURi.encodeFromURL(imageUrl);
         await userModel.updateOne({ _id: id }, { picture, imageType: 'avatar' });
-        res.json({ picture, msg: 'Ahora tienes el avatar como imágen de usuario.' });
+        res.json({ picture, msg: 'Ahora tienes el avatar seleccionado.' });
     }
     catch (err) {
         console.log(err);
-        res.status(400).json({ error: true, msg: 'Problemas subiendo la imágen.' });
+        res.status(400).json({ error: true, msg: 'Problemas subiendo la imagen.' });
     }
 }
 

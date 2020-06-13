@@ -1,4 +1,5 @@
 const dictionariesModel = require('../models/dictionaries.model');
+const { randomWordsFromDictionary } = require('../models/dictionaries.helper');
 const scrapWords = require('../lib/scrapWords');
 const fetch = require('node-fetch');
 
@@ -68,7 +69,7 @@ async function getRandomWords() {
         return { words: records };
     }
     catch(err) { }
-    const words = await getWordsFromModel();
+    const words = await randomWordsFromDictionary();
     return { words };
 }
 
@@ -80,17 +81,3 @@ function fetchWithTimeout(url, timeout = 2000) {
         })
     ])
 }
-
-async function getWordsFromModel() {
-    const data = await dictionariesModel.aggregate([{ $sample: { size: 1 }}]);
-    const randomWords = getThreeWords(data[0].words);
-    return randomWords;
-}
-
-function getThreeWords(words, many = 3) {
-    const arr = [];
-    while (many-- != 0) {
-        arr.push(words[parseInt(Math.random() * words.length)]);
-    }
-    return arr;
-} 

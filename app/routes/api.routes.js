@@ -5,6 +5,7 @@ const passport  = require('passport');
 const usersCtrl      = require('../controllers/user.controller');
 const googleAuthCtrl = require('../controllers/googleAuth.controller');
 const dictionaryCtrl = require('../controllers/dictionaries.controller');
+const rankingCtrl    = require('../controllers/ranking.controllers');
 
 // router.get('/getUsers',  usersCtrl.getUsers);
 // router.get('/deleteAll', usersCtrl.deleteAll);
@@ -28,5 +29,9 @@ router.get( '/user/game/room/status/:id', (req, res) => {
     const room = roomsCtrl.getPrivateRoom(id);
     res.json({ room });
 })
+
+router.post('/ranking/',    rankingCtrl.post);
+router.get( '/ranking/',    rankingCtrl.get);
+router.get( '/ranking/all', rankingCtrl.getAll);
 
 module.exports = router;
