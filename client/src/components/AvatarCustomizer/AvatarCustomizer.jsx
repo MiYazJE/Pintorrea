@@ -66,7 +66,13 @@ const AvatarCustomizer = forwardRef(({ onSave, initIndexes, onlyAvatar }, ref) =
     };
 
     const generateRandomly = () => {
-        console.log('random generator avatar...');
+        for (const key of Object.keys(selectors)) {
+            if (key === 'avatarStyle') continue;
+            const maxLength   = options[key].length;
+            const randomIndex = parseInt(Math.random() * maxLength);
+            const randomItem  = options[key][randomIndex];
+            selectors[key][1](randomItem);
+        }
     };
 
     const save = () => {

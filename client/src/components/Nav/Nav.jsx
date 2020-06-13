@@ -1,20 +1,15 @@
-import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import EditAvatar from '../EditAvatar/EditAvatar';
-import EditProfile from '../EditProfile/EditProfile'
-import { Layout, Menu, notification, Avatar } from "antd";
+import EditProfile from '../EditProfile/EditProfile';
+import { Layout, Menu, notification, Avatar } from 'antd';
 import Drawer from 'react-drag-drawer';
-import {
-    UserOutlined,
-    LogoutOutlined,
-    ProfileOutlined,
-    UnorderedListOutlined
-} from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, EditOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { readUser, readImage } from '../../reducers/userReducer';
 import { logOut } from '../../actions/userActions';
-import "antd/dist/antd.css";
-import "./nav.scss";
+import 'antd/dist/antd.css';
+import './nav.scss';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
@@ -30,24 +25,24 @@ const Nav = ({ user, logOut, picture }) => {
         setShowEditAvatar(false);
         setShowProfile(false);
         setShowModal(false);
-    }
+    };
 
     const handleLogout = () => {
         logOut(() => {
             notification.success({
-                message: "Sesión cerrada!",
+                message: 'Sesión cerrada!',
                 key,
                 duration: 5,
-                placement: 'bottomRight'
+                placement: 'bottomRight',
             });
             setRedirect(true);
         });
-    }
+    };
 
     const handleShowModal = (set) => {
         set(true);
-        setShowModal(true)
-    }
+        setShowModal(true);
+    };
 
     return (
         <Header className="header">
@@ -71,48 +66,51 @@ const Nav = ({ user, logOut, picture }) => {
                 {user.auth ? (
                     <SubMenu
                         title={
-                            <span style={{display: 'flex', alignItems: 'center'}}>
-                                <Avatar style={{backgroundColor: 'white'}} src={picture} />
-                                <span style={{marginLeft: '5px'}}>{user.name}</span>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                <Avatar style={{ backgroundColor: 'white' }} src={picture} />
+                                <span style={{ marginLeft: '5px' }}>{user.name}</span>
                             </span>
                         }
                     >
                         <Menu.ItemGroup title="Perfil">
-                            <Menu.Item key="link-profile" onClick={() => handleShowModal(setShowProfile)}>
-                                <ProfileOutlined style={{ marginRight: "5px" }} />
+                            <Menu.Item
+                                icon={<UserOutlined />}
+                                key="link-profile"
+                                onClick={() => handleShowModal(setShowProfile)}
+                            >
                                 Editar
                             </Menu.Item>
-                            <Menu.Item key="link-avatar" onClick={() => handleShowModal(setShowEditAvatar)}>
-                                <ProfileOutlined style={{ marginRight: "5px" }} />
+                            <Menu.Item
+                                icon={<EditOutlined />}
+                                key="link-avatar"
+                                onClick={() => handleShowModal(setShowEditAvatar)}
+                            >
                                 Avatar
                             </Menu.Item>
                         </Menu.ItemGroup>
                         <Menu.Item key="link-logout" onClick={handleLogout}>
-                            <LogoutOutlined style={{ marginRight: "5px" }} />
+                            <LogoutOutlined style={{ marginRight: '5px' }} />
                             Cerrar sesión
                         </Menu.Item>
                     </SubMenu>
                 ) : (
-                        <Menu.Item>
-                            <UserOutlined />
-                            <Link to="/login">Iniciar sesión</Link>
-                        </Menu.Item>
-                    )}
+                    <Menu.Item>
+                        <UserOutlined />
+                        <Link to="/login">Iniciar sesión</Link>
+                    </Menu.Item>
+                )}
             </Menu>
-            <Drawer
-                open={showModal}
-                onRequestClose={toggleShowModal}
-            >
+            <Drawer open={showModal} onRequestClose={toggleShowModal}>
                 {showProfile ? <EditProfile /> : null}
                 {showEditAvatar ? <EditAvatar /> : null}
             </Drawer>
         </Header>
     );
-}
+};
 
-const mapStateToProps = state => ({ 
+const mapStateToProps = (state) => ({
     user: readUser(state),
-    picture: readImage(state)
+    picture: readImage(state),
 });
 
 export default connect(mapStateToProps, { logOut })(Nav);

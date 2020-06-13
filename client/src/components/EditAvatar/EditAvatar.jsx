@@ -4,6 +4,7 @@ import { notification, Button } from 'antd';
 import { connect } from 'react-redux';
 import { uploadPicture, uploadAvatar } from '../../actions/userActions';
 import { readImage, readName, readID, readAvatar } from '../../reducers/userReducer';
+import { GiPerspectiveDiceSixFacesRandom } from 'react-icons/gi';
 import './editAvatar.scss';
 
 const EditAvatar = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) => {
@@ -28,7 +29,11 @@ const EditAvatar = ({ picture, uploadPicture, name, id, uploadAvatar, avatar }) 
             <AvatarCustomizer ref={refAvatar} onSave={handleSaveAvatar} initIndexes={{ ...avatar }} />
             <div className="wrapButtons">
                 <Button onClick={handleSaveAvatar}>Guardar avatar</Button>
-                <Button onClick={handleRandomGenerator}>Generar aleatoriamente</Button>
+                <Button
+                    style={{marginLeft: '10px'}}  
+                    icon={<GiPerspectiveDiceSixFacesRandom />} 
+                    onClick={handleRandomGenerator}>
+                </Button>
             </div>
         </div>
     );
