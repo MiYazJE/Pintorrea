@@ -6,7 +6,7 @@ import options from './options';
 
 const URL_IMG = 'https://avataaars.io/';
 
-const AvatarCustomizer = forwardRef(({ onSave, initIndexes, onlyAvatar }, ref) => {
+const AvatarCustomizer = forwardRef(({ initIndexes, onlyAvatar }, ref) => {
     const [indexes, setIndexes] = useState(initIndexes);
     const [topType, setTopType] = useState('LongHairMiaWallace');
     const [eyeType, setEyeType] = useState('Happy');
@@ -72,6 +72,7 @@ const AvatarCustomizer = forwardRef(({ onSave, initIndexes, onlyAvatar }, ref) =
             const randomIndex = parseInt(Math.random() * maxLength);
             const randomItem  = options[key][randomIndex];
             selectors[key][1](randomItem);
+            indexes[key] = randomIndex;
         }
     };
 
