@@ -21,5 +21,12 @@ router.get('/dictionary/randomWords',  dictionaryCtrl.randomWords);
 
 router.post('/user/game/createRoom',         usersCtrl.createRoom);
 router.get( '/user/game/room/valid/:idRoom', usersCtrl.isValidRoom);
+router.post('/user/game/room/startGame',     usersCtrl.startPrivateGame);
+router.get( '/user/game/room/status/:id', (req, res) => {
+    const { roomsCtrl } = req.app.locals;
+    const { id } = req.params;
+    const room = roomsCtrl.getPrivateRoom(id);
+    res.json({ room });
+})
 
 module.exports = router;

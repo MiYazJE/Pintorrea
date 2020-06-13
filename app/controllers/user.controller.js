@@ -16,7 +16,8 @@ module.exports = {
     changeAvatar,
     changePictureFromAvatar,
     createRoom,
-    isValidRoom
+    isValidRoom,
+    startPrivateGame,
 };
 
 async function nameAlreadyRegistered(name) {
@@ -144,19 +145,28 @@ async function changePictureFromAvatar(req, res) {
 function createRoom(req, res) {
     const { user } = req.body;
     if (!user) return res.status(400).json({ msg: 'El usuario esta vacío.' });
-    const { ioCtrl } = req.app.locals;
+    const { roomsCtrl } = req.app.locals;
     const id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
-    ioCtrl.roomsCtrl.createPrivateRoom(user, id);
-    const room = ioCtrl.roomsCtrl.getRoom(id);
+    roomsCtrl.createPrivateRoom(user, id);
+    const room = roomsCtrl.getPrivateRoom(id);
+    console.log(room)
     res.json(room);
 }
 
 function isValidRoom(req, res) {
     const { idRoom } = req.params;
     if (!idRoom) return res.status(401).json({ valid: false });
-    const { ioCtrl } = req.app.locals;
-    const room = ioCtrl.roomsCtrl.getRoom(idRoom);
+    const { roomsCtrl } = req.app.locals;
+    const room = roomsCtrl.getPrivateRoom(idRoom);
     res.json({ valid: room && room.isPrivate });
+}
+
+function startPrivateGame(req, res) {
+    const { idRoom } = req.body;
+    if (!idRoom) return res.status(400).json({ started: false, msg: 'El id de la sala está vacío.' });
+    const { roomsCtrl } = req.app.locals;
+    roomsCtrl.startPrivateGame(idRoom);
+    res.json({ started: true });
 }
 
 // async function update(req, res) {

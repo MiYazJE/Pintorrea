@@ -24,8 +24,7 @@ import {
     resetMessages,
     setCurrentRound,
     setMaxRound,
-    setIsStarted,
-    setRooms,
+    setIsStarted
 } from '../../actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
@@ -51,6 +50,7 @@ const Game = ({
     setDrawerName,
     setIsDrawer,
     resetGame,
+    resetMessages,
     addMessage,
     setCurrentRound,
     setMaxRound,
@@ -72,6 +72,7 @@ const Game = ({
     const [wrapCanvasWidth, setWrapCanvasWidth] = useState(0);
     const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
     const [canvasOberserver, setCanvasObserver] = useState(null);
+    const [redirectPrivateGame, setRedirectPrivateGame] = useState(false);
     const history = useHistory();
 
     const wrapCanvasRef = useRef(null);
@@ -86,9 +87,10 @@ const Game = ({
             }
         });
 
+        resetMessages();
+        console.log('adding listeners')
         socket = io();
         socket.emit('joinRoom', { user, roomName: room });
-        resetMessages();
     }, []);
 
     useEffect(() => {
@@ -111,6 +113,7 @@ const Game = ({
         });
 
         socket.on('chooseDrawer', async ({ drawer, words }) => {
+            console.log(user.name, words)
             resetGame();
             setIsDrawer(drawer === user.name);
             setDrawerName(drawer);
@@ -159,6 +162,8 @@ const Game = ({
         });
 
         return () => {
+            console.log('component unmounting')
+            resetMessages();
             leaveRoom();
             socket.disconnect();
         };
@@ -217,7 +222,10 @@ const Game = ({
         console.log('painting with bucket...');
     };
 
-    const sendMessage = (guess) => socket.emit('guessWord', { user, guess, room });
+    const sendMessage = (guess) => {
+        console.log(user.name, 'is sending message-', guess);
+        socket.emit('guessWord', { user, guess, room })
+    };
 
     const sendCoordinates = (canvas) => {
         if (!isDrawer) return;

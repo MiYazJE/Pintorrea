@@ -65,6 +65,7 @@ export const setRooms = (rooms) => ({
 export const createPrivateRoom = (user, callback) => async (dispatch) => {
     dispatch(setLoadingRoom(true));
     const room = await Http.post({ user }, '/user/game/createRoom');
+    console.log(room)
     dispatch(setLoadingRoom(false));
     callback(room.id);
 }
@@ -83,3 +84,11 @@ const setLoadingRoom = (loadingRoom) => ({
     type: 'SET_LOADING_ROOM',
     loadingRoom
 });
+
+export const startGame = (idRoom, success) => async (dispatch) => {
+    const res = await Http.post({ idRoom }, '/user/game/room/startGame');
+    console.log(res);
+    if (res.started) {
+        success();
+    }
+} 

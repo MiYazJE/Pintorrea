@@ -65,6 +65,6 @@ function initRoutes() {
 
 function initSocketIO(server) {
     const io = socketIO(server);
-    const ioCtrl = require('./lib/socket-io.js')(io);
-    app.locals.ioCtrl = ioCtrl;
+    const roomsCtrl = require('./lib/socket-io.js')(io);
+    app.locals.roomsCtrl = roomsCtrl;
 }

@@ -55,7 +55,11 @@ const Home = ({
             console.log(rooms);
             setRooms(rooms);
         });
-        return () => socket.disconnect();
+        
+        return () => {
+            console.log('home unmounting...')
+            socket.disconnect();
+        }
     }, []);
 
     const handleSendMessage = (msg) => {
@@ -76,7 +80,7 @@ const Home = ({
     };
 
     const handleJoinPrivateRoom = async ({ roomName }) => {
-        setBtnLoad(true)
+        setBtnLoad(true);
         verifyPrivateRoom(
             roomName,
             (message) => {

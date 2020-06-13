@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { notification, Form, Input, Button, InputNumber, Select, Divider, Tooltip } from 'antd';
+import { notification, Form, Input, Button, InputNumber, Select, Divider } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../reducers/userReducer';
 import './privateRoom.scss';
 import io from 'socket.io-client';
-import { addMessage, resetMessages } from '../../actions/gameActions';
+import { addMessage, resetMessages, startGame } from '../../actions/gameActions';
 import { readPrivateRoom } from '../../reducers/gameReducer';
 import Http from '../../Helpers/Http';
 import UsersAvatars from '../UsersAvatars/UsersAvatars';
 import { CopyOutlined } from '@ant-design/icons';
 import Chat from '../Chat/Chat';
+import { joinRoom } from '../../actions/userActions';
+import Game from '../Game/Game';
 
 const { Option } = Select;
 
@@ -28,7 +30,8 @@ const getOptions = (start, final, increment) => {
 
 let socket;
 
-const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
+const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRoom }) => {
+    const [btnLoad, setBtnLoad] = useState(false);
     const [roomId, setRoomId] = useState(match.params.id);
     const [url, setUrl] = useState(window.location.href);
     const [room, setRoom] = useState({});
@@ -39,7 +42,8 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
     const [rounds, setRounds] = useState(0);
     const [players, setPlayers] = useState([]);
     const [optionsTime, setOptionsTime] = useState(getOptions(60, 150, 10));
-    const [optionsRounds, setOptionsRounds] = useState(getOptions(3, 10, 1));
+    const [optionsRounds, setOptionsRounds] = useState(getOptions(1, 10, 1));
+    const [redirectGame, setRedirectGame] = useState(false);
     const history = useHistory();
     const refUrl = useRef();
     const refCode = useRef();
@@ -59,24 +63,38 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
             console.log(user.name, 'join room');
             socket.emit('joinPrivateRoom', { user, id });
 
-            socket.on('updateSettings', (data) => {
-                const { room } = JSON.parse(data);
-                setRoom(room);
+            socket.on('updateSettings', updateSettings);
+            socket.on('privateRoomMessage', sendMessage);
+
+            socket.on('startGame', () => {
+                joinRoom(roomId);
+                setRedirectGame(true);
             });
 
-            socket.on('message', (msg) => {
-                addMessage(msg);
+            socket.on('goPrivateRoom', () => {
+                setRedirectGame(false);
+                console.log(players)
             });
 
-            return () => socket.disconnect();
+            return () => {
+                console.log('private room unmounting...');
+                socket.disconnect();
+            };
         })();
     }, []);
+
+    const sendMessage = (msg) => addMessage(msg);
+    const updateSettings = (data) => {
+        console.log('updating room');
+        const { room } = JSON.parse(data);
+        setRoom(room);
+    };
 
     useEffect(() => {
         console.log('updating room settings');
         console.log(room);
         setIsHost(user.name === room.host);
-        setCurrentPlayers(room.players);
+        setCurrentPlayers(room.roomPlayers);
         setMaxPlayers(room.max);
         setDrawingTime(room.drawingTime);
         setRounds(room.rounds);
@@ -89,29 +107,12 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
         return valid;
     };
 
-    const handleChangeDrawingTime = (drawingTime) => {
+    const handleChangeSettings = (replace) => {
+        console.log('newChanges', replace);
         socket.emit(
             'changeSettingsPrivateRoom',
             JSON.stringify({
-                newRoom: { ...room, drawingTime },
-            })
-        );
-    };
-
-    const handleChangeMaxPlayers = (max) => {
-        socket.emit(
-            'changeSettingsPrivateRoom',
-            JSON.stringify({
-                newRoom: { ...room, max },
-            })
-        );
-    };
-
-    const handleChangeGameRounds = (rounds) => {
-        socket.emit(
-            'changeSettingsPrivateRoom',
-            JSON.stringify({
-                newRoom: { ...room, rounds },
+                newRoom: { ...room, ...replace },
             })
         );
     };
@@ -129,105 +130,115 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages }) => {
     };
 
     const handleStartGame = () => {
+        setBtnLoad(true);
         console.log('starting the game...');
+        startGame(roomId, () => {
+            setBtnLoad(false);
+            socket.emit('startPrivateGame', { room: roomId });
+        });
     };
 
     const handleSendMessage = (msg) => {
         console.log(msg);
         socket.emit('sendMessageToRoom', { room: roomId, name: user.name, msg });
-    }
+    };
 
     return (
         <div className="wrapPreRoom">
-            <div className="wrapper">
-                <div className="preRoom">
-                    <div className="settings">
-                        <h2>Configuración</h2>
-                        <Divider className="divider"></Divider>
-                        <div className="center">
-                            {players ? <UsersAvatars size={40} showNames={true} users={players} /> : null}
-                            <Form layout="vertical" initialValues={initialFormValues}>
-                                <Form.Item label="Jugadores">
-                                    <Form.Item name="fieldCurrentPlayers" noStyle>
-                                        <InputNumber
+            {redirectGame ? (
+                <Game />
+            ) : (
+                <div className="wrapper">
+                    <div className="preRoom">
+                        <div className="settings">
+                            <h2>Configuración</h2>
+                            <Divider className="divider"></Divider>
+                            <div className="center">
+                                {players ? <UsersAvatars size={40} showNames={true} users={players} /> : null}
+                                <Form layout="vertical" initialValues={initialFormValues}>
+                                    <Form.Item label="Jugadores">
+                                        <Form.Item name="fieldCurrentPlayers" noStyle>
+                                            <InputNumber
+                                                size="middle"
+                                                disabled={!isHost}
+                                                style={{ width: 200 }}
+                                                onChange={(maxPlayers) => handleChangeSettings({ max: maxPlayers })}
+                                                value={maxPlayers}
+                                                min={currentPlayers}
+                                                max={20}
+                                            />
+                                        </Form.Item>
+                                    </Form.Item>
+                                    <Form.Item label="Tiempo de dibujado">
+                                        <Select
                                             size="middle"
                                             disabled={!isHost}
+                                            value={drawingTime}
+                                            onChange={(time) => handleChangeSettings({ drawingTime: time })}
                                             style={{ width: 200 }}
-                                            onChange={handleChangeMaxPlayers}
-                                            value={maxPlayers}
-                                            min={currentPlayers}
-                                            max={20}
-                                        />
+                                        >
+                                            {optionsTime}
+                                        </Select>
                                     </Form.Item>
-                                </Form.Item>
-                                <Form.Item label="Tiempo de dibujado">
-                                    <Select
-                                        size="middle"
-                                        disabled={!isHost}
-                                        value={drawingTime}
-                                        onChange={handleChangeDrawingTime}
-                                        style={{ width: 200 }}
+                                    <Form.Item label="Rondas">
+                                        <Select
+                                            size="middle"
+                                            disabled={!isHost}
+                                            value={rounds}
+                                            onChange={(maxRounds) => handleChangeSettings({ rounds: maxRounds })}
+                                            style={{ width: 200 }}
+                                        >
+                                            {optionsRounds}
+                                        </Select>
+                                    </Form.Item>
+                                    <Button
+                                        loading={btnLoad}
+                                        size="large"
+                                        className="btnStart"
+                                        onClick={handleStartGame}
+                                        disabled={!isHost || currentPlayers === 1}
                                     >
-                                        {optionsTime}
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item label="Rondas">
-                                    <Select
-                                        size="middle"
-                                        disabled={!isHost}
-                                        value={rounds}
-                                        onChange={handleChangeGameRounds}
-                                        style={{ width: 200 }}
-                                    >
-                                        {optionsRounds}
-                                    </Select>
-                                </Form.Item>
-                                <Button
-                                    size="large"
-                                    className="btnStart"
-                                    onClick={handleStartGame}
-                                    disabled={!isHost || currentPlayers === 1}
-                                >
-                                    Empezar partida
-                                </Button>
-                            </Form>
+                                        Empezar partida
+                                    </Button>
+                                </Form>
+                            </div>
+                        </div>
+                        <div className="players">
+                            <h2>Chat</h2>
+                            <Divider className="divider"></Divider>
+                            <Chat sendMessage={handleSendMessage} placeholderMessage="Escribe algo..." />
                         </div>
                     </div>
-                    <div className="players">
-                        <h2>Chat</h2>
-                        <Divider className="divider"></Divider>
-                        <Chat sendMessage={handleSendMessage} placeholderMessage="Escribe algo..." />
+                    <div className="shareLink">
+                        <span>Comparte este link para invitar a amigos</span>
+                        <div className="wrapUrl">
+                            <Input
+                                size="large"
+                                ref={refUrl}
+                                onChange={() => setUrl(window.location.href)}
+                                value={url}
+                                style={{ width: '80%' }}
+                            />
+                            <Button size="large" onClick={clipBoardUrl} type="primary" icon={<CopyOutlined />}>
+                                Copiar
+                            </Button>
+                        </div>
+                        <span>O comparte el código de la sala</span>
+                        <div className="wrapUrl">
+                            <Input
+                                size="large"
+                                ref={refCode}
+                                onChange={() => setRoomId(match.params.id)}
+                                value={roomId}
+                                style={{ width: '80%' }}
+                            />
+                            <Button size="large" onClick={clipBoardCode} type="primary" icon={<CopyOutlined />}>
+                                Copiar
+                            </Button>
+                        </div>
                     </div>
                 </div>
-                <div className="shareLink">
-                    <span>Comparte este link para invitar a amigos</span>
-                    <div className="wrapUrl">
-                        <Input
-                            size="large"
-                            ref={refUrl}
-                            onChange={() => setUrl(window.location.href)}
-                            value={url}
-                            style={{ width: '80%' }}
-                        />
-                        <Button size="large" onClick={clipBoardUrl} type="primary" icon={<CopyOutlined />}>
-                            Copiar
-                        </Button>
-                    </div>
-                    <span>O comparte el código de la sala</span>
-                    <div className="wrapUrl">
-                        <Input
-                            size="large"
-                            ref={refCode}
-                            onChange={() => setRoomId(match.params.id)}
-                            value={roomId}
-                            style={{ width: '80%' }}
-                        />
-                        <Button size="large" onClick={clipBoardCode} type="primary" icon={<CopyOutlined />}>
-                            Copiar
-                        </Button>
-                    </div>
-                </div>
-            </div>
+            )}
         </div>
     );
 };
@@ -239,7 +250,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     addMessage: (message) => dispatch(addMessage(message)),
-    resetMessages: () => dispatch(resetMessages())
+    resetMessages: () => dispatch(resetMessages()),
+    startGame: (roomId, success) => dispatch(startGame(roomId, success)),
+    joinRoom: (room) => dispatch(joinRoom(room)),
+    resetMessages: () => dispatch(resetMessages()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoom);

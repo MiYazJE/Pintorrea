@@ -15,14 +15,22 @@ const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, gu
     const [encryptedWord, setEncryptedWord] = useState('');
 
     useEffect(() => {
-        socket.on('progress', ({ time, encryptedWord }) => {
-            console.log(time, encryptedWord);
-            setTime(time);
-            setEncryptedWord(encryptedWord);
-        });
+        console.log(socket)
+        socket.on('progress', progressEvent);
+
+        return () => {
+            console.log('game progress unmounting...');
+            socket.disconnect();
+        }
     }, []);
 
     useEffect(() => setTime(null), [isStarted]);
+
+    const progressEvent = ({ time, encryptedWord }) => {
+        console.log(time, encryptedWord);
+        setTime(time);
+        setEncryptedWord(encryptedWord);
+    }
 
     return isStarted ? (
         <div className="wrapGameProgress">

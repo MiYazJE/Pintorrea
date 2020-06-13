@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TiPencil } from 'react-icons/ti';
+import { TiPencil, TiSocialTumbler } from 'react-icons/ti';
 import FlipMove from 'react-flip-move';
 import './puntuation.scss';
 import UserAvatar from '../UsersAvatars/UserAvatar';
@@ -16,22 +16,36 @@ class Puntuation extends Component {
     constructor(props) {
         super(props);
         this.sortUsers = this.sortUsers.bind(this);
+        this.updateGameStatus = this.updateGameStatus.bind(this);
 
         this.state = {
             users: []
         }
 
+        console.log('getting socket...')
     }
 
     componentDidMount = () => {
         const { socket, room } = this.props;
-        socket.on('gameStatus', ({ users }) => {
-            console.log(users);
-            this.sortUsers(users);
-        });
-
+        
         socket.emit('getGameStatus', { room });
+        socket.on('gameStatus', this.updateGameStatus);
     }
+
+    componentWillUnmount = () => {
+        console.log('PUNTUATION unmounting...');
+        const { socket } = this.props;
+        socket.off('gameStatus', this.updateGameStatus);
+    }
+
+    componentDidUpdate = () => {
+        console.log('will update')
+    }
+
+    updateGameStatus = ({ users }) => {
+        console.log(users);
+        this.sortUsers(users);
+    };
 
     sortUsers = (users) => {
         const sortDesc = (a, b) => b.puntuation - a.puntuation;
