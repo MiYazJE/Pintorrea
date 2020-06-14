@@ -146,7 +146,7 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
     return (
         <div className="wrapPreRoom">
             {redirectGame ? (
-                <Game />
+                <Game socketProvider={socket} />
             ) : (
                 <div className="wrapper">
                     <div className="preRoom">

@@ -33,15 +33,6 @@ const ShowInteraction = ({ currentRound, view, chooseWord, words, drawerName, pu
                 <PuntuationTable puntuation={puntuation} />
             );
         case 'showResults':
-            // const users = [
-            //     { name: 'ruben', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'pedro', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'juan', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'miguel', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'pablo', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'pablo', puntuation: parseInt(Math.random() * 50) },
-            //     { name: 'pablo', puntuation: parseInt(Math.random() * 50) },
-            // ]
             return (
                 <Results finalPuntuation={finalPuntuation} />
             );

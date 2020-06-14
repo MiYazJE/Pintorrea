@@ -20,7 +20,7 @@ const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, gu
 
         return () => {
             console.log('game progress unmounting...');
-            socket.disconnect();
+            socket.off('progress', progressEvent)
         }
     }, []);
 

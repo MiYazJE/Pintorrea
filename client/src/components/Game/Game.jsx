@@ -4,8 +4,8 @@ import CanvasControls from '../CanvasControls/CanvasControls';
 import Puntuation from '../Puntuation/Puntuation';
 import CanvasDraw from 'react-canvas-draw';
 import CustomModal from '../CustomModal/CustomModal';
-import { connect } from 'react-redux';
-import { leaveRoom } from '../../actions/userActions';
+import { connect, useDispatch } from 'react-redux';
+import { leaveRoom, sendPuntuation } from '../../actions/userActions';
 import { readUser, readRoom } from '../../reducers/userReducer';
 import {
     readIsDrawer,
@@ -56,6 +56,7 @@ const Game = ({
     setMaxRound,
     setIsStarted,
     leaveRoom,
+    socketProvider
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
@@ -74,6 +75,7 @@ const Game = ({
     const [canvasOberserver, setCanvasObserver] = useState(null);
     const [redirectPrivateGame, setRedirectPrivateGame] = useState(false);
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const wrapCanvasRef = useRef(null);
     const canvasRef = useRef(null);
@@ -89,7 +91,12 @@ const Game = ({
 
         resetMessages();
         console.log('adding listeners')
-        socket = io();
+        if (socketProvider) {
+            socket = socketProvider;
+        }
+        else {
+            socket = io();
+        }
         socket.emit('joinRoom', { user, roomName: room });
     }, []);
 
@@ -156,6 +163,7 @@ const Game = ({
 
         socket.on('endGame', ({ users }) => {
             console.log(users);
+            dispatch(sendPuntuation(user, users));
             resetGame();
             setInteraction('showResults');
             setFinalPuntuation(users);
@@ -165,7 +173,9 @@ const Game = ({
             console.log('component unmounting')
             resetMessages();
             leaveRoom();
-            socket.disconnect();
+            if (!socketProvider) {
+                socket.disconnect();
+            }
         };
     }, []);
 
@@ -312,4 +322,5 @@ export default connect(mapStateToProps, {
     setMaxRound,
     setIsStarted,
     leaveRoom,
+    sendPuntuation
 })(Game);

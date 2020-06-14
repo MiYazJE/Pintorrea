@@ -28,7 +28,7 @@ const Results = ({ finalPuntuation }) => {
             <div className="puntuation">
                 {finalPuntuation.map((player, index) => (
                     <div key={player.id} className="player">
-                        <UserAvatar size={avatarSize} {...player} />
+                        <UserAvatar showName={true} size={avatarSize} {...player} />
                         <span className="rank" style={{ color: getRankColor(index + 1) }}>
                             # {index + 1}
                         </span>
