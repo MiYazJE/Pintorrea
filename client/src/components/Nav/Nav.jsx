@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import EditAvatar from '../EditAvatar/EditAvatar';
 import EditProfile from '../EditProfile/EditProfile';
 import { Layout, Menu, notification, Avatar } from 'antd';
 import Drawer from 'react-drag-drawer';
-import { UserOutlined, LogoutOutlined, EditOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, EditOutlined, ClusterOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { readUser, readImage } from '../../reducers/userReducer';
 import { logOut } from '../../actions/userActions';
@@ -15,11 +15,15 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
+const CustomMenuItem = (props) => {
+    return <Menu.Item {...props}>{props.title}</Menu.Item>;
+};
+
 const Nav = ({ user, logOut, picture }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showEditAvatar, setShowEditAvatar] = useState(false);
-    const [redirect, setRedirect] = useState(false);
+    const history = useHistory();
 
     const toggleShowModal = () => {
         setShowEditAvatar(false);
@@ -35,7 +39,7 @@ const Nav = ({ user, logOut, picture }) => {
                 duration: 5,
                 placement: 'bottomRight',
             });
-            setRedirect(true);
+            history.push('/login');
         });
     };
 
@@ -46,38 +50,42 @@ const Nav = ({ user, logOut, picture }) => {
 
     return (
         <Header className="header">
-            {redirect ? <Redirect to="/login" /> : null}
             <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
-                <Menu.Item key="link-inicio">
-                    <Link to="/">Inicio</Link>
-                </Menu.Item>
-                <SubMenu
-                    title={
-                        <span className="submenu-title-wrapper">
-                            <UnorderedListOutlined />
-                            Ranking
+                {user.auth ? (
+                    <Menu.Item key="link-inicio" onClick={() => history.push('/')}>
+                        <span className="centerIcon">
+                            Salas   
+                            <UnorderedListOutlined style={{marginLeft: '5px'}} />
                         </span>
-                    }
-                >
-                    <Menu.Item>Option 1</Menu.Item>
-                    <Menu.Item>Option 2</Menu.Item>
-                </SubMenu>
+                    </Menu.Item>
+                ) : null}
+                {user.auth ? (
+                    <Menu.Item
+                        key="link-ranking"
+                        onClick={() => history.push('/ranking')}
+                    >
+                        <span className="centerIcon">
+                            Ranking
+                            <ClusterOutlined style={{marginLeft: '5px'}} />
+                        </span>
+                    </Menu.Item>
+                ) : null}
                 {user.auth ? (
                     <SubMenu
                         title={
                             <span style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ marginRight: '5px' }}>{user.name}</span>
                                 <Avatar style={{ backgroundColor: 'white' }} src={picture} />
-                                <span style={{ marginLeft: '5px' }}>{user.name}</span>
                             </span>
                         }
                     >
                         <Menu.ItemGroup title="Perfil">
                             <Menu.Item
-                                icon={<UserOutlined />}
                                 key="link-profile"
                                 onClick={() => handleShowModal(setShowProfile)}
                             >
+                                <UserOutlined />
                                 Editar
                             </Menu.Item>
                             <Menu.Item
@@ -89,14 +97,15 @@ const Nav = ({ user, logOut, picture }) => {
                             </Menu.Item>
                         </Menu.ItemGroup>
                         <Menu.Item key="link-logout" onClick={handleLogout}>
-                            <LogoutOutlined style={{ marginRight: '5px' }} />
                             Cerrar sesión
+                            <LogoutOutlined style={{ marginLeft: '5px' }} />
                         </Menu.Item>
                     </SubMenu>
                 ) : (
-                    <Menu.Item>
+                    <Menu.Item onClick={history.push('/login')}>
                         <UserOutlined />
-                        <Link to="/login">Iniciar sesión</Link>
+                        {/* <Link to="/login">Iniciar sesión</Link> */}
+                        Iniciar sesión
                     </Menu.Item>
                 )}
             </Menu>

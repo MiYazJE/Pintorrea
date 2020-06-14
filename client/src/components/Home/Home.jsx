@@ -80,6 +80,7 @@ const Home = ({
     };
 
     const handleJoinPrivateRoom = async ({ roomName }) => {
+        if (!roomName) return;
         setBtnLoad(true);
         verifyPrivateRoom(
             roomName,

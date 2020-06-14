@@ -1,0 +1,88 @@
+.wrapRanking {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .ranking-table {
+        overflow: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 70%;
+        min-width: 400px;
+        min-height: 90%;
+        max-height: 90%;
+        background-color: rgba(0, 21, 41, 1);
+        border-radius: 4px;
+    }
+
+    .wrapUser {
+        color: #001529;
+        border-radius: 4px;
+        margin-top: 30px;
+        width: 90%;
+        height: 100px;
+        min-height: 100px;
+        background-color: #76DEF3;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        .rank {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 20%;
+            height: 100%;
+        }
+
+        .avatar {
+            width: 20%;
+            margin-right: 15px;
+        }
+
+        .stats {
+            width: 60%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            .games {
+                padding: 10px;
+                font-size: 15px;
+                height: 100%;
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                
+                .totalPoints {
+                    color: green;
+                }
+
+                .totalGames {
+                    color: green;
+                }
+            }
+
+            .victories {
+                width: 50%;
+                height: 100%;
+                padding: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+
+        }
+
+    }
+
+}

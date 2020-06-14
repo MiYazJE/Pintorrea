@@ -42,6 +42,11 @@ const setUserAuthLoading = (loading) => ({
     loading
 });
 
+export const setTypeImage = (imageType) => ({
+    type: 'SET_TYPE_IMAGE_SELECTED',
+    imageType
+});
+
 export const signIn = (user, success, error) => async (dispatch) => {
     const res = await logIn(user);
     if (res.success) {
@@ -140,7 +145,18 @@ export const uploadAvatarImage = ({ imageUrl, id }, success, error) => async (di
     }
 }
 
-export const setTypeImage = (imageType) => ({
-    type: 'SET_TYPE_IMAGE_SELECTED',
-    imageType
-});
+export const sendPuntuation = (user, users) => async (dispatch) => {
+    console.log('sending stats')
+    users = users.sort((a, b) => b.puntuation - a.puntuation);
+    console.log(users) 
+    let userData = { userId: user.id };
+    users.forEach((u, index) => {
+        if (u.name === user.name) {
+            userData.position = index + 1;
+            userData.gamePoints = u.puntuation;
+        }
+    });
+    console.log(userData)
+    const data = await Http.post(userData, '/user/ranking');
+    console.log(data);
+}; 

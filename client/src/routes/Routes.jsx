@@ -5,6 +5,7 @@ import Game from '../components/Game/Game';
 import SignUp from '../components/SignUp/SignUp';
 import PrivateRoom from '../components/PrivateRoom/PrivateRoom';
 import PrivateRoute from './PrivateRoute';
+import Ranking from '../components/Ranking/Ranking';
 import { connect } from 'react-redux';
 import { readAuth, readUserLoading } from '../reducers/userReducer';
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -20,13 +21,14 @@ const Routes = ({ auth, userLoading }) => {
                 <Switch>
                     <PrivateRoute component={Home} path="/" exact />
                     <PrivateRoute component={Game} path="/game" exact />
+                    <PrivateRoute component={Ranking} path="/ranking" exact />
+                    <PrivateRoute component={PrivateRoom} path="/privateRoom/:id" />
                     <Route path="/login" exact>
                         {!auth ? <Login /> : <Redirect to="/" />}
                     </Route>
                     <Route path="/signUp" exact>
                         {!auth ? <SignUp /> : <Redirect to="/" />}
                     </Route>
-                    <PrivateRoute component={PrivateRoom} path="/privateRoom/:id" />
                     <Route path="*">
                         <Redirect to="/" />
                     </Route>

@@ -47,7 +47,7 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
 
     const handleSelectImage = () => {
         uploadPicture(imageUploaded, id, () => {
-            notification.success({ message: 'Ahora tienes esta imágen!', duration: 5 });
+            notification.success({ message: 'Ahora tienes tu imagen seleccionada!', duration: 5 });
             if (!imageSelected) {
                 toggleSelectedButtons()
             }
@@ -80,7 +80,7 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
                 <div className="avatar">
                     <AvatarCustomizer ref={refAvatar} initIndexes={{ ...avatar }} onlyAvatar={true} />
                     <Button type={avatarSelected ? 'primary' : null} onClick={handleSelectAvatar}>
-                        Utiliza tu avatar como imágen
+                        Utiliza tu avatar como imagen
                     </Button>
                 </div>
                 <div className="profileImage">
@@ -96,7 +96,7 @@ const EditProfile = ({ avatar, id, name, picture, imageType, uploadPicture, uplo
                         <img src={imageUploaded} alt="avatar" />
                     </Upload>
                     <Button type={imageSelected ? 'primary' : null} onClick={() => handleSelectImage()}>
-                        Utiliza tu propia imágen
+                        Utiliza tu propia imagen
                     </Button>
                 </div>
             </div>

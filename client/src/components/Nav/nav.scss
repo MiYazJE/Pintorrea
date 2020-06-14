@@ -6,6 +6,12 @@
     * {
         font-size: large;
     }
+
+    .centerIcon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
 
 .ant-modal-header,

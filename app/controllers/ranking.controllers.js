@@ -36,7 +36,7 @@ async function post(req, res) {
 
 async function get(req, res) {
     const { userId } = req.body;
-    if (userId) return res.status(400).json({ msg: 'El userId está vacío.' });
+    if (!userId) return res.status(400).json({ msg: 'El userId está vacío.' });
     const userRanking = await rankingsModel.findOne({ userId });
     return res.json({ userRanking });
 }
