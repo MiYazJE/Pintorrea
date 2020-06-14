@@ -67,4 +67,5 @@ function initSocketIO(server) {
     const io = socketIO(server);
     const roomsCtrl = require('./lib/socket-io.js')(io);
     app.locals.roomsCtrl = roomsCtrl;
+    app.locals.io = io;
 }

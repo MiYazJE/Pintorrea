@@ -7,6 +7,7 @@ const RankingSchema = new Schema({
     goldVictories: { type: Number, default: 0 },
     silverVictories: { type: Number, default: 0 },
     bronzeVictories: { type: Number, default: 0 },
+    totalGames: { type: Number, default: 1 }
 });
 
 module.exports = model('Ranking', RankingSchema);

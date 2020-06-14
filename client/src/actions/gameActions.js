@@ -92,3 +92,7 @@ export const startGame = (idRoom, success) => async (dispatch) => {
         success();
     }
 } 
+
+export const requestRanking = () => async (dispatch) => {
+    await Http.get('/user/ranking/request');
+}

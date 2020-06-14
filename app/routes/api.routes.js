@@ -30,8 +30,9 @@ router.get( '/user/game/room/status/:id', (req, res) => {
     res.json({ room });
 })
 
-router.post('/user/ranking/',    rankingCtrl.post);
-router.get( '/user/ranking/',    rankingCtrl.get);
-router.get( '/user/ranking/all', rankingCtrl.getAll);
+router.post('/user/ranking/',        rankingCtrl.post);
+router.get( '/user/ranking/',        rankingCtrl.get);
+router.get( '/user/ranking/all',     rankingCtrl.getAll);
+router.get( '/user/ranking/request', rankingCtrl.request);
 
 module.exports = router;

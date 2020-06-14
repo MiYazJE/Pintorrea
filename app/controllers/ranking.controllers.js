@@ -1,10 +1,12 @@
 const rankingsModel = require('../models/ranking.model');
+const usersModel    = require('../models/user.model');
 const { getVictoryType } = require('../models/ranking.helper');
 
 module.exports = {
     post,
     get,
     getAll,
+    request
 }
 
 async function post(req, res) {
@@ -28,6 +30,7 @@ async function post(req, res) {
             ...rankingExists._doc,
             ...getVictoryType((rankingExists), position),
             totalPoints: rankingExists.totalPoints + gamePoints,
+            totalGames: rankingExists.totalGames + 1,
         }
         await rankingsModel.updateOne({ userId }, { ...rankStats });    
         res.json({ updated: true, rankStats });
@@ -44,4 +47,16 @@ async function get(req, res) {
 async function getAll(req, res) {
     const rankings = await rankingsModel.find({ });
     res.json({ rankings });
+}
+
+async function request(req, res) {
+    const { io } = req.app.locals;
+    let usersRanking = await rankingsModel.find({ });
+    const ranking = [];
+    for (const user of usersRanking) {
+        const { picture, name } = (await usersModel.findById({ _id: user.userId }));
+        ranking.push({ ...user._doc, picture, name });
+    }
+    io.emit('updateRanking', { ranking });
+    res.status(201).json({ success: true });
 }
