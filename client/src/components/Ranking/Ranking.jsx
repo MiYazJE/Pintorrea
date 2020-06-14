@@ -57,6 +57,10 @@ class Ranking extends Component {
                 <Content className="content">
                     <div className="wrapRanking">
                         <div className="ranking-table">
+                            <div className="title">
+                                <h1>Temporada 2020/2021</h1>
+                                <span>Ranking en directo</span>
+                            </div>
                             <FlipMove
                                 staggerDurationBy="30"
                                 duration={500}
@@ -76,8 +80,7 @@ class Ranking extends Component {
                                               <div className="stats">
                                                   <div className="games">
                                                       <span>
-                                                          Puntuación:{user.totalPoints}
-                                                          <span className="totalPoints">{user.puntuation}</span>
+                                                          Puntuación: <span className="totalPoints">{user.totalPoints}</span>
                                                       </span>
                                                       <span>
                                                           Partidas: <span className="totalGames">{user.totalGames}</span>

@@ -74,6 +74,7 @@ const Register = ({ register }) => {
         },
     });
 
+    console.log('signUP')
     return (
         <Layout className="layout">
             <Nav />

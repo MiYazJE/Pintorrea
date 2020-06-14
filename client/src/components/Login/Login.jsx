@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
 import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
@@ -22,10 +22,9 @@ const validateEmail = (_, email) => {
 }
 
 const Login = ({ signIn, googleSignIn, auth }) => {
-    const history = useHistory();
-    const [redirect, setRedirect] = useState(false);
     const [localLoading, setLocalLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
+    const history = useHistory();
 
     useEffect(() => {
         googleSignIn(() => {
@@ -40,7 +39,8 @@ const Login = ({ signIn, googleSignIn, auth }) => {
 
     async function handleLogin(user) {
         setLocalLoading(true);
-        signIn(user, 
+        signIn(
+            user, 
             () => {
                 notification.success({
                     message: 'Has sido logeado satisfactoriamente!',
@@ -62,7 +62,6 @@ const Login = ({ signIn, googleSignIn, auth }) => {
 
     return (
         <Layout className="layout">
-            {redirect ? <Redirect to="/" /> : null}
             <Nav />
             <Content className="content">
                 <div className="wrapForm">
@@ -74,7 +73,7 @@ const Login = ({ signIn, googleSignIn, auth }) => {
                         onFinish={handleLogin}
                     >
                         <h1 style={{ textAlign: "center", color: "white" }}>
-                            Login
+                            Entrar
                         </h1>
                         <Form.Item
                             name="email"
@@ -112,8 +111,8 @@ const Login = ({ signIn, googleSignIn, auth }) => {
                                 placeholder="Introduce la contraseña..."
                             />
                         </Form.Item>
-                        <Form.Item>
-                            <Form.Item
+                        {/* <Form.Item> */}
+                            {/* <Form.Item
                                 name="remember"
                                 valuePropName="checked"
                                 noStyle
@@ -123,12 +122,12 @@ const Login = ({ signIn, googleSignIn, auth }) => {
                                         Recordar contraseña
                                     </span>
                                 </Checkbox>
-                            </Form.Item>
+                            </Form.Item> */}
 
-                            <a className="login-form-forgot" href="/validatePassword">
+                            {/* <a className="login-form-forgot" href="/validatePassword">
                                 Olvidaste la contraseña
-                            </a>
-                        </Form.Item>
+                            </a> */}
+                        {/* </Form.Item> */}
 
                         <Form.Item>
                             <Button
@@ -139,9 +138,9 @@ const Login = ({ signIn, googleSignIn, auth }) => {
                             >
                                 Entrar
                             </Button>
-                            <Link style={{ marginLeft: "30px" }} to="/signUp">
-                                Registrate ahora!
-                            </Link>
+                            <Button type="link" style={{ marginLeft: "30px" }} onClick={() => history.push('/signUp')}>
+                                No tienes cuenta?
+                            </Button>
                         </Form.Item>
                         <div className="wrapButtonsLogin">
                             <a href="/auth/google">

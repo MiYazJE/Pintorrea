@@ -33,6 +33,27 @@
             background-color: #79222d;
         }
 
+        .title {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            h1 {
+                color: white;
+                text-align: center;
+            }
+            
+            span {
+                color: goldenrod;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                font-size: 12px;
+            }
+        }
+
         .wrapUsers {
             width: 90%;
 
@@ -79,7 +100,6 @@
                     align-items: center;
 
                     .games {
-                        padding: 10px;
                         font-size: 15px;
                         height: 100%;
                         width: 50%;

@@ -15,10 +15,6 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 const key = 'updatable';
 
-const CustomMenuItem = (props) => {
-    return <Menu.Item {...props}>{props.title}</Menu.Item>;
-};
-
 const Nav = ({ user, logOut, picture }) => {
     const [showProfile, setShowProfile] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -50,7 +46,6 @@ const Nav = ({ user, logOut, picture }) => {
 
     return (
         <Header className="header">
-            <div className="logo" />
             <Menu theme="dark" className="nav" mode="horizontal">
                 {user.auth ? (
                     <Menu.Item key="link-inicio" onClick={() => history.push('/')}>
@@ -102,9 +97,8 @@ const Nav = ({ user, logOut, picture }) => {
                         </Menu.Item>
                     </SubMenu>
                 ) : (
-                    <Menu.Item onClick={history.push('/login')}>
+                    <Menu.Item onClick={() => history.push('/login')}>
                         <UserOutlined />
-                        {/* <Link to="/login">Iniciar sesión</Link> */}
                         Iniciar sesión
                     </Menu.Item>
                 )}
@@ -122,4 +116,8 @@ const mapStateToProps = (state) => ({
     picture: readImage(state),
 });
 
-export default connect(mapStateToProps, { logOut })(Nav);
+const mapDispatchToProps = (dispatch) => ({
+    logOut: (callback) => dispatch(logOut(callback))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);

@@ -13,6 +13,7 @@ import '../App.scss';
 import { Spin } from 'antd';
 
 const Routes = ({ auth, userLoading }) => {
+    console.log(userLoading)
     return (
         <div className="app" id="app">
             {userLoading ? (

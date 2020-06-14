@@ -35,6 +35,8 @@ async function post(req, res) {
         await rankingsModel.updateOne({ userId }, { ...rankStats });    
         res.json({ updated: true, rankStats });
     }
+
+    updateRanking(req);
 }
 
 async function get(req, res) {
@@ -50,6 +52,11 @@ async function getAll(req, res) {
 }
 
 async function request(req, res) {
+    updateRanking(req);
+    res.status(201).json({ success: true });
+}
+
+async function updateRanking(req) {
     const { io } = req.app.locals;
     let usersRanking = await rankingsModel.find({ });
     const ranking = [];
@@ -58,5 +65,4 @@ async function request(req, res) {
         ranking.push({ ...user._doc, picture, name });
     }
     io.emit('updateRanking', { ranking });
-    res.status(201).json({ success: true });
 }
