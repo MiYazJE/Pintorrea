@@ -15,7 +15,6 @@ const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, gu
     const [encryptedWord, setEncryptedWord] = useState('');
 
     useEffect(() => {
-        console.log(socket)
         socket.on('progress', progressEvent);
 
         return () => {
@@ -27,7 +26,6 @@ const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, gu
     useEffect(() => setTime(null), [isStarted]);
 
     const progressEvent = ({ time, encryptedWord }) => {
-        console.log(time, encryptedWord);
         setTime(time);
         setEncryptedWord(encryptedWord);
     }

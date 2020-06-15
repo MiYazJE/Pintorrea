@@ -32,6 +32,10 @@ import GameProgress from '../GameProgress/GameProgress';
 import ShowInteraction from './ShowInteraction';
 import ResizeObserver from 'resize-observer-polyfill';
 import { useHistory } from 'react-router-dom';
+import useSound from 'use-sound';
+import guessedSound from '../../sounds/guessed.mp3';
+import clockSound from '../../sounds/clock.mp3';
+import timeoutSound from '../../sounds/timeout.mp3';
 
 const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
@@ -74,6 +78,10 @@ const Game = ({
     const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
     const [canvasOberserver, setCanvasObserver] = useState(null);
     const [redirectPrivateGame, setRedirectPrivateGame] = useState(false);
+    const [reproduce, setReproduce] = useState(false);
+    const [playGuessed] = useSound(guessedSound);
+    const [playTimeout] = useSound(timeoutSound);
+    const [playTime, { stop }] = useSound(clockSound);
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -115,6 +123,9 @@ const Game = ({
     useEffect(() => {
         if (!user.room) return history.push('/');
         socket.on('message', (message) => {
+            if (message.reproduceSound) {
+                setReproduce(message.reproduceSound);
+            }
             console.log(message);
             addMessage(message);
         });
@@ -147,8 +158,9 @@ const Game = ({
             setActualWord(word);
         });
 
-        socket.on('puntuationTable', ({ users, finalStatusMsg }) => {
+        socket.on('puntuationTable', ({ users, finalStatusMsg, reproduceSound }) => {
             console.log(users);
+            setReproduce(reproduceSound || 'stopTime');
             setRoundPuntuation({ users, finalStatusMsg });
             setInteraction('puntuationTable');
             setShowModal(true);
@@ -178,6 +190,26 @@ const Game = ({
             }
         };
     }, []);
+
+    useEffect(() => {
+        if (reproduce) {
+            console.log(reproduce)
+            if (reproduce === 'time') {
+                playTime();
+            }
+            else if (reproduce === 'guessed') {
+                playGuessed();
+            }
+            else if (reproduce === 'stopTime') {
+                stop();
+            } 
+            else if (reproduce === 'timeout') {
+                stop();
+                playTimeout();
+            }
+            setReproduce(null);
+        }
+    }, [reproduce])
 
     const startEventChooseWord = async (wordsToChoose) => {
         setShowModal(true);

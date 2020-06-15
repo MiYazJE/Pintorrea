@@ -27,7 +27,8 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "set-interval-async": "^1.0.32",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "use-sound": "^1.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
