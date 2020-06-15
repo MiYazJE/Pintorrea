@@ -53,7 +53,7 @@ const Chat = ({ messages, sendMessage, placeholderMessage }) => {
             <div className="formMessage">
                 <Form form={form} onFinish={(msg) => handleSendMessage(msg)}>
                     <Form.Item name="msg">
-                        <Input autoFocus placeholder={placeholderMessage} />
+                        <Input autoComplete="off" autoFocus placeholder={placeholderMessage} />
                     </Form.Item>
                 </Form>
             </div>

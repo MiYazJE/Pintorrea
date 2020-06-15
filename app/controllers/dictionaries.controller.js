@@ -64,12 +64,14 @@ async function randomWords(req, res) {
 
 async function getRandomWords() {
     try {
-        const data = await fetchWithTimeout('https://www.aleatorios.com/random-words?dictionary=2&words=3', 1000);
+        const data = await fetchWithTimeout('https://www.aleatorios.com/random-words?dictionary=2&words=3', 1500);
         const { records } = await data.json();
+        console.log('sraping words from api')
         return { words: records };
     }
     catch(err) { }
     const words = await randomWordsFromDictionary();
+    console.log('sraping words from database')
     return { words };
 }
 

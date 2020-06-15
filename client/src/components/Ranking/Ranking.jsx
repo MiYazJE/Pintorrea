@@ -13,16 +13,6 @@ const { Content } = Layout;
 
 let socket;
 
-// const users = [
-//     { name: 'ruben', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'jose', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'pepe', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'juan', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'kevin', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'julio', totalPoints: parseInt(Math.random() * 300) },
-//     { name: 'pedro', totalPoints: parseInt(Math.random() * 300) },
-// ];
-
 class Ranking extends Component {
     constructor(props) {
         super(props);

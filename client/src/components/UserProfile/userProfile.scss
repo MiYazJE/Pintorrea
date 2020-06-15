@@ -60,6 +60,16 @@
         text-align: center;
     }
 
+    .wrapVictories {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+    span {
+        text-align: center;
+    }
+
 }
 
 .loading {

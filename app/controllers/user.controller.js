@@ -1,4 +1,5 @@
 const userModel = require('../models/user.model');
+const rankingModel = require('../models/ranking.model');
 const imageDataURi = require('image-data-uri');
 
 const { avatarFemale, avatarMale, pictureFemale, pictureMale } = require('../models/user.defaults');
@@ -17,7 +18,7 @@ module.exports = {
     changePictureFromAvatar,
     createRoom,
     isValidRoom,
-    startPrivateGame,
+    startPrivateGame
 };
 
 async function nameAlreadyRegistered(name) {
@@ -73,6 +74,11 @@ async function create(req, res) {
     user.password = await user.encryptPassword(password);
     await user.save();
 
+    const ranking = new rankingModel({
+        userId: user._id
+    });
+    await ranking.save();
+
     res.send({
         message: `Has sido registrado correctamente.`,
         success: true,
@@ -113,7 +119,8 @@ async function getProfile(req, res) {
     const { id } = req.params;
     if (!id) return res.status(401).json({ msg: 'El id esta vacío.' });
     const user = await userModel.findById({ _id: id });
-    res.json(user);
+    const ranking = await rankingModel.findOne({ userId: id }); 
+    res.json({ user, ranking });
 }
 
 async function changeAvatar(req, res) {
@@ -180,3 +187,18 @@ function startPrivateGame(req, res) {
     // Promise.all(promises);
     // res.status(201).send('test');
 // }
+
+// async function updateUsers(req, res) {
+//     const users = await userModel.find({}); 
+//     for (const user of users) {
+//         const ranking = await rankingModel.findOne({ userId: user._id }); 
+//         if (!ranking) {
+//             console.log('creating empty ranking to', user.name);
+//             const defaultRanking = new rankingModel({
+//                 userId: user._id
+//             });
+//             await defaultRanking.save();
+//             console.log(defaultRanking)
+//         }
+//     }
+// } 
