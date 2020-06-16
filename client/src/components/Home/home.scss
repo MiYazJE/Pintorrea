@@ -14,15 +14,6 @@
     padding: 10px;
     display: flex;
     justify-content: space-evenly;
-    flex-wrap: wrap;
-}
-
-@media (max-width: 1200px) {
-    .wrap-chat {
-        min-height: 400px; 
-        max-height: 400px;
-        margin-bottom: 20px;
-    }
 }
 
 .wrapQuestion {

@@ -8,13 +8,6 @@ $height-title: 30px;
     min-width: 450px;
     max-height: 500px;
 
-    @media (max-width: 1200px) {
-        width: 100%;
-        margin: 0px;
-        margin-bottom: 50px;
-        min-width: 550px;
-    }
-
     .wrapBtn {
         display: block;
         

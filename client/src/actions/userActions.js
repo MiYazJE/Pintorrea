@@ -37,6 +37,10 @@ export const setPicture = (picture) => ({
     picture
 });
 
+export const toggleVolume = () => ({
+    type: 'TOGGLE_VOLUME_ACTIVATED'
+});
+
 const setUserAuthLoading = (loading) => ({
     type: 'SET_USER_AUTH_LOADING',
     loading

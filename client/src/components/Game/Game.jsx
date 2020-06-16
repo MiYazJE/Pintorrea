@@ -6,14 +6,13 @@ import CanvasDraw from 'react-canvas-draw';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect, useDispatch } from 'react-redux';
 import { leaveRoom, sendPuntuation } from '../../actions/userActions';
-import { readUser, readRoom } from '../../reducers/userReducer';
+import { readUser, readRoom, readVolumeActivated } from '../../reducers/userReducer';
 import {
     readIsDrawer,
     readMessages,
     readDrawerName,
     readGuessed,
     readActualWord,
-    readIsStarted
 } from '../../reducers/gameReducer';
 import {
     setActualWord,
@@ -32,7 +31,7 @@ import './game.scss';
 import GameProgress from '../GameProgress/GameProgress';
 import ShowInteraction from './ShowInteraction';
 import ResizeObserver from 'resize-observer-polyfill';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import useSound from 'use-sound';
 import guessedSound from '../../sounds/guessed.mp3';
 import clockSound from '../../sounds/clock.mp3';
@@ -62,7 +61,7 @@ const Game = ({
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    isStarted
+    volumeActivated
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
@@ -120,8 +119,6 @@ const Game = ({
 
         return () => observer.unobserve(wrapCanvasRef.current);
     }, [wrapCanvasRef.current]);
-
-    useEffect(() => setTime(null), [isStarted]);
 
     useEffect(() => {
         if (!user.room) return history.push('/');
@@ -205,6 +202,7 @@ const Game = ({
     }, []);
 
     useEffect(() => {
+        if (!volumeActivated) return;
         if (reproduce) {
             if (reproduce === 'time') {
                 playTime();
@@ -298,6 +296,7 @@ const Game = ({
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
+                <div className="wrapLogo"><Link to="/"><div className="logo"></div></Link></div>
                 <div className="gameProgress"><GameProgress time={time} encryptedWord={encryptedWord}  /></div>
                 <div className="inlineItems">
                     <div className="puntuationTable"><Puntuation ref={puntuationRef} /></div>
@@ -350,7 +349,7 @@ const mapStateToProps = (state) => ({
     guessed: readGuessed(state),
     actualWord: readActualWord(state),
     messages: readMessages(state),
-    readIsStarted: readMessages(state),
+    volumeActivated: readVolumeActivated(state)
 });
 
 export default connect(mapStateToProps, {
@@ -365,5 +364,5 @@ export default connect(mapStateToProps, {
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    sendPuntuation,
+    sendPuntuation
 })(Game);

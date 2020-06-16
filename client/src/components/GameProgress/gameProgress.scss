@@ -3,6 +3,7 @@
     display: flex;
     padding: 0px 10px;
     height: 100%;
+    position: relative;
     
     .timeRoundWrap {
         width: 230px;
@@ -38,4 +39,11 @@
             margin-bottom: 0px;
         }
     }
+}
+
+.wrapSoundLogo {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
 }

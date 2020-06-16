@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { notification, Form, Input, Button, InputNumber, Select, Divider } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../reducers/userReducer';
@@ -10,6 +10,7 @@ import { readPrivateRoom } from '../../reducers/gameReducer';
 import Http from '../../Helpers/Http';
 import UsersAvatars from '../UsersAvatars/UsersAvatars';
 import { CopyOutlined } from '@ant-design/icons';
+import { GiExitDoor } from 'react-icons/gi';
 import Chat from '../Chat/Chat';
 import { joinRoom } from '../../actions/userActions';
 import Game from '../Game/Game';
@@ -80,6 +81,7 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
             });
 
             return () => {
+                console.log(user.name, 'va a eliminarse...');
                 socket.disconnect();
             };
         })();
@@ -155,13 +157,24 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
         socket.emit('sendMessageToRoom', { room: roomId, name: user.name, msg });
     };
 
+    const handleLeavePrivateRoom = () => {
+        history.push('/');
+        socket.disconnect();
+    }
+
     return (
         <div className="wrapPreRoom">
             {redirectGame ? (
-                <Game socketProvider={socket} />
+                <Game />
             ) : (
                 <div className="wrapper">
                     <div className="preRoom">
+                        <Button onClick={handleLeavePrivateRoom} type="primary" className="btnLeave">
+                            <span style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                Salir
+                                <GiExitDoor style={{marginLeft: '3px'}} />
+                            </span>
+                        </Button>
                         <div className="settings">
                             <h2>Configuración</h2>
                             <Divider className="divider"></Divider>
