@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { notification, Form, Input, Button, InputNumber, Select, Divider } from 'antd';
 import { connect } from 'react-redux';
 import { readUser } from '../../reducers/userReducer';
@@ -45,8 +45,8 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
     const [drawingTime, setDrawingTime] = useState(0);
     const [rounds, setRounds] = useState(0);
     const [players, setPlayers] = useState([]);
-    const [optionsTime, setOptionsTime] = useState(getOptions(60, 150, 10));
-    const [optionsRounds, setOptionsRounds] = useState(getOptions(1, 10, 1));
+    const [optionsTime] = useState(getOptions(60, 150, 10));
+    const [optionsRounds] = useState(getOptions(1, 10, 1));
     const [redirectGame, setRedirectGame] = useState(false);
     const [reproduce, setReproduce] = useState(null);
     const [playJoin] = useSound(joinSound);
@@ -278,7 +278,6 @@ const mapDispatchToProps = (dispatch) => ({
     resetMessages: () => dispatch(resetMessages()),
     startGame: (roomId, success) => dispatch(startGame(roomId, success)),
     joinRoom: (room) => dispatch(joinRoom(room)),
-    resetMessages: () => dispatch(resetMessages()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoom);

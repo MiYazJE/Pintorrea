@@ -7,9 +7,6 @@ const googleAuthCtrl = require('../controllers/googleAuth.controller');
 const dictionaryCtrl = require('../controllers/dictionaries.controller');
 const rankingCtrl    = require('../controllers/ranking.controllers');
 
-// router.get('/getUsers',  usersCtrl.getUsers);
-// router.get('/deleteAll', usersCtrl.deleteAll);
-
 router.get('/auth/google/',         googleAuthCtrl.signIn);
 router.get('/auth/google/user',     googleAuthCtrl.user);
 router.get('/auth/google/callback', passport.authenticate('google'), googleAuthCtrl.callback);
@@ -23,12 +20,6 @@ router.get('/dictionary/randomWords',  dictionaryCtrl.randomWords);
 router.post('/user/game/createRoom',         usersCtrl.createRoom);
 router.get( '/user/game/room/valid/:idRoom', usersCtrl.isValidRoom);
 router.post('/user/game/room/startGame',     usersCtrl.startPrivateGame);
-router.get( '/user/game/room/status/:id', (req, res) => {
-    const { roomsCtrl } = req.app.locals;
-    const { id } = req.params;
-    const room = roomsCtrl.getPrivateRoom(id);
-    res.json({ room });
-})
 
 router.post('/user/ranking/',        rankingCtrl.post);
 router.get( '/user/ranking/',        rankingCtrl.get);

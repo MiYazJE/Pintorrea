@@ -175,30 +175,3 @@ function startPrivateGame(req, res) {
     roomsCtrl.startPrivateGame(idRoom);
     res.json({ started: true });
 }
-
-// async function update(req, res) {
-    // await userModel.update({}, { $rename : { 'sex' : 'gender' } }, { multi: true });
-    // await userModel.update({}, { gender: 'male' }, { multi: true });
-    // const users = await userModel.find({ });
-    // const promises = users.map((user) => {
-    //     console.log(user.name);
-    //     return userModel.updateOne({ _id: user._id }, { gender: 'male', avatar: avatarMale })
-    // });
-    // Promise.all(promises);
-    // res.status(201).send('test');
-// }
-
-// async function updateUsers(req, res) {
-//     const users = await userModel.find({}); 
-//     for (const user of users) {
-//         const ranking = await rankingModel.findOne({ userId: user._id }); 
-//         if (!ranking) {
-//             console.log('creating empty ranking to', user.name);
-//             const defaultRanking = new rankingModel({
-//                 userId: user._id
-//             });
-//             await defaultRanking.save();
-//             console.log(defaultRanking)
-//         }
-//     }
-// } 

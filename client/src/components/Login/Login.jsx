@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Form, Input, Button, Checkbox, notification, Layout } from "antd";
+import { useHistory } from "react-router-dom";
+import { Form, Input, Button, notification, Layout } from "antd";
 import { LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import { MdEmail } from "react-icons/md";
 import Nav from "../Nav/Nav";
@@ -111,23 +111,6 @@ const Login = ({ signIn, googleSignIn, auth }) => {
                                 placeholder="Introduce la contraseña..."
                             />
                         </Form.Item>
-                        {/* <Form.Item> */}
-                            {/* <Form.Item
-                                name="remember"
-                                valuePropName="checked"
-                                noStyle
-                            >
-                                <Checkbox>
-                                    <span className="message">
-                                        Recordar contraseña
-                                    </span>
-                                </Checkbox>
-                            </Form.Item> */}
-
-                            {/* <a className="login-form-forgot" href="/validatePassword">
-                                Olvidaste la contraseña
-                            </a> */}
-                        {/* </Form.Item> */}
 
                         <Form.Item>
                             <Button

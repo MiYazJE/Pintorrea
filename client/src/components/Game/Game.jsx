@@ -65,21 +65,16 @@ const Game = ({
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
-    const [puntuationUsers, setPuntuationUsers] = useState([]);
     const [interaction, setInteraction] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [intervalEvent, setIntervalEvent] = useState(null);
     const [words, setWords] = useState([]);
-    const [coordinates, setCoordinates] = useState({});
     const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
     const [previousColor, setPreviousColor] = useState(canvasColor);
     const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
-    const [previousFontSize, setPreviousFontSize] = useState(fontSize);
-    const [bucketPaint, setBucketPaint] = useState(false);
+    const [previousFontSize] = useState(fontSize);
     const [wrapCanvasWidth, setWrapCanvasWidth] = useState(0);
     const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
-    const [canvasOberserver, setCanvasObserver] = useState(null);
-    const [redirectPrivateGame, setRedirectPrivateGame] = useState(false);
     const [reproduce, setReproduce] = useState(false);
     const [time, setTime] = useState(null);
     const [encryptedWord, setEncryptedWord] = useState('');
@@ -258,14 +253,8 @@ const Game = ({
             setCanvasColor(previousColor);
         } else if (mode === 'erase') {
             setCanvasColor('#FFF');
-        } else if (mode === 'bucket') {
-            setPreviousFontSize(fontSize);
-            setFontSize(0);
-            setBucketPaint(true);
-            return;
         }
         setFontSize(previousFontSize);
-        setBucketPaint(false);
     };
 
     const changeColor = (color) => {

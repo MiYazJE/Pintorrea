@@ -79,19 +79,19 @@ class Ranking extends Component {
                                                   <div className="victories">
                                                       <div>
                                                           <Tooltip title="Oro">
-                                                              <span className="gold">🥇</span>
+                                                              <span aria-label="Gold" role="img" className="gold">🥇</span>
                                                           </Tooltip>
                                                           {user.goldVictories}
                                                       </div>
                                                       <div>
                                                           <Tooltip title="Plata">
-                                                              <span className="silver">🥈</span>
+                                                              <span aria-label="Silver" role="img" className="silver">🥈</span>
                                                           </Tooltip>
                                                           {user.silverVictories}
                                                       </div>
                                                       <div>
                                                           <Tooltip title="Bronce">
-                                                              <span className="bronze">🥉</span>
+                                                              <span aria-label="Bronze" role="img" className="bronze">🥉</span>
                                                           </Tooltip>
                                                           {user.bronzeVictories}
                                                       </div>
