@@ -8,7 +8,7 @@ const { Footer: FooterComponent } = Layout;
 const Footer = () => {
     return (
         <FooterComponent className="footer">
-            Pintorrea a los motores ©2020 Creado por Rubén Saiz
+            Pintorrea ©2020, todos los derechos reservados.
         </FooterComponent>
     );
 }

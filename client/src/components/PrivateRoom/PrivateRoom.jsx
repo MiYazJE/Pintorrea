@@ -13,6 +13,9 @@ import { CopyOutlined } from '@ant-design/icons';
 import Chat from '../Chat/Chat';
 import { joinRoom } from '../../actions/userActions';
 import Game from '../Game/Game';
+import useSound from 'use-sound';
+import joinSound from '../../sounds/userJoin.mp3';
+import leaveSound from '../../sounds/userLeft.mp3';
 
 const { Option } = Select;
 
@@ -44,6 +47,9 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
     const [optionsTime, setOptionsTime] = useState(getOptions(60, 150, 10));
     const [optionsRounds, setOptionsRounds] = useState(getOptions(1, 10, 1));
     const [redirectGame, setRedirectGame] = useState(false);
+    const [reproduce, setReproduce] = useState(null);
+    const [playJoin] = useSound(joinSound);
+    const [playLeave] = useSound(leaveSound);
     const history = useHistory();
     const refUrl = useRef();
     const refCode = useRef();
@@ -51,7 +57,6 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
     useEffect(() => {
         (async () => {
             const { id } = match.params;
-            console.log(id);
             if (!id || !(await isValidRoom(id))) {
                 notification.error({ message: 'La sala a la que intentas acceder no es válida!' });
                 history.push('/login');
@@ -60,7 +65,6 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
 
             resetMessages();
             socket = io();
-            console.log(user.name, 'join room');
             socket.emit('joinPrivateRoom', { user, id });
 
             socket.on('updateSettings', updateSettings);
@@ -73,26 +77,27 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
 
             socket.on('goPrivateRoom', () => {
                 setRedirectGame(false);
-                console.log(players)
             });
 
             return () => {
-                console.log('private room unmounting...');
                 socket.disconnect();
             };
         })();
     }, []);
 
-    const sendMessage = (msg) => addMessage(msg);
-    const updateSettings = (data) => {
-        console.log('updating room');
-        const { room } = JSON.parse(data);
-        setRoom(room);
-    };
+    useEffect(() => {
+        if (reproduce) {
+            if (reproduce === 'join') {
+                playJoin();
+            }
+            else if (reproduce === 'leave') {
+                playLeave();
+            }
+            setReproduce(null);
+        }
+    }, [reproduce]);
 
     useEffect(() => {
-        console.log('updating room settings');
-        console.log(room);
         setIsHost(user.name === room.host);
         setCurrentPlayers(room.roomPlayers);
         setMaxPlayers(room.max);
@@ -101,14 +106,23 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
         setPlayers(room.allUsers);
     }, [room]);
 
+    const sendMessage = (msg) => {
+        if (msg.reproduceSound) {
+            setReproduce(msg.reproduceSound);
+        }
+        addMessage(msg);
+    }
+    const updateSettings = (data) => {
+        const { room } = JSON.parse(data);
+        setRoom(room);
+    };
+
     const isValidRoom = async (id) => {
         const { valid } = await Http.get(`/user/game/room/valid/${id}`);
-        console.log(valid);
         return valid;
     };
 
     const handleChangeSettings = (replace) => {
-        console.log('newChanges', replace);
         socket.emit(
             'changeSettingsPrivateRoom',
             JSON.stringify({
@@ -131,7 +145,6 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
 
     const handleStartGame = () => {
         setBtnLoad(true);
-        console.log('starting the game...');
         startGame(roomId, () => {
             setBtnLoad(false);
             socket.emit('startPrivateGame', { room: roomId });
@@ -139,7 +152,6 @@ const PrivateRoom = ({ user, match, addMessage, resetMessages, startGame, joinRo
     };
 
     const handleSendMessage = (msg) => {
-        console.log(msg);
         socket.emit('sendMessageToRoom', { room: roomId, name: user.name, msg });
     };
 

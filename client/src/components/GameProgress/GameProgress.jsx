@@ -10,25 +10,7 @@ import {
     readIsStarted,
 } from '../../reducers/gameReducer';
 
-const GameProgress = ({ socket, actualWord, isDrawer, currentRound, maxRound, guessed, isStarted }) => {
-    const [time, setTime] = useState(null);
-    const [encryptedWord, setEncryptedWord] = useState('');
-
-    useEffect(() => {
-        socket.on('progress', progressEvent);
-
-        return () => {
-            console.log('game progress unmounting...');
-            socket.off('progress', progressEvent)
-        }
-    }, []);
-
-    useEffect(() => setTime(null), [isStarted]);
-
-    const progressEvent = ({ time, encryptedWord }) => {
-        setTime(time);
-        setEncryptedWord(encryptedWord);
-    }
+const GameProgress = ({ time, encryptedWord, socket, actualWord, isDrawer, currentRound, maxRound, guessed, isStarted }) => {
 
     return isStarted ? (
         <div className="wrapGameProgress">

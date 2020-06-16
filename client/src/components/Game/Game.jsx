@@ -13,6 +13,7 @@ import {
     readDrawerName,
     readGuessed,
     readActualWord,
+    readIsStarted
 } from '../../reducers/gameReducer';
 import {
     setActualWord,
@@ -36,8 +37,9 @@ import useSound from 'use-sound';
 import guessedSound from '../../sounds/guessed.mp3';
 import clockSound from '../../sounds/clock.mp3';
 import timeoutSound from '../../sounds/timeout.mp3';
+import joinSound from '../../sounds/userJoin.mp3';
+import leaveSound from '../../sounds/userLeft.mp3';
 
-const ENDPOINT = '/socket-io';
 const INITIAL_COLOR = '#000000';
 const INITIAL_FONT_SIZE = 5;
 
@@ -60,10 +62,11 @@ const Game = ({
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    socketProvider
+    isStarted
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
+    const [puntuationUsers, setPuntuationUsers] = useState([]);
     const [interaction, setInteraction] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [intervalEvent, setIntervalEvent] = useState(null);
@@ -79,14 +82,19 @@ const Game = ({
     const [canvasOberserver, setCanvasObserver] = useState(null);
     const [redirectPrivateGame, setRedirectPrivateGame] = useState(false);
     const [reproduce, setReproduce] = useState(false);
+    const [time, setTime] = useState(null);
+    const [encryptedWord, setEncryptedWord] = useState('');
     const [playGuessed] = useSound(guessedSound);
     const [playTimeout] = useSound(timeoutSound);
+    const [playJoin] = useSound(joinSound);
+    const [playLeave] = useSound(leaveSound);
     const [playTime, { stop }] = useSound(clockSound);
     const history = useHistory();
     const dispatch = useDispatch();
 
     const wrapCanvasRef = useRef(null);
     const canvasRef = useRef(null);
+    const puntuationRef = useRef(null);
 
     useEffect(() => {
         if (!user.room) return history.push('/');
@@ -98,20 +106,13 @@ const Game = ({
         });
 
         resetMessages();
-        console.log('adding listeners')
-        if (socketProvider) {
-            socket = socketProvider;
-        }
-        else {
-            socket = io();
-        }
+        socket = io();
         socket.emit('joinRoom', { user, roomName: room });
     }, []);
 
     useEffect(() => {
         const observer = new ResizeObserver((entries, observer) => {
             const { width, height } = entries[0].contentRect;
-            console.log(width, height);
             setWrapCanvasHeight(height);
             setWrapCanvasWidth(width);
         });
@@ -120,18 +121,24 @@ const Game = ({
         return () => observer.unobserve(wrapCanvasRef.current);
     }, [wrapCanvasRef.current]);
 
+    useEffect(() => setTime(null), [isStarted]);
+
     useEffect(() => {
         if (!user.room) return history.push('/');
         socket.on('message', (message) => {
             if (message.reproduceSound) {
                 setReproduce(message.reproduceSound);
             }
-            console.log(message);
+            else if (message.userLeft) {
+                setReproduce('leave');
+            }
+            else if (message.userJoin) {
+                setReproduce('join');
+            }
             addMessage(message);
         });
 
         socket.on('chooseDrawer', async ({ drawer, words }) => {
-            console.log(user.name, words)
             resetGame();
             setIsDrawer(drawer === user.name);
             setDrawerName(drawer);
@@ -158,12 +165,22 @@ const Game = ({
             setActualWord(word);
         });
 
+        socket.on('progress', ({ time, encryptedWord }) => {
+            setTime(time);
+            setEncryptedWord(encryptedWord);
+        });
+
         socket.on('puntuationTable', ({ users, finalStatusMsg, reproduceSound }) => {
-            console.log(users);
             setReproduce(reproduceSound || 'stopTime');
             setRoundPuntuation({ users, finalStatusMsg });
             setInteraction('puntuationTable');
             setShowModal(true);
+        });
+
+        socket.emit('getGameStatus', { room });
+
+        socket.on('gameStatus', ({ users }) => {
+            puntuationRef.current.sortUsers(users);
         });
 
         socket.on('setGuessed', () => setGuessed());
@@ -174,7 +191,6 @@ const Game = ({
         });
 
         socket.on('endGame', ({ users }) => {
-            console.log(users);
             dispatch(sendPuntuation(user, users));
             resetGame();
             setInteraction('showResults');
@@ -182,18 +198,14 @@ const Game = ({
         });
 
         return () => {
-            console.log('component unmounting')
             resetMessages();
             leaveRoom();
-            if (!socketProvider) {
-                socket.disconnect();
-            }
+            socket.disconnect();
         };
     }, []);
 
     useEffect(() => {
         if (reproduce) {
-            console.log(reproduce)
             if (reproduce === 'time') {
                 playTime();
             }
@@ -207,6 +219,12 @@ const Game = ({
                 stop();
                 playTimeout();
             }
+            else if (reproduce === 'join') {
+                playJoin();
+            }
+            else if (reproduce === 'leave') {
+                playLeave();
+            }
             setReproduce(null);
         }
     }, [reproduce])
@@ -216,9 +234,7 @@ const Game = ({
         clearInterval(intervalEvent);
         let currentSeconds = 0;
         let interval = setInterval(() => {
-            console.log(currentSeconds);
             if (currentSeconds === MAX_SECONDS_CHOOSE_WORD) {
-                console.log('timeout, choosing the word randomly...');
                 handleChooseWord(wordsToChoose[Math.random() * words.length]);
                 clearInterval(interval);
             }
@@ -228,7 +244,6 @@ const Game = ({
     };
 
     const handleChooseWord = (word) => {
-        console.log(word);
         setShowModal(false);
         clearInterval(intervalEvent);
         setIntervalEvent(null);
@@ -260,12 +275,7 @@ const Game = ({
         setPreviousColor(color);
     };
 
-    const paintBucket = () => {
-        console.log('painting with bucket...');
-    };
-
     const sendMessage = (guess) => {
-        console.log(user.name, 'is sending message-', guess);
         socket.emit('guessWord', { user, guess, room })
     };
 
@@ -288,9 +298,9 @@ const Game = ({
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
-                <div className="gameProgress">{socket ? <GameProgress socket={socket} /> : null}</div>
+                <div className="gameProgress"><GameProgress time={time} encryptedWord={encryptedWord}  /></div>
                 <div className="inlineItems">
-                    <div className="puntuationTable">{socket ? <Puntuation socket={socket} room={room} /> : null}</div>
+                    <div className="puntuationTable"><Puntuation ref={puntuationRef} /></div>
                     <div className="drawContainer">
                         <div className="wrapCanvas" ref={wrapCanvasRef}>
                             <CanvasDraw
@@ -340,6 +350,7 @@ const mapStateToProps = (state) => ({
     guessed: readGuessed(state),
     actualWord: readActualWord(state),
     messages: readMessages(state),
+    readIsStarted: readMessages(state),
 });
 
 export default connect(mapStateToProps, {
@@ -354,5 +365,5 @@ export default connect(mapStateToProps, {
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    sendPuntuation
+    sendPuntuation,
 })(Game);
