@@ -16,6 +16,7 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'LOG_USER':
             return {
+                ...state,
                 id: action.user.id,
                 email: action.user.email,
                 name: action.user.name,

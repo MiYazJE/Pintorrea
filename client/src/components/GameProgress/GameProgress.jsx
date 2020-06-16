@@ -16,7 +16,6 @@ import { FiVolume2, FiVolumeX } from 'react-icons/fi';
 const GameProgress = ({
     time,
     encryptedWord,
-    socket,
     actualWord,
     isDrawer,
     currentRound,
@@ -26,6 +25,8 @@ const GameProgress = ({
     volumeActivated,
     toggleVolume,
 }) => {
+
+    console.log('VOLUME_ACTIVATED', volumeActivated)
     return (
         <div className="wrapGameProgress">
             {isStarted ? (
