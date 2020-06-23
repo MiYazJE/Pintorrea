@@ -31,6 +31,8 @@ import clockSound from '../../sounds/clock.mp3';
 import timeoutSound from '../../sounds/timeout.mp3';
 import joinSound from '../../sounds/userJoin.mp3';
 import leaveSound from '../../sounds/userLeft.mp3';
+import { FaSlideshare } from 'react-icons/fa';
+import { set } from 'mongoose';
 
 const INITIAL_COLOR = '#000000';
 const INITIAL_FONT_SIZE = 5;
@@ -46,6 +48,7 @@ let canvasColor = INITIAL_COLOR;
 let previousColor = canvasColor;
 let fontSize = INITIAL_FONT_SIZE;
 let resizing = false;
+let bucketPaint = false;
 
 let ctx;
 
@@ -149,7 +152,6 @@ const Game = ({
         });
 
         socket.on('draw', ({ drawer, coordinates }) => {
-            console.log(coordinates)
             if (drawer !== user.name) draw(coordinates);
         });
 
@@ -217,20 +219,21 @@ const Game = ({
         canvasRef.current.removeEventListener('mouseup', mouseUpEvent);
     };
 
-    const mouseMoveEvent = ({ offsetX, offsetY }) => {
+    const mouseMoveEvent = ({ offsetX: x, offsetY: y }) => {
         if (!startDrawing) return;
-        const drawCoordinates = { from: { ...coordinates }, to: { x: offsetX, y: offsetY } };
+        const drawCoordinates = { from: { ...coordinates }, to: { x, y } };
         sendCoordinates({ ...drawCoordinates });
         draw({ ...drawCoordinates });
-        coordinates = { x: offsetX, y: offsetY };
+        coordinates = { x, y };
     };
 
-    const mouseDownEvent = ({ offsetX, offsetY }) => {
+    const mouseDownEvent = ({ offsetX: x, offsetY: y }) => {
+        if (bucketPaint) return paintWithBucket({ x, y });
         startDrawing = true;
-        coordinates = { x: offsetX, y: offsetY };
+        coordinates = { x, y };
         const drawCoordinates = {
-            from: { x: offsetX, y: offsetY },
-            to: { x: offsetX, y: offsetY },
+            from: { x, y },
+            to: { x, y },
         };
         sendCoordinates({ ...drawCoordinates });
         draw({ ...drawCoordinates });
@@ -251,7 +254,6 @@ const Game = ({
         ctx.lineWidth = size;
         ctx.strokeStyle = color;
         ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
         ctx.beginPath();
         ctx.moveTo(newFrom.x, newFrom.y);
         ctx.quadraticCurveTo(newFrom.x, newFrom.y, newTo.x, newTo.y);
@@ -321,8 +323,12 @@ const Game = ({
     const setPaintMode = (mode) => {
         if (mode === 'draw') {
             canvasColor = previousColor;
+            bucketPaint = false;
         } else if (mode === 'erase') {
             canvasColor = '#FFF';
+            bucketPaint = false;
+        } else if (mode === 'bucket') {
+            bucketPaint = true;
         }
     };
 
@@ -333,6 +339,72 @@ const Game = ({
 
     const sendMessage = (guess) => {
         socket.emit('guessWord', { user, guess, room });
+    };
+
+    const paintWithBucket = ({ x, y }) => {
+        console.log('painting with bucket', x, y);
+        const imageData = ctx.getImageData(0, 0, canvasRef.current.width, canvasRef.current.height);
+        const currentColor = getPixelColor(x, y, imageData);
+        const fillColor = hexToRgba();
+        if (colorsMatch(currentColor, fillColor)) return;
+        fillWithColor(x, y, currentColor, fillColor, imageData);
+        ctx.putImageData(imageData, 0, 0);
+    };
+
+    const directions = [
+        { x: 1, y: 0 },
+        { x: -1, y: 0 },
+        { x: 0, y: 1 },
+        { x: 0, y: -1 },
+    ];
+
+    const fillWithColor = (startX, startY, currentColor, fillColor, imageData) => {
+        const visited = new Set();
+        const stack = [{ x: startX, y: startY }];
+        
+        while (stack.length !== 0) {
+            let { x, y } = stack.pop();
+            const targetColor = getPixelColor(x, y, imageData);
+            setPixelColor(x, y, fillColor, imageData);
+            if (colorsMatch(currentColor, targetColor)) {
+                for (const direction of directions) {
+                    const newX = x + direction.x;
+                    const newY = y + direction.y;
+                    const index = newY * canvasRef.current.width + newX; 
+                    if (newX >= 0 && newY >= 0 && newY < imageData.height && newX < imageData.width && !visited.has(index)) {
+                        visited.add(index);
+                        stack.push({ x: newX, y: newY });
+                    }
+                }
+            }
+        }
+    };
+    
+    const setPixelColor = (x, y, fillColor, imageData) => {
+        const index = (y * imageData.width + x) * 4;
+        imageData.data[index] = fillColor[0];
+        imageData.data[index + 1] = fillColor[1];
+        imageData.data[index + 2] = fillColor[2];
+        imageData.data[index + 3] = fillColor[3];
+    };
+
+    const colorsMatch = (color1, color2) => {
+        for (const i in color1) {
+            if (color1[i] !== color2[i]) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const hexToRgba = () => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(canvasColor);
+        return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16), 255];
+    };
+
+    const getPixelColor = (x, y, imageData) => {
+        const index = (y * imageData.width + x) * 4;
+        return [imageData.data[index], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3]];
     };
 
     const sendCoordinates = (coordinates) => {
@@ -374,25 +446,12 @@ const Game = ({
                     </div>
                     <div className="drawContainer">
                         <div className="wrapCanvas" ref={wrapCanvasRef}>
-                            {/* <CanvasDraw
-                                ref={canvasRef}
-                                onChange={sendCoordinates}
-                                brushRadius={fontSize}
-                                hideGrid={true}
-                                canvasHeight={wrapCanvasHeight}
-                                canvasWidth={wrapCanvasWidth}
-                                brushColor={canvasColor}
-                                lazyRadius={0}
-                                hideInterface={true}
-                                immediateLoading={true}
-                                disabled={!isDrawer}
-                            /> */}
                             <canvas
                                 width={wrapCanvasWidth}
                                 height={wrapCanvasHeight}
                                 ref={canvasRef}
                                 style={{ backgroundColor: 'white', zIndex: 5, display: 'block' }}
-                            ></canvas>
+                            />
                             <CustomModal show={showModal} width={wrapCanvasWidth} height={wrapCanvasHeight}>
                                 <ShowInteraction
                                     view={interaction}
