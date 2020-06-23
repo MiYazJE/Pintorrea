@@ -1,5 +1,6 @@
 .wrapModal {
     position: absolute;
+    display: none;
     z-index: 1;
     left: 0;
     top: 0;
@@ -8,6 +9,7 @@
 }
 
 .show {
+    display: block;
     z-index: 20;
     opacity: 1;
 }

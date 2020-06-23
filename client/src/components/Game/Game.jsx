@@ -7,13 +7,7 @@ import CustomModal from '../CustomModal/CustomModal';
 import { connect, useDispatch } from 'react-redux';
 import { leaveRoom, sendPuntuation } from '../../actions/userActions';
 import { readUser, readRoom, readVolumeActivated } from '../../reducers/userReducer';
-import {
-    readIsDrawer,
-    readMessages,
-    readDrawerName,
-    readGuessed,
-    readActualWord,
-} from '../../reducers/gameReducer';
+import { readIsDrawer, readMessages, readDrawerName, readGuessed, readActualWord } from '../../reducers/gameReducer';
 import {
     setActualWord,
     setGuessed,
@@ -24,7 +18,7 @@ import {
     resetMessages,
     setCurrentRound,
     setMaxRound,
-    setIsStarted
+    setIsStarted,
 } from '../../actions/gameActions';
 import io from 'socket.io-client';
 import './game.scss';
@@ -45,6 +39,15 @@ const INITIAL_FONT_SIZE = 5;
 const MAX_SECONDS_CHOOSE_WORD = 15;
 
 let socket;
+let startDrawing = false;
+let coordinates = {};
+
+let canvasColor = INITIAL_COLOR;
+let previousColor = canvasColor;
+let fontSize = INITIAL_FONT_SIZE;
+let previousFontSize = fontSize;
+
+let ctx;
 
 const Game = ({
     isDrawer,
@@ -61,7 +64,7 @@ const Game = ({
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    volumeActivated
+    volumeActivated,
 }) => {
     const [roundPuntuation, setRoundPuntuation] = useState([]);
     const [finalPuntuation, setFinalPuntuation] = useState([]);
@@ -69,10 +72,6 @@ const Game = ({
     const [showModal, setShowModal] = useState(false);
     const [intervalEvent, setIntervalEvent] = useState(null);
     const [words, setWords] = useState([]);
-    const [canvasColor, setCanvasColor] = useState(INITIAL_COLOR);
-    const [previousColor, setPreviousColor] = useState(canvasColor);
-    const [fontSize, setFontSize] = useState(INITIAL_FONT_SIZE);
-    const [previousFontSize] = useState(fontSize);
     const [wrapCanvasWidth, setWrapCanvasWidth] = useState(0);
     const [wrapCanvasHeight, setWrapCanvasHeight] = useState(0);
     const [reproduce, setReproduce] = useState(false);
@@ -99,6 +98,7 @@ const Game = ({
             }
         });
 
+        ctx = canvasRef.current.getContext('2d');
         resetMessages();
         socket = io();
         socket.emit('joinRoom', { user, roomName: room });
@@ -113,18 +113,16 @@ const Game = ({
         observer.observe(wrapCanvasRef.current);
 
         return () => observer.unobserve(wrapCanvasRef.current);
-    }, [wrapCanvasRef.current]);
+    }, []);
 
     useEffect(() => {
         if (!user.room) return history.push('/');
         socket.on('message', (message) => {
             if (message.reproduceSound) {
                 setReproduce(message.reproduceSound);
-            }
-            else if (message.userLeft) {
+            } else if (message.userLeft) {
                 setReproduce('leave');
-            }
-            else if (message.userJoin) {
+            } else if (message.userJoin) {
                 setReproduce('join');
             }
             addMessage(message);
@@ -135,21 +133,25 @@ const Game = ({
             setIsDrawer(drawer === user.name);
             setDrawerName(drawer);
             if (drawer !== user.name) {
+                removeCanvasEvents();
                 showDrawerIsChoosing(drawer);
                 return;
             }
+            applyCanvasEvents();
             setInteraction('chooseWord');
             setWords(words);
             startEventChooseWord(words);
         });
 
         socket.on('draw', ({ drawer, coordinates }) => {
-            if (drawer === user.name) return;
-            canvasRef.current.loadSaveData(coordinates);
+            console.log(drawer, user.name, coordinates);
+            if (drawer !== user.name) draw(coordinates);
         });
 
+        socket.on('clearCanvas', () => clearCanvas());
+
         socket.on('ready', ({ word, currentRound, maxRound }) => {
-            canvasRef.current.clear();
+            clearCanvas();
             setIsStarted(true);
             setShowModal(false);
             setCurrentRound(currentRound);
@@ -196,31 +198,73 @@ const Game = ({
         };
     }, []);
 
+    const applyCanvasEvents = () => {
+        canvasRef.current.onmousedown = mouseDownEvent;
+        canvasRef.current.onmousemove = mouseMoveEvent;
+        canvasRef.current.onmouseup = mouseUpEvent;
+    };
+
+    const removeCanvasEvents = () => {
+        canvasRef.current.removeEventListener('mousedown', mouseDownEvent);
+        canvasRef.current.removeEventListener('mousemove', mouseMoveEvent);
+        canvasRef.current.removeEventListener('mouseup', mouseUpEvent);
+    };
+
+    const mouseMoveEvent = ({ offsetX, offsetY }) => {
+        if (!startDrawing) return;
+        const drawCoordinates = [{ ...coordinates }, { x: offsetX, y: offsetY }];
+        sendCoordinates(drawCoordinates);
+        draw(drawCoordinates);
+        coordinates = { x: offsetX, y: offsetY };
+    };
+
+    const mouseDownEvent = ({ offsetX, offsetY }) => {
+        startDrawing = true;
+        coordinates = { x: offsetX, y: offsetY };
+        const drawCoordinates = [
+            { x: offsetX, y: offsetY },
+            { x: offsetX, y: offsetY },
+        ];
+        sendCoordinates(drawCoordinates);
+        draw(drawCoordinates);
+    };
+
+    const mouseUpEvent = () => {
+        startDrawing = false;
+    };
+
+    const draw = (coordinates) => {
+        const [from, to] = coordinates;
+        console.log('IS DRAWER', isDrawer);
+        ctx.lineWidth = fontSize;
+        ctx.strokeStyle = 'blue';
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.stroke();
+    };
+
     useEffect(() => {
         if (!volumeActivated) return;
         if (reproduce) {
             if (reproduce === 'time') {
                 playTime();
-            }
-            else if (reproduce === 'guessed') {
+            } else if (reproduce === 'guessed') {
                 playGuessed();
-            }
-            else if (reproduce === 'stopTime') {
+            } else if (reproduce === 'stopTime') {
                 stop();
-            } 
-            else if (reproduce === 'timeout') {
+            } else if (reproduce === 'timeout') {
                 stop();
                 playTimeout();
-            }
-            else if (reproduce === 'join') {
+            } else if (reproduce === 'join') {
                 playJoin();
-            }
-            else if (reproduce === 'leave') {
+            } else if (reproduce === 'leave') {
                 playLeave();
             }
             setReproduce(null);
         }
-    }, [reproduce])
+    }, [reproduce]);
 
     const startEventChooseWord = async (wordsToChoose) => {
         setShowModal(true);
@@ -250,48 +294,52 @@ const Game = ({
 
     const setPaintMode = (mode) => {
         if (mode === 'draw') {
-            setCanvasColor(previousColor);
+            canvasColor = previousColor;
         } else if (mode === 'erase') {
-            setCanvasColor('#FFF');
+            canvasColor = '#FFF';
         }
-        setFontSize(previousFontSize);
+        fontSize = previousFontSize;
     };
 
     const changeColor = (color) => {
-        setCanvasColor(color);
-        setPreviousColor(color);
+        canvasColor = color;
+        previousColor = color;
     };
 
     const sendMessage = (guess) => {
-        socket.emit('guessWord', { user, guess, room })
+        socket.emit('guessWord', { user, guess, room });
     };
 
-    const sendCoordinates = (canvas) => {
-        if (!isDrawer) return;
-        const coordinates = canvas.getSaveData();
+    const sendCoordinates = (coordinates) => {
         socket.emit('sendDraw', { drawer: user.name, coordinates, room });
     };
 
     const handleClear = () => {
-        canvasRef.current.clear();
-        sendCoordinates(canvasRef.current);
+        socket.emit('clearDraw', { room });
     };
 
-    const handleUndo = () => {
-        canvasRef.current.undo();
-        sendCoordinates(canvasRef.current);
-    };
+    const handleUndo = () => {};
+
+    const clearCanvas = () => ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
     return (
         <div className="wrapGameContent">
             <div className="gameContent">
-                <div className="wrapLogo"><Link to="/"><div className="logo"></div></Link></div>
-                <div className="gameProgress"><GameProgress time={time} encryptedWord={encryptedWord}  /></div>
+                <div className="wrapLogo">
+                    <Link to="/">
+                        <div className="logo"></div>
+                    </Link>
+                </div>
+                <div className="gameProgress">
+                    <GameProgress time={time} encryptedWord={encryptedWord} />
+                </div>
                 <div className="inlineItems">
-                    <div className="puntuationTable"><Puntuation ref={puntuationRef} /></div>
+                    <div className="puntuationTable">
+                        <Puntuation ref={puntuationRef} />
+                    </div>
                     <div className="drawContainer">
                         <div className="wrapCanvas" ref={wrapCanvasRef}>
-                            <CanvasDraw
+                            {/* <CanvasDraw
                                 ref={canvasRef}
                                 onChange={sendCoordinates}
                                 brushRadius={fontSize}
@@ -303,7 +351,13 @@ const Game = ({
                                 hideInterface={true}
                                 immediateLoading={true}
                                 disabled={!isDrawer}
-                            />
+                            /> */}
+                            <canvas
+                                width={wrapCanvasWidth}
+                                height={wrapCanvasHeight}
+                                ref={canvasRef}
+                                style={{ backgroundColor: 'white', zIndex: 5, display: 'block' }}
+                            ></canvas>
                             <CustomModal show={showModal} width={wrapCanvasWidth} height={wrapCanvasHeight}>
                                 <ShowInteraction
                                     view={interaction}
@@ -318,7 +372,7 @@ const Game = ({
                             show={isDrawer}
                             changeColor={changeColor}
                             setPaintMode={setPaintMode}
-                            setFontSize={setFontSize}
+                            setFontSize={(size) => (fontSize = size)}
                             goBack={handleUndo}
                             clear={handleClear}
                         />
@@ -338,7 +392,7 @@ const mapStateToProps = (state) => ({
     guessed: readGuessed(state),
     actualWord: readActualWord(state),
     messages: readMessages(state),
-    volumeActivated: readVolumeActivated(state)
+    volumeActivated: readVolumeActivated(state),
 });
 
 export default connect(mapStateToProps, {
@@ -353,5 +407,5 @@ export default connect(mapStateToProps, {
     setMaxRound,
     setIsStarted,
     leaveRoom,
-    sendPuntuation
+    sendPuntuation,
 })(Game);
