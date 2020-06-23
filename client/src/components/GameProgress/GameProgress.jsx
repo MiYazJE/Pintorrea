@@ -26,7 +26,6 @@ const GameProgress = ({
     toggleVolume,
 }) => {
 
-    console.log('VOLUME_ACTIVATED', volumeActivated)
     return (
         <div className="wrapGameProgress">
             {isStarted ? (

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import Chat from '../Chat/Chat';
 import CanvasControls from '../CanvasControls/CanvasControls';
 import Puntuation from '../Puntuation/Puntuation';
-import CanvasDraw from 'react-canvas-draw';
 import CustomModal from '../CustomModal/CustomModal';
 import { connect, useDispatch } from 'react-redux';
 import { leaveRoom, sendPuntuation } from '../../actions/userActions';
@@ -41,11 +40,12 @@ const MAX_SECONDS_CHOOSE_WORD = 15;
 let socket;
 let startDrawing = false;
 let coordinates = {};
+let globalCoordinates = [];
 
 let canvasColor = INITIAL_COLOR;
 let previousColor = canvasColor;
 let fontSize = INITIAL_FONT_SIZE;
-let previousFontSize = fontSize;
+let resizing = false;
 
 let ctx;
 
@@ -109,6 +109,11 @@ const Game = ({
             const { width, height } = entries[0].contentRect;
             setWrapCanvasHeight(height);
             setWrapCanvasWidth(width);
+            resizing = true;
+            for (const coordinates of globalCoordinates) {
+                draw(coordinates);
+            }
+            resizing = false;
         });
         observer.observe(wrapCanvasRef.current);
 
@@ -144,11 +149,13 @@ const Game = ({
         });
 
         socket.on('draw', ({ drawer, coordinates }) => {
-            console.log(drawer, user.name, coordinates);
+            console.log(coordinates)
             if (drawer !== user.name) draw(coordinates);
         });
 
-        socket.on('clearCanvas', () => clearCanvas());
+        socket.on('clearCanvas', () => {
+            clearCanvas();
+        });
 
         socket.on('ready', ({ word, currentRound, maxRound }) => {
             clearCanvas();
@@ -212,37 +219,55 @@ const Game = ({
 
     const mouseMoveEvent = ({ offsetX, offsetY }) => {
         if (!startDrawing) return;
-        const drawCoordinates = [{ ...coordinates }, { x: offsetX, y: offsetY }];
-        sendCoordinates(drawCoordinates);
-        draw(drawCoordinates);
+        const drawCoordinates = { from: { ...coordinates }, to: { x: offsetX, y: offsetY } };
+        sendCoordinates({ ...drawCoordinates });
+        draw({ ...drawCoordinates });
         coordinates = { x: offsetX, y: offsetY };
     };
 
     const mouseDownEvent = ({ offsetX, offsetY }) => {
         startDrawing = true;
         coordinates = { x: offsetX, y: offsetY };
-        const drawCoordinates = [
-            { x: offsetX, y: offsetY },
-            { x: offsetX, y: offsetY },
-        ];
-        sendCoordinates(drawCoordinates);
-        draw(drawCoordinates);
+        const drawCoordinates = {
+            from: { x: offsetX, y: offsetY },
+            to: { x: offsetX, y: offsetY },
+        };
+        sendCoordinates({ ...drawCoordinates });
+        draw({ ...drawCoordinates });
     };
 
     const mouseUpEvent = () => {
         startDrawing = false;
     };
 
-    const draw = (coordinates) => {
-        const [from, to] = coordinates;
-        console.log('IS DRAWER', isDrawer);
-        ctx.lineWidth = fontSize;
-        ctx.strokeStyle = 'blue';
+    const draw = ({ from, to, color, size, width, height }) => {
+        width = width || canvasRef.current.width;
+        height = height || canvasRef.current.height;
+        color = color || canvasColor;
+        size = size || fontSize;
+        const [newFrom, newTo] = calculateRealCoordinates(from, to, width, height);
+        if (!resizing) globalCoordinates.push({ from, to, color, size, width, height, size });
+
+        ctx.lineWidth = size;
+        ctx.strokeStyle = color;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(from.x, from.y);
-        ctx.lineTo(to.x, to.y);
+        ctx.moveTo(newFrom.x, newFrom.y);
+        ctx.lineTo(newTo.x, newTo.y);
         ctx.stroke();
+    };
+
+    const calculateRealCoordinates = (from, to, width, height) => {
+        if (!width || (width === canvasRef.current.width && height === canvasRef.current.height)) return [from, to];
+        const newFrom = {
+            x: (from.x * canvasRef.current.width) / width,
+            y: (from.y * canvasRef.current.height) / height,
+        };
+        const newTo = {
+            x: (to.x * canvasRef.current.width) / width,
+            y: (to.y * canvasRef.current.height) / height,
+        };
+        return [newFrom, newTo];
     };
 
     useEffect(() => {
@@ -298,7 +323,6 @@ const Game = ({
         } else if (mode === 'erase') {
             canvasColor = '#FFF';
         }
-        fontSize = previousFontSize;
     };
 
     const changeColor = (color) => {
@@ -311,7 +335,14 @@ const Game = ({
     };
 
     const sendCoordinates = (coordinates) => {
-        socket.emit('sendDraw', { drawer: user.name, coordinates, room });
+        const width = canvasRef.current.width;
+        const height = canvasRef.current.height;
+        coordinates = { ...coordinates, color: canvasColor, size: fontSize, width, height };
+        socket.emit('sendDraw', {
+            room,
+            drawer: user.name,
+            coordinates,
+        });
     };
 
     const handleClear = () => {
@@ -320,7 +351,10 @@ const Game = ({
 
     const handleUndo = () => {};
 
-    const clearCanvas = () => ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    const clearCanvas = () => {
+        globalCoordinates = [];
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    };
 
     return (
         <div className="wrapGameContent">
