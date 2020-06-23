@@ -251,9 +251,10 @@ const Game = ({
         ctx.lineWidth = size;
         ctx.strokeStyle = color;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
         ctx.moveTo(newFrom.x, newFrom.y);
-        ctx.lineTo(newTo.x, newTo.y);
+        ctx.quadraticCurveTo(newFrom.x, newFrom.y, newTo.x, newTo.y);
         ctx.stroke();
     };
 
